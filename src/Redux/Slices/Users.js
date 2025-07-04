@@ -42,12 +42,12 @@ export const deleteUser = createAsyncThunk("users/deleteUser", async (id, { reje
   try {
     const { error } = await supabase.from("users").delete().eq("id", id);
    if (error) {
-        console.error("Delete error:", error.message); // ✨ هنا نطبع الخطأ
+        console.error("Delete error:", error.message); 
         throw error;
       }
     return id;
   } catch (error) {
-    console.error("Error in deleteUser:", error.message); // ✨ هنا نطبع الخطأ
+    console.error("Error in deleteUser:", error.message); 
     return rejectWithValue(error.message);
     
   }
