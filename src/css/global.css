@@ -4,6 +4,7 @@
   --accent-color: #327AFF;
   --background-color: #f8f7fa;
   --side-bar-color: #1B0F31;
+  --Activeside-bar-color: #FFFFFF14;
   --black-color : #27242F;
   --dark-gray-color: #424047;
   --mid-gray-color: #7B7686;
@@ -18,12 +19,23 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  transition: all ease 0.4s;
 }
 
 body {
   font-family: var(--main-font);
   box-sizing: border-box;
     background-color: var(--background-color);
+}
+html, body {
+  height: 100%;
+  overflow: auto; /* أو scroll حسب حاجتك */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
+body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
 }
 
 p {
@@ -56,4 +68,36 @@ p {
   border: 1px solid var(--border-color);
   border-radius: 10px;
   cursor: pointer;
-}   
+}
+.offcanvas.offcanvas-end {
+   width: 228px !important;
+}
+.sidebarLink{
+cursor: pointer;
+position: relative;
+width: 100%;
+}
+.sidebarLink:hover{
+background-color:var(--Activeside-bar-color);
+}
+.ActivesidebarLink{
+background-color:var(--Activeside-bar-color);
+}
+.ActivesidebarLink::before{
+  position: absolute;
+  content: '';
+height: 100%;
+width: 4px;
+background-color:var( --primary-color) ;
+}
+.sidebarLink p{
+  margin-right: 15px;
+  display: flex;
+  align-items: center;
+  color:var(--white-color);
+  font-weight: 400;
+  font-size: 18px;
+  gap:10px;
+  padding: 10px;
+}
+

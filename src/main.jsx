@@ -6,6 +6,16 @@ import { Store } from './Redux/Store'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 
+
+createRoot(document.getElementById('root')).render(
+  <Provider store={Store}>
+    <StrictMode>
+      <App />
+    </StrictMode>
+  </Provider>,
+)
+
+
 createRoot(document.getElementById('root')).render(
   <Provider store={Store}>
     <StrictMode>
