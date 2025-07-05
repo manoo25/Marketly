@@ -5,6 +5,7 @@ import React from 'react'
 export default function AllGlobalCopm() {
     return (
         <div>
+            
             <PrimarySearch label="بحث عن مستخدم" icon="+_+" />
             <LightButton label="بحث" onClick={() => console.log("searchVal")} />
             <DangerButton label="حذف" />
