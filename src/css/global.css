@@ -1,15 +1,18 @@
 :root {
   --main-font: "El Messiri", sans-serif;
   --primary-color: #915EF6;
+  --primary-color-light: rgba(145, 94, 246, 0.129);
   --accent-color: #327AFF;
   --background-color: #f8f7fa;
   --side-bar-color: #1B0F31;
-  --black-color : #27242F;
+  --delete-color: red;
+  --delete-color-light: rgba(244, 113, 113, 0.118);
+  --black-color: #27242F;
   --dark-gray-color: #424047;
   --mid-gray-color: #7B7686;
   --very-light-gray-color: #A6A1B1;
   --very-very-light-gray-color: #CDC5DC;
-  --border-color : #EFECF3;
+  --border-color: #EFECF3;
   --white-color: #FFFFFF;
 }
 
@@ -23,7 +26,7 @@
 body {
   font-family: var(--main-font);
   box-sizing: border-box;
-    background-color: var(--background-color);
+  background-color: var(--background-color);
 }
 
 p {
@@ -49,11 +52,54 @@ p {
 
 .btn-secondary {
   background-color: var(--white-color);
-  color: var(--black-color);
+  color: var(--primary-color);
   font-family: var(--main-font);
   font-size: 1rem;
   padding: 0.5rem 1rem;
   border: 1px solid var(--border-color);
   border-radius: 10px;
   cursor: pointer;
-}   
+}
+
+.btn-light {
+  background-color: var(--primary-color-light);
+  color: var(--primary-color);
+  font-family: var(--main-font);
+  /* font-weight: bold; */
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.btn-danger {
+  background-color: var(--delete-color-light);
+  color: var(--delete-color);
+  font-family: var(--main-font);
+  /* font-weight: bold; */
+  font-size: 1rem;
+  padding: 0.5rem 5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.input-search {
+  font-family: var(--main-font);
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  outline-color: var(--primary-color);
+}
+
+.selector {
+  font-family: var(--main-font);
+  font-size: 1rem;
+  text-align: right;
+  padding: 0.5rem 0.5rem .5rem 10rem;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  outline-color: var(--primary-color);
+}
