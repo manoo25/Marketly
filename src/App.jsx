@@ -42,6 +42,9 @@ function App() {
       <button onClick={() => dispatch(DeleteCategory("b06a4961-2a5c-4f5a-b389-fc9a7adf0807"))}>
         Delete Category <span className="fa-brands fa-facebook"></span>
       </button>
+      <p>السلام عليكم ورحمة الله وبركاته</p>
+      <button className="btn-primary">زر رئيسي</button>
+      <button className="btn-secondary">زر ثانوي</button>
     </div>
   );
 }
