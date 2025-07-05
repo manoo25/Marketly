@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { } from "./Redux/Slices/Users";
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import { AddCategory, DeleteCategory, GetCategories, UpdateCategory } from "./Redux/Slices/Categories";
 
 function App() {
@@ -26,17 +27,20 @@ function App() {
   return (
     <div>
       <h1>Categories</h1>
-      <ul>
+      <ul >
         {categories.map((category) => (
           <li key={category.id}>{category.name}</li>
         ))}
       </ul>
       <button onClick={handleAddCategory}>Add Category</button>
-      <button onClick={() => dispatch(UpdateCategory({ id: "551ccc41-5a24-4fda-862d-640728295584", updatedData: { name: "Updated Category" } }))}>
+      <button onClick={() => dispatch(UpdateCategory({ id: "b06a4961-2a5c-4f5a-b389-fc9a7adf0807", updatedData: { name: "Updated Category" } }))}>
         Update Category
       </button>
-      <button onClick={() => dispatch(DeleteCategory("551ccc41-5a24-4fda-862d-640728295584"))}>
+      <button onClick={() => dispatch(DeleteCategory("b06a4961-2a5c-4f5a-b389-fc9a7adf0807"))}>
         Delete Category
+      </button>
+      <button onClick={() => dispatch(DeleteCategory("b06a4961-2a5c-4f5a-b389-fc9a7adf0807"))}>
+        Delete Category <span className="fa-brands fa-facebook"></span>
       </button>
     </div>
   );
