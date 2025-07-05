@@ -1,0 +1,59 @@
+:root {
+  --main-font: "El Messiri", sans-serif;
+  --primary-color: #915EF6;
+  --accent-color: #327AFF;
+  --background-color: #f8f7fa;
+  --side-bar-color: #1B0F31;
+  --black-color : #27242F;
+  --dark-gray-color: #424047;
+  --mid-gray-color: #7B7686;
+  --very-light-gray-color: #A6A1B1;
+  --very-very-light-gray-color: #CDC5DC;
+  --border-color : #EFECF3;
+  --white-color: #FFFFFF;
+}
+
+/* Global styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--main-font);
+  box-sizing: border-box;
+    background-color: var(--background-color);
+}
+
+p {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: #333;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: var(--white-color);
+  font-family: var(--main-font);
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-color);
+}
+
+.btn-secondary {
+  background-color: var(--white-color);
+  color: var(--black-color);
+  font-family: var(--main-font);
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  cursor: pointer;
+}   
