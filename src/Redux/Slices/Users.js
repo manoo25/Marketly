@@ -1,13 +1,14 @@
-
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { supabase } from "../../Supabase/supabaseClient";
 
-export const fetchUsers = createAsyncThunk("users/fetchUsers", async (_, { rejectWithValue }) => {
+
+export const fetchUsers = createAsyncThunk("users/fetchUsers", async (_ , { rejectWithValue }) => {
   try {
     const { data, error } = await supabase.from("users").select("*");
     if (error) throw error;
     return data;
-  } catch (error) {
+  } 
+  catch (error) {
     return rejectWithValue(error.message);
   }
 });
@@ -17,7 +18,8 @@ export const createUser = createAsyncThunk("users/createUser", async (userData, 
     const { data, error } = await supabase.from("users").insert(userData).select();
     if (error) throw error;
     return data[0]; 
-  } catch (error) {
+  } 
+  catch (error) {
     return rejectWithValue(error.message);
   }
 });
@@ -32,7 +34,8 @@ export const updateUser = createAsyncThunk("users/updateUser", async ({ id, upda
       .select();
     if (error) throw error;
     return data[0];
-  } catch (error) {
+  } 
+  catch (error) {
     return rejectWithValue(error.message);
   }
 });
@@ -88,6 +91,8 @@ const usersSlice = createSlice({
       .addCase(updateUser.fulfilled, (state, action) => {
         const index = state.users.findIndex(user => user.id === action.payload.id);
         if (index !== -1) {
+          console.log(action.payload);
+          
           state.users[index] = action.payload;
         }
       })

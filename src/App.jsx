@@ -1,45 +1,44 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createUser, deleteUser, fetchUsers } from "./Redux/Slices/Users";
+import { } from "./Redux/Slices/Users";
+import { AddCategory, DeleteCategory, GetCategories, UpdateCategory } from "./Redux/Slices/Categories";
 
 function App() {
   const dispatch = useDispatch();
-  const { users } = useSelector((state) => state.Users);
+  const { categories } = useSelector((state) => state.Categories);
 
   useEffect(() => {
-    dispatch(fetchUsers());
+    dispatch(GetCategories());
+    console.log(categories);
+    
   }, [dispatch]);
 
-  useEffect(() => {
-    if (users.length > 0) {
-      console.log(users);
-    }
-  }, [users]);
 
-  function handleAddUser() {
-    const newUser = {
-      name: "Tarek",
-      email: "mohamedsalama45489@gmail.com",
-      password: "3250894",
-      location: "Sakha",
-      role: "admin",
+
+  function handleAddCategory() {
+    const newCategory = {
+      name: "New Category"
+    
     };
-
-    dispatch(createUser(newUser));
+    dispatch(AddCategory(newCategory));
   }
 
   return (
-    <>
-      <p>Hello Marketly</p>
-      <button onClick={handleAddUser}>Add User</button>
-      <button
-        onClick={() =>
-          dispatch(deleteUser("aaf589d0-2ac9-45d5-b3fb-0710ad9faa07"))
-        }
-      >
-        Delete User
+    <div>
+      <h1>Categories</h1>
+      <ul>
+        {categories.map((category) => (
+          <li key={category.id}>{category.name}</li>
+        ))}
+      </ul>
+      <button onClick={handleAddCategory}>Add Category</button>
+      <button onClick={() => dispatch(UpdateCategory({ id: "551ccc41-5a24-4fda-862d-640728295584", updatedData: { name: "Updated Category" } }))}>
+        Update Category
       </button>
-    </>
+      <button onClick={() => dispatch(DeleteCategory("551ccc41-5a24-4fda-862d-640728295584"))}>
+        Delete Category
+      </button>
+    </div>
   );
 }
 
