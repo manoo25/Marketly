@@ -13,9 +13,10 @@ export default function PrimaryButton({ label = "", icon = null, className = "",
 
     return (
         <button
-        type={type}
+            style={{ width: "100%" }}
+            type={type}
             className={`btn-primary ${className} ${selectedSize}`}
-        onClick={onClick}
+            onClick={onClick}
         >
             {icon && <span className="icon">{icon} </span>}
             {label && <span>{label}</span>}

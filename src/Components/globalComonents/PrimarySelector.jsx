@@ -4,6 +4,7 @@ export default function PrimarySelector({label="اختر" , icon ="", className=
 
     return (
         <select
+            style={{ width:"100%" }}
             value={value}
             onChange={(e)=>onChange(e.target.value)}
             className={`selector ${className}`}
