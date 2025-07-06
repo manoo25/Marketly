@@ -5,7 +5,7 @@ function SidebarLink() {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const sidebarLinks = [
-    { text: 'لوحة التحكم', icon: 'fa-solid fa-gauge', path: '/Dashboard/home' },
+    { text: 'لوحة التحكم', icon: 'fa-solid fa-gauge', path: '/Dashboard/Charts' },
     { text: 'المستخدمين', icon: 'fa-solid fa-users', path: '/Dashboard/Users' },
     { text: 'المنتجات', icon: 'fa-solid fa-box-open', path: '/Dashboard/Products' },
     { text: 'الأصناف', icon: 'fa-solid fa-layer-group', path: '/Dashboard/Categories' },

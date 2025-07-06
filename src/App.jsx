@@ -1,10 +1,11 @@
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Sidebar from "./Components/LayoutComponents/Sidebar";
 import Layout from "./Pages/Layout";
 import Products from "./Pages/ProductsPage";
 import Users from "./Pages/UsersPage";
 import Orders from "./Pages/Orders";
+import Charts from "./Pages/Charts";
+import Categories from "./Pages/CategoriesPage";
 
 
 
@@ -13,7 +14,9 @@ function App() {
 let routes= createBrowserRouter([
   {path:'/',element:<Layout></Layout>},
   {path:'Dashboard',element:<Layout></Layout>,children:[
+     {path:'Charts',element:<Charts></Charts>},
      {path:'Products',element:<Products></Products>},
+     {path:'Categories',element:<Categories></Categories>},
      {path:'Users',element:<Users></Users>},
      {path:'Orders',element:<Orders></Orders>},
   ]},
