@@ -1,15 +1,26 @@
-
-import { } from "./Redux/Slices/Users";
+import React, { useState } from "react";
+import { Button } from "react-bootstrap";
 import '@fortawesome/fontawesome-free/css/all.min.css';
+
 import { AddCategory, DeleteCategory, GetCategories, UpdateCategory } from "./Redux/Slices/Categories";
 import Sidebar from "./Components/LayoutComponents/Sidebar";
-import AllGlobalCopm from "./Pages/AllGlobalCopm";
+import AddUserModal from "./Components/modalsComponents/UserModal";
 
 function App() {
- 
+  const [showModal, setShowModal] = useState(false);
 
   return (
-  <AllGlobalCopm/>
+    <>
+      <Sidebar />
+
+      <div className="text-end p-4">
+        <Button variant="primary" onClick={() => setShowModal(true)}>
+          إضافة مستخدم
+        </Button>
+
+        <AddUserModal show={showModal} handleClose={() => setShowModal(false)} />
+      </div>
+    </>
   );
 }
 
