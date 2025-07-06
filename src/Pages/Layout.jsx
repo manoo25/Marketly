@@ -9,6 +9,7 @@ import { Outlet } from 'react-router-dom';
 function Layout() {
   const [margin, setMargin] = useState('0');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [PageTitle, SetPageTitle] = useState('لوحة التحكم');
 
   const offcanvasRef = useRef(null);
 
@@ -63,7 +64,7 @@ function Layout() {
         </div>
 
         <div className="offcanvas-body m-0  p-0">
-          <SidebarLink />
+          <SidebarLink SetPageTitle={SetPageTitle} />
         </div>
       </div>
 
@@ -74,7 +75,7 @@ function Layout() {
          <Nav 
         handleToggleSidebar={handleToggleSidebar}
         isSidebarOpen={isSidebarOpen}
-       
+       PageTitle={PageTitle}
         />
        </div>
 

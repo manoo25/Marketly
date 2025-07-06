@@ -1,6 +1,8 @@
 import AvatarDropdown from "./Avatar";
 
-function Nav({handleToggleSidebar,isSidebarOpen}) {
+function Nav({handleToggleSidebar,isSidebarOpen,PageTitle}) {
+  console.log(PageTitle);
+  
     return ( 
         <nav style={{
             backgroundColor:"var(--white-color)",
@@ -22,7 +24,7 @@ function Nav({handleToggleSidebar,isSidebarOpen}) {
             style={{ fontSize: 20 }}
             className={`fa-regular fa-square-caret-${isSidebarOpen ? 'right' : 'left'}`}
           ></span>
-          لوحة التحكم
+          {PageTitle}
         </button>
 <div className=" d-flex align-items-center position-relative">
       

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-function SidebarLink() {
+function SidebarLink({SetPageTitle}) {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const sidebarLinks = [
@@ -15,7 +15,12 @@ function SidebarLink() {
   return (
     <>
       {sidebarLinks.map((link, index) => (
-        <Link to={link.path} key={index} onClick={() => setActiveIndex(index)} className="text-decoration-none">
+        <Link to={link.path} key={index} 
+       onClick={() => {
+    setActiveIndex(index);
+    SetPageTitle(link.text);
+  }}
+        className="text-decoration-none">
           <div className={`sidebarLink ${activeIndex === index ? 'ActivesidebarLink' : ''}`}>
             <p><span className={link.icon}></span> {link.text}</p>
           </div>
