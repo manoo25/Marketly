@@ -1,6 +1,14 @@
+
+import ProductsPageHeader from "../Components/ProductsComponents/productsPageHeader";
+import ProductsTbl from "../Components/ProductsComponents/ProductsTbl";
+
+
 function Products() {
+   
+    
     return ( <>
-    <p>Products Page</p>
+    <ProductsPageHeader/>
+  <ProductsTbl/>
     </> );
 }
 

@@ -1,9 +1,17 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { supabase } from "../../Supabase/supabaseClient";
 
+// Get All Products with related category and trader info
 export const fetchProducts = createAsyncThunk("products/fetchproducts", async (_, { rejectWithValue }) => {
     try {
-        const { data, error } = await supabase.from("products").select("*");
+        const { data, error } = await supabase
+            .from("products")
+            .select(`
+                *,
+                category:category_id (*),
+                trader:trader_id (*),
+                company:company_id (name,image)
+            `);
         if (error) throw error;
         return data;
     } catch (error) {
@@ -11,9 +19,17 @@ export const fetchProducts = createAsyncThunk("products/fetchproducts", async (_
     }
 });
 
+// Create a new product
 export const createProduct = createAsyncThunk("products/createproduct", async (productData, { rejectWithValue }) => {
     try {
-        const { data, error } = await supabase.from("products").insert(productData).select();
+        const { data, error } = await supabase
+            .from("products")
+            .insert(productData)
+            .select(`
+                *,
+                categories:category_id (*),
+                traders:trader_id (*)
+            `);
         if (error) throw error;
         return data[0];
     } catch (error) {
@@ -21,9 +37,18 @@ export const createProduct = createAsyncThunk("products/createproduct", async (p
     }
 });
 
+// Update a product
 export const updateProduct = createAsyncThunk("products/updateproduct", async ({ id, updatedData }, { rejectWithValue }) => {
     try {
-        const { data, error } = await supabase.from("products").update(updatedData).eq("id", id).select();
+        const { data, error } = await supabase
+            .from("products")
+            .update(updatedData)
+            .eq("id", id)
+            .select(`
+                *,
+                categories:category_id (*),
+                traders:trader_id (*)
+            `);
         if (error) throw error;
         return data[0];
     } catch (error) {
@@ -31,6 +56,7 @@ export const updateProduct = createAsyncThunk("products/updateproduct", async ({
     }
 });
 
+// Delete a product
 export const deleteProduct = createAsyncThunk("products/deleteproduct", async (id, { rejectWithValue }) => {
     try {
         const { error } = await supabase.from("products").delete().eq("id", id);
@@ -41,6 +67,7 @@ export const deleteProduct = createAsyncThunk("products/deleteproduct", async (i
     }
 });
 
+// Slice
 const productSlice = createSlice({
     name: "products",
     initialState: {

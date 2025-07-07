@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import "./UsersTbl.css";
+import "../../css/Table.css";
 
 const fakeUsers = Array.from({ length: 100 }, (_, i) => ({
   id: i + 1,
