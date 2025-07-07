@@ -183,7 +183,16 @@ background-color:var( --primary-color) ;
   text-align: right;
 }
 
+ 
+
  .modal-content select.form-select {
+  background-position: left 0.75rem center;
+  padding-left: 2rem;
+  padding-right: 0.75rem;
+}
+
+
+  select.form-select {
   background-position: left 0.75rem center;
   padding-left: 2rem;
   padding-right: 0.75rem;

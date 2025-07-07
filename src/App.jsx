@@ -6,7 +6,8 @@ import Users from "./Pages/UsersPage";
 import Orders from "./Pages/Orders";
 import Charts from "./Pages/Charts";
 import Categories from "./Pages/CategoriesPage";
-
+import SignUp from "./Pages/auth/SignUp";
+import SigninPage from "./Pages/auth/SignIn"
 
 
 
@@ -19,12 +20,16 @@ let routes= createBrowserRouter([
      {path:'Categories',element:<Categories></Categories>},
      {path:'Users',element:<Users></Users>},
      {path:'Orders',element:<Orders></Orders>},
+     {path:'SignUp',element:<SignUp/>},
+     {path:'SigninPage',element:<SigninPage/>},
   ]},
 ])
   
   return (
     <>
-   <RouterProvider router={routes}/>
+   {/* <RouterProvider router={routes}/> */}
+   <SigninPage/>
+   
     </>
   );
 }

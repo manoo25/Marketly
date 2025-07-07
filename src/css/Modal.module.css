@@ -60,8 +60,8 @@ select.form-select {
   padding-right: 0.75rem;
 }
 .customModal {
-  max-width: 600px !important; /* عدّل الحجم حسب رغبتك */
-  width: 90% !important;       /* يجعلها مرنة على الشاشات الصغيرة */
+  max-width: 600px !important; 
+  width: 90% !important;       
 }
 
 

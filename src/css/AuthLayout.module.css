@@ -1,0 +1,68 @@
+ :root {
+  --main-font: "El Messiri", sans-serif;
+  --primary-color: #915EF6;
+  --primary-color-light: rgba(145, 94, 246, 0.129);
+  --accent-color: #327AFF;
+  --background-color: #f8f7fa;
+  --side-bar-color: #1B0F31;
+  --Activeside-bar-color: #FFFFFF14;
+  --black-color: #27242F;
+  --delete-color: red;
+  --delete-color-light: rgba(244, 113, 113, 0.118);
+  --dark-gray-color: #424047;
+  --mid-gray-color: #7B7686;
+  --very-light-gray-color: #A6A1B1;
+  --very-very-light-gray-color: #CDC5DC;
+  --border-color: #EFECF3;
+  --white-color: #FFFFFF;
+}
+ .signupPage {
+  background-color: var(--background-color);
+  min-height: 100vh;
+}
+
+.signupImageSection {
+  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+  padding: 2rem;
+  border-radius: 12px;
+  height: 92vh;
+}
+
+.signupSideImg {
+  max-width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+ 
+.signupFormWrapper {
+  padding: 2rem;
+  max-width: 700px;
+  width: 100%;
+  margin: auto;
+}
+
+ .formGroup {
+  margin-bottom: 1.5rem;
+}
+
+.formLabel {
+   margin-bottom: 0.5rem;
+  color: var(--dark-gray-color);
+}
+
+ 
+
+input:focus,
+  select:focus,
+  textarea:focus {
+    outline: none;
+    box-shadow: none !important;
+    border-color: transparent !important;  
+  }
+  input,select,textarea{
+    border-color:transparent !important ;
+  }
+ 
+ 
+ 
+
