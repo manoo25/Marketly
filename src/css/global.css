@@ -197,3 +197,10 @@ background-color:var( --primary-color) ;
   color: var(--mid-gray-color);
   pointer-events: none;
 }
+.CloseModalBtn{
+  font-size: 25px;
+  color: rgba(248, 73, 73, 0.74);
+}
+.CloseModalBtn:hover{
+ color: black;
+}

@@ -1,4 +1,5 @@
 
+import AddProductModal from "../Components/modalsComponents/ProductModal";
 import ProductsPageHeader from "../Components/ProductsComponents/productsPageHeader";
 import ProductsTbl from "../Components/ProductsComponents/ProductsTbl";
 
