@@ -27,8 +27,9 @@ export const createProduct = createAsyncThunk("products/createproduct", async (p
             .insert(productData)
             .select(`
                 *,
-                categories:category_id (*),
-                traders:trader_id (*)
+                category:category_id (*),
+                trader:trader_id (*),
+                company:company_id (name,image)
             `);
         if (error) throw error;
         return data[0];
@@ -46,8 +47,9 @@ export const updateProduct = createAsyncThunk("products/updateproduct", async ({
             .eq("id", id)
             .select(`
                 *,
-                categories:category_id (*),
-                traders:trader_id (*)
+                category:category_id (*),
+                trader:trader_id (*),
+                company:company_id (name,image)
             `);
         if (error) throw error;
         return data[0];

@@ -204,3 +204,7 @@ background-color:var( --primary-color) ;
 .CloseModalBtn:hover{
  color: black;
 }
+.AddProductModal {
+  max-width: 700px !important; /* عدّل الحجم حسب رغبتك */
+  width: 90% !important;       /* يجعلها مرنة على الشاشات الصغيرة */
+}
