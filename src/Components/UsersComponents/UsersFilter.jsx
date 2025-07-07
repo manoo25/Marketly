@@ -1,5 +1,5 @@
 import React from 'react';
-import GovernorateFilter from './FilteredComponents/GovernorateFilter'; // أو أي اسم فلترك
+import GovernorateFilter from './FilteredComponents/GovernorateFilter';
 import LightButton from '../globalComonents/LightButton';
 import RoleFilter from './FilteredComponents/RoleFilter';
 import NameSearch from './FilteredComponents/NameSearch';
@@ -17,7 +17,7 @@ function UsersFilter({
     onSearchClick,
 }) {
     return (
-        <div className="d-flex gap-2 align-items-center justify-content-center">
+        <div className="d-flex gap-3 align-items-center justify-content-center">
 
             <NameSearch
                 searchName={searchName}

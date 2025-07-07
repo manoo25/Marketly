@@ -3,7 +3,7 @@ import PrimarySelector from '../../globalComonents/PrimarySelector'
 
 function RoleFilter({ selectedRole, setSelectedRole }) {
 
-    const roles = [{ label: "كل الصلاحيات", value: "" }, { label: "أدمن", value: "أدمن" }, { label: "تاجر", value: "تاجر" }, { label: "مستخدم", value: "مستخدم" }]
+    const roles = [{ label: "كل الصلاحيات", value: "" }, { label: "أدمن", value: "admin" }, { label: "تاجر", value: "trader" }, { label: "مستخدم", value: "user" }]
 
     return (
         <div style={{width:"220px"}}>
