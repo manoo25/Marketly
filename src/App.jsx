@@ -25,7 +25,7 @@ let routes= createBrowserRouter([
 
   return (
     <>
-   <RouterProvider router={routes}/>
+  <RouterProvider router={routes}/>
     </>
   );
 }

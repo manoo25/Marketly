@@ -22,5 +22,7 @@ export const uploadImagesToSupabase = async (files,store) => {
     console.log("✅ File uploaded to:", publicUrlData.publicUrl);
     uploadedUrls.push(publicUrlData.publicUrl);
   }
+  console.log(uploadedUrls);
+  
   return uploadedUrls;
 };

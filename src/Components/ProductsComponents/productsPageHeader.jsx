@@ -1,4 +1,4 @@
-import PrimaryButton from "../globalComonents/PrimaryButton";
+
 import AddProductModal from "../modalsComponents/ProductModal";
 
 function ProductsPageHeader() {

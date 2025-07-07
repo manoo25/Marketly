@@ -14,6 +14,7 @@ export default function SecondaryButton({ label = "", icon = null, className = "
     return (
         <button
             type={type}
+            style={{ width:"100%" }}
             className={`btn-secondary ${className} ${selectedSize}`}
             onClick={onClick}
         >
