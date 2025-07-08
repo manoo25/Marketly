@@ -80,7 +80,7 @@ function Layout() {
        </div>
 
         {/* Routing Pages  */}
-        <div className='bg-light p-4'>
+        <div className='bg-light' style={{ padding : '3rem'}}>
           <Outlet/>
         </div>
       </div>

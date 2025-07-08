@@ -10,8 +10,8 @@ function SidebarLink({SetPageTitle}) {
     { text: 'المنتجات', icon: 'fa-solid fa-box-open', path: '/Dashboard/Products' },
     { text: 'الأصناف', icon: 'fa-solid fa-layer-group', path: '/Dashboard/Categories' },
     { text: 'المبيعات', icon: 'fa-solid fa-chart-line', path: '/Dashboard/Sales' },
-
-    { text: 'الشركات', icon: 'fa-solid fa-chart-line', path: '/Dashboard/companies' }
+    { text: 'الشركات', icon: 'fa-solid fa-chart-line', path: '/Dashboard/companies' },
+    { text: 'الطلبات', icon: 'fa-solid fa-receipt', path: '/Dashboard/Orders' }
   ];
 
   return (
