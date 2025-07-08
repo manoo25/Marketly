@@ -11,7 +11,7 @@ export const fetchProducts = createAsyncThunk("products/fetchproducts", async (_
                 category:category_id (*),
                 trader:trader_id (*),
                 company:company_id (name,image)
-            `);
+                          `);
         if (error) throw error;
         return data;
     } catch (error) {

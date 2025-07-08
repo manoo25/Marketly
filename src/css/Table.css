@@ -7,17 +7,18 @@
   background-color: #ffffff;
   position: relative;
   z-index: 9;
-  overflow: hidden;
   margin: 20px auto;
   font-family: "Cairo", sans-serif;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  overflow-y: visible;
+
 }
 
 
 .table {
   background-color: white;
   border-radius: 23px;
-  /* overflow: hidden; */
+  border: 0;
 }
 .table td,.table th{
 text-align: center;
@@ -35,10 +36,13 @@ align-content: center;
 .user-table tbody tr {
   height: 54px;
   border-bottom: 1px solid #efecf3;
+  border-radius: 23px ;
+
 }
 
 .user-table tbody td {
   padding: 12px 16px;
+   overflow-y:visible;
  
 }
 

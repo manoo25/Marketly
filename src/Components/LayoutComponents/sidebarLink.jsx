@@ -9,7 +9,10 @@ function SidebarLink({SetPageTitle}) {
     { text: 'المستخدمين', icon: 'fa-solid fa-users', path: '/Dashboard/Users' },
     { text: 'المنتجات', icon: 'fa-solid fa-box-open', path: '/Dashboard/Products' },
     { text: 'الأصناف', icon: 'fa-solid fa-layer-group', path: '/Dashboard/Categories' },
-    { text: 'المبيعات', icon: 'fa-solid fa-chart-line', path: '/Dashboard/Sales' }
+    { text: 'المبيعات', icon: 'fa-solid fa-chart-line', path: '/Dashboard/Sales' },
+    { text: 'الشركات', icon: 'fa-solid fa-chart-line', path: '/Dashboard/companies' },
+    { text: 'الطلبات', icon: 'fa-solid fa-receipt', path: '/Dashboard/Orders' },
+    { text: 'المرتجعات', icon: 'fa-solid fa-undo', path: '/Dashboard/Returns' }
   ];
 
   return (

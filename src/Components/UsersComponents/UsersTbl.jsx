@@ -1,9 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../css/Table.css";
 import "./CustomMenu.css";
 import ModalConfirm from "./ModalConfirm";
 import PrimaryButton from "../globalComonents/PrimaryButton";
 import { SiLastdotfm } from "react-icons/si";
+import CustomMenu from "../globalComonents/CustomMenu";
 // const fakeUsers = Array.from({ length: 100 }, (_, i) => ({
 //   id: i + 1,
 //   username: `user${i + 1}`,
@@ -17,7 +18,7 @@ import { SiLastdotfm } from "react-icons/si";
 
 const rowsPerPage = 10;
 
-const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, searchEmail, onDeleteUser, onBlockUser }) => {
+const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, searchEmail, onBlockUser }) => {
 
 
   const filteredUsers = users.filter((user) => {
@@ -45,24 +46,7 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
   useEffect(() => {
     setCurrentPage(1);
   }, [selectedRole, selectedGovernorate]);
-
-  // Open Menu and Close it by any Click and View Control
-  const [openIndex, setOpenIndex] = useState(null);
-  const popupRefs = useRef([]);
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      const currentPopup = popupRefs.current[openIndex];
-      if (currentPopup && !currentPopup.contains(e.target)) {
-        setOpenIndex(null);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [openIndex]);
-  const [menuDirection, setMenuDirection] = useState("down");
-  // Open Menu and Close it by any Click and View Control
   
-
 
   const [confirmModal, setConfirmModal] = useState({
     open: false,
@@ -74,9 +58,7 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
   
   // Modals for  Block And Delete Confirm  
   const handleBlockUser = (user) => {
-    setOpenIndex(null);
     const isBlocked = user.isBlocked;
-
     setConfirmModal({
       open: true,
       message: isBlocked
@@ -92,29 +74,32 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
   };
   
 
-  const handleDeleteUser = (user) => {
-    setOpenIndex(null);
-    setConfirmModal({
-      open: true,
-      message: `هل تريد حذف ${user.name}؟`,
-      confirmText: "حذف",
-      confirmClass: "btn-danger",
-      onConfirm: () => {
-        onDeleteUser(user.id); // نديه الـ id بس
-        setConfirmModal((prev) => ({ ...prev, open: false }));
-      },
-    });
-  };
+  // const handleDeleteUser = (user) => {
+  //   setConfirmModal({
+  //     open: true,
+  //     message: `هل تريد حذف ${user.name}؟`,
+  //     confirmText: "حذف",
+  //     confirmClass: "btn-danger",
+  //     onConfirm: () => {
+  //       onDeleteUser(user.id); // نديه الـ id بس
+  //       setConfirmModal((prev) => ({ ...prev, open: false }));
+  //     },
+  //   });
+  // };
   
   // Modals for  Block And Delete Confirm  
+
+  function ShowMe(){
+    console.log("Hello")
+  }
 
   return (
     <>
       
 
-      <div className="user-table ">
-        <table border="1" width="100%" dir="rtl" className="table">
-          <thead>
+      <div className="user-table  ">
+        <table className="table" border="1" width="100%" dir="rtl" >
+          <thead >
             <tr>
               <th>
                 <label className="checkbox-wrapper">
@@ -135,7 +120,7 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
               <th></th>
             </tr>
           </thead>
-          <tbody>
+          <tbody >
             {currentUsers.map((user) => (
               <tr className={user.isBlocked ? "blocked-row" : "not-blocked-row"}
               key={user.id}>
@@ -166,186 +151,19 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
                 <td>{user.governorate}</td>
                 <td>{user.city}</td>
                 <td style={{  }}>
-                  <label style={{ position:"relative" }} class="popup" ref={(el) => (popupRefs.current[user.id] = el)}>
-                    <input
-                      type="checkbox"
-                      checked={openIndex === user.id}
-                      onChange={() => {
-                        const rect = popupRefs.current[user.id]?.getBoundingClientRect();
-                        const windowHeight = window.innerHeight;
-                        const spaceBelow = windowHeight - rect.bottom;
-                        const menuHeight = 150;
-                        setMenuDirection(spaceBelow < menuHeight ? "up" : "down");
-                        setOpenIndex((prev) => (prev === user.id ? null : user.id));
-                      }}
-                      
-                    />
-                    <div tabIndex="0" className="burger" style={{
-                      width: "42px",
-                      height: "42px",
-                      border: "1px solid #EFECF3",
-                      borderRadius: "12px",
-                      background: "#fff",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      cursor: "pointer",
-                      position:"relative",
-                      // zIndex:-1
-                    }}>
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="#424047"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <circle cx="5" cy="12" r="1" />
-                        <circle cx="12" cy="12" r="1" />
-                        <circle cx="19" cy="12" r="1" />
-                      </svg>
-                    </div>
 
-                    <nav class="popup-window" 
-                      style={{
-                        position: "absolute",
-                        width: "fit-content",
-                        top: menuDirection === "down" ? "100%" : "auto",
-                        bottom: menuDirection === "up" ? "100%" : "auto",
-                        left: 0,
-                        background: "#fff",
-                        boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
-                        borderRadius: "8px",
-                        zIndex: 1000,
-                        marginBottom: menuDirection === "up" ? "10px" : 0,
-                        marginTop: menuDirection === "down" ? "10px" : 0,
-                    }}
-                    >
-                     
-                      <ul style={{ position:"relative", zIndex:999}}>
-                       
-                        <li>
-                          <button
-                            className="custom-btn-menu"
-                            onClick={() => {
-
-                              setOpenIndex(null);
-                            }}
-
-                          >
-                           <span style={{ color:"blue" }} className='fa-regular fa-user  '></span>
-                            <span className='mb-2'>إرسال رسالة</span>
-                            
-                          </button>
-                        </li>
-                        <li>
-                          <button
-                            className="custom-btn-menu"
-                            onClick={() => {
-
-                              setOpenIndex(null);
-                            }}
-
-                          >
-                           <span style={{ color:"green" }} className='fa-regular fa-user  '></span>
-                            <span className='mb-2'>تعديل</span>
-                            
-                          </button>
-                        </li>
-                        <li>
-                          <button
-                            className="custom-btn-menu"
-                            onClick={() => {
-                              handleDeleteUser(user)
-                              setOpenIndex(null);
-                            }}
-                          >
-                          <span style={{ color:"red" }} className='fa-regular fa-user  '></span>
-                            <span className='mb-2'>حذف</span>
-                            
-                          </button>
-                        </li>
-                        <li>
-                          <button
-                            className="custom-btn-menu"
-                            onClick={() => {
-                              handleBlockUser(user)
-
-                              setOpenIndex(null);
-                            }}
-                            >
-                              <span style={{ color:"orange" }} className='fa-solid fa-right-from-bracket fa-rotate-180  '></span>
-                            <span className='mb-2'>{user.isBlocked ? "إلغاء الحظر" : "حظر"}</span>
-                            
-                          </button>
-                        </li>
-                      </ul>
-                    </nav>
-                  </label>
+                  <CustomMenu
+                  id={user.id}
+                  options={[
+                    { label: "إرسال رسالة", icon: "fa-solid fa-paper-plane", color: "green", onClick:()=>{ShowMe()}},
+                    { label: user.isBlocked ? "إالغاء الحظر" : "حظر" , icon: "fa-solid fa-ban", color: "red",
+                      onClick:()=>{handleBlockUser(user)}}
+                  ]}
+                  />
 
 
-                  {/* <div className="dropdown">
-                    <button
-                      className="btn dropdown-toggle"
-                      type="button"
-                      id={`dropdownMenu${user.id}`}
-                      data-bs-toggle="dropdown"
-                      data-bs-auto-close="outside"
-                      aria-expanded="false"
-                      style={{
-                        width: "42px",
-                        height: "42px",
-                        borderRadius: "12px",
-                        padding: "12px",
-                        background: "#FFFFFF",
-                        border: "1px solid #EFECF3",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="#424047"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <circle cx="5" cy="12" r="1" />
-                        <circle cx="12" cy="12" r="1" />
-                        <circle cx="19" cy="12" r="1" />
-                      </svg>
-                    </button>
 
-
-                    <ul
-                      className="dropdown-menu dropdown-menu-end"
-                      aria-labelledby={`dropdownMenu${user.id}`}
-                    >
-                      <li>
-                        <button
-                          className="dropdown-item"
-                          onClick={() => console.log("Edit", user.id)}
-                        >
-                          تعديل
-                        </button>
-                      </li>
-                      <li>
-                        <button
-                          className="dropdown-item text-danger"
-                          onClick={() => console.log("Delete", user.id)}
-                        >
-                          حذف
-                        </button>
-                      </li>
-                    </ul>
-                  </div> */}
+              
                 </td>
               </tr>
             ))}

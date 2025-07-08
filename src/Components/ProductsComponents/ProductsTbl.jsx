@@ -3,18 +3,18 @@ import "../../css/Table.css";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from "../../Redux/Slices/ProductSlice";
 
-const rowsPerPage = 10;
+const rowsPerPage = 4;
 
 const ProductsTbl = () => {
   const dispatch = useDispatch();
   const { products } = useSelector((state) => state.Products);
-  console.log(products);
+
 
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     dispatch(fetchProducts());
-  }, [dispatch]);
+  }, []);
 
   const totalPages = Math.ceil(products.length / rowsPerPage);
   const startIndex = (currentPage - 1) * rowsPerPage;

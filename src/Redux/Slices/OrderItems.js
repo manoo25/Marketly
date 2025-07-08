@@ -4,9 +4,9 @@ import { supabase } from "../../Supabase/supabaseClient";
 
 export const getOrderItems = createAsyncThunk(
   "OrderItems/getOrderItems",
-  async (_, { rejectWithValue }) => {
+  async (order_id, { rejectWithValue }) => {
     try {
-      const { data, error } = await supabase.from("order_items").select("*");
+      const { data, error } = await supabase.from("order_items").eq("order_id", order_id).select("*");
       if (error) throw error;
       
       return data;

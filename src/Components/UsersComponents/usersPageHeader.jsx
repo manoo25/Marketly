@@ -1,5 +1,4 @@
-import React from 'react'
-import PrimaryButton from '../globalComonents/PrimaryButton'
+
 import AddUserModal from '../modalsComponents/UserModal'
 
 function UsersPageHeader() {

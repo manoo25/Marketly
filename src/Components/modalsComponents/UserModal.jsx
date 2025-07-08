@@ -8,7 +8,7 @@ import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { createUser } from '../../Redux/Slices/Users';
 import { uploadImagesToSupabase } from '../../Redux/uploadingImage'; // نفس الدالة
-import { v4 as uuidv4 } from 'uuid';
+
 
 const AddUserModal = () => {
   const [images, setImages] = useState([]);
@@ -45,9 +45,10 @@ const AddUserModal = () => {
 
       const imageUrls = await uploadImagesToSupabase(formik.values.userImage, 'users');
       const { userImage, ...cleanValues } = formik.values;
+      console.log(userImage);
+      
       const values = {
         ...cleanValues,
-        id: uuidv4(),
         isBlocked: false, 
         image: imageUrls[0],
         phone: formik.values.phone,
