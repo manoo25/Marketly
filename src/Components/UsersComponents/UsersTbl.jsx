@@ -20,7 +20,7 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
 
   const filteredUsers = users.filter((user) => {
     const matchGovernorate = selectedGovernorate
-      ? user.location === selectedGovernorate
+      ? user.governorate === selectedGovernorate
       : true;
 
     const matchRole = selectedRole
@@ -110,15 +110,16 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
     <>
       
 
-      <div className="user-table ">
-        <table border="1" width="100%" dir="rtl" className="table">
-          <thead>
+      <div className="user-table  ">
+        <table className="table" border="1" width="100%" dir="rtl" >
+          <thead >
             <tr>
               <th>
-                <div className="checkbox-header">
+                <label className="checkbox-wrapper">
                   <input type="checkbox" id="select-all" />
 
-                </div>
+                  {/* <span>{}</span> */}
+                </label>
               </th>
               <th>
 
@@ -132,7 +133,7 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
               <th></th>
             </tr>
           </thead>
-          <tbody>
+          <tbody >
             {currentUsers.map((user) => (
               <tr className={user.isBlocked ? "blocked-row" : "not-blocked-row"}
               key={user.id}>
@@ -160,8 +161,8 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
                 >
                   {user.role}
                 </td>
-                <td>{user.location}</td>
-                <td>{user.location}</td>
+                <td>{user.governorate}</td>
+                <td>{user.city}</td>
                 <td style={{  }}>
 
                   <label style={{ position:"relative" }} class="popup" ref={(el) => (popupRefs.current[user.id] = el)}>
@@ -171,11 +172,8 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
                       onChange={() => {
                         const rect = popupRefs.current[user.id]?.getBoundingClientRect();
                         const windowHeight = window.innerHeight;
-
-                        // هل المساحة اللي تحت العنصر تكفي لعرض القائمة؟
                         const spaceBelow = windowHeight - rect.bottom;
-                        const menuHeight = 150; // عدّلها حسب ارتفاع المنيو عندك
-
+                        const menuHeight = 150;
                         setMenuDirection(spaceBelow < menuHeight ? "up" : "down");
                         setOpenIndex((prev) => (prev === user.id ? null : user.id));
                       }}
@@ -210,7 +208,7 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
                       </svg>
                     </div>
 
-                    <nav class="popup-window" 
+                    <nav class="popup-window " 
                       style={{
                         position: "absolute",
                         width: "fit-content",
@@ -288,65 +286,7 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
                   </label>
 
 
-                  {/* <div className="dropdown">
-                    <button
-                      className="btn dropdown-toggle"
-                      type="button"
-                      id={`dropdownMenu${user.id}`}
-                      data-bs-toggle="dropdown"
-                      data-bs-auto-close="outside"
-                      aria-expanded="false"
-                      style={{
-                        width: "42px",
-                        height: "42px",
-                        borderRadius: "12px",
-                        padding: "12px",
-                        background: "#FFFFFF",
-                        border: "1px solid #EFECF3",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="#424047"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <circle cx="5" cy="12" r="1" />
-                        <circle cx="12" cy="12" r="1" />
-                        <circle cx="19" cy="12" r="1" />
-                      </svg>
-                    </button>
-
-
-                    <ul
-                      className="dropdown-menu dropdown-menu-end"
-                      aria-labelledby={`dropdownMenu${user.id}`}
-                    >
-                      <li>
-                        <button
-                          className="dropdown-item"
-                          onClick={() => console.log("Edit", user.id)}
-                        >
-                          تعديل
-                        </button>
-                      </li>
-                      <li>
-                        <button
-                          className="dropdown-item text-danger"
-                          onClick={() => console.log("Delete", user.id)}
-                        >
-                          حذف
-                        </button>
-                      </li>
-                    </ul>
-                  </div> */}
+              
                 </td>
               </tr>
             ))}

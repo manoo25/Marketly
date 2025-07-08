@@ -41,6 +41,7 @@ export const updateUser = createAsyncThunk("users/updateUser", async ({ id, upda
 });
 
 
+
 export const deleteUser = createAsyncThunk("users/deleteUser", async (id, { rejectWithValue }) => {
   try {
     const { error } = await supabase.from("users").delete().eq("id", id);
