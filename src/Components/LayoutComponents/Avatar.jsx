@@ -1,5 +1,4 @@
-import React from 'react';
-import Logo from '../../assets/Images/logo.png';
+
 import '../../css/Avatar.css'
 import avatar from "../../assets/Images/user.png"
 function AvatarDropdown() {
@@ -7,9 +6,9 @@ function AvatarDropdown() {
 
   return (
 
-<label class="popup">
+<label className="popup">
   <input type="checkbox" />
-  <div tabindex="0" class="burger">
+  <div tabIndex="0" className="burger">
     <img src={avatar} alt="avatar"
     style={{
       width:'60px',
@@ -17,7 +16,7 @@ function AvatarDropdown() {
     }}
     />
   </div>
-  <nav class="popup-window">
+  <nav className="popup-window">
    
     <ul>
      

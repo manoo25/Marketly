@@ -1,19 +1,30 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import '../../css/global.css';
 import PrimaryButton from '../globalComonents/PrimaryButton';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { createProduct } from '../../Redux/Slices/ProductSlice';
 import { uploadImagesToSupabase } from '../../Redux/uploadingImage';
+import { GetCategories } from '../../Redux/Slices/Categories';
+import { GetUnits } from '../../Redux/Slices/units';
 
 const AddProductModal = () => {
   const [images, setImages] = useState([]);
   const [show, setShow] = useState(false);
   const [PiecePrice, SetPiecePrice] = useState('');
   const [EndPrice, SetEndPrice] = useState('');
+  const {categories}=useSelector((state)=>state.Categories);
+  const {Units}=useSelector((state)=>state.Units);
+
+  
   const dispatch = useDispatch();
+
+    useEffect(() => {
+      dispatch(GetCategories());
+      dispatch(GetUnits());
+    }, []);
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
@@ -141,10 +152,10 @@ const AddProductModal = () => {
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                   >
-                    <option value="">اختر التصنيف</option>
-                    <option value="33dbc38c-6cff-498f-bae9-2f595538e48a">33dbc38c...</option>
-                    <option value="أجهزة">أجهزة</option>
-                    <option value="إكسسوارات">إكسسوارات</option>
+                    <option value="" selected={true}>اختر التصنيف</option>
+                    {categories.map((category)=>(
+ <option value={category.id}>{category.name}</option>
+                    ))};
                   </Form.Select>
                   {formik.touched.category_id && formik.errors.category_id && (
                     <div className="text-danger">{formik.errors.category_id}</div>
@@ -162,8 +173,9 @@ const AddProductModal = () => {
                     onBlur={formik.handleBlur}
                   >
                     <option value="">اختر الوحدة</option>
-                    <option value="قطعة">قطعة</option>
-                    <option value="كرتونة">كرتونة</option>
+                      {Units.map((unit)=>(
+ <option value={unit.name}>{unit.name}</option>
+                    ))};
                   </Form.Select>
                   {formik.touched.unit && formik.errors.unit && (
                     <div className="text-danger">{formik.errors.unit}</div>
