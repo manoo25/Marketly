@@ -5,6 +5,7 @@ import productSlice from "./Slices/ProductSlice";
 import ordersSlice from "./Slices/OrdersSlice";
 import orderItemsSlice from "./Slices/OrderItems";
 import UnitsSlice from "./Slices/units";
+import CompaniesSlice from "./Slices/CompaniesSlice";
 
 export const Store=configureStore({
     reducer: {
@@ -13,6 +14,7 @@ export const Store=configureStore({
        Units:UnitsSlice.reducer,
        Products:productSlice.reducer,
        Orders:ordersSlice.reducer,
-       OrderItems:orderItemsSlice.reducer
+       OrderItems:orderItemsSlice.reducer,
+    Companies: CompaniesSlice.reducer,
     }
 });

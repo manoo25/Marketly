@@ -6,6 +6,7 @@ import Users from "./Pages/UsersPage";
 import Orders from "./Pages/Orders";
 import Charts from "./Pages/Charts";
 import Categories from "./Pages/CategoriesPage";
+import Companies from './Pages/Companies';
 
 
 
@@ -19,6 +20,7 @@ let routes= createBrowserRouter([
      {path:'Categories',element:<Categories></Categories>},
      {path:'Users',element:<Users></Users>},
      {path:'Orders',element:<Orders></Orders>},
+     {path:'companies',element:<Companies></Companies>},
   ]},
 ])
 
