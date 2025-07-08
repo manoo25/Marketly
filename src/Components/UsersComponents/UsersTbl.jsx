@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import "../../css/Table.css";
 import "./CustomMenu.css";
 import ModalConfirm from "./ModalConfirm";
+import PrimaryButton from "../globalComonents/PrimaryButton";
+import { SiLastdotfm } from "react-icons/si";
 // const fakeUsers = Array.from({ length: 100 }, (_, i) => ({
 //   id: i + 1,
 //   username: `user${i + 1}`,
@@ -83,7 +85,7 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
       confirmText: isBlocked ? "إلغاء الحظر" : "حظر",
       confirmClass: "btn-warning",
       onConfirm: () => {
-        onBlockUser(user); // بنديله الـ user كامل عشان نعرف حالته
+        onBlockUser(user); 
         setConfirmModal((prev) => ({ ...prev, open: false }));
       },
     });
@@ -164,7 +166,6 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
                 <td>{user.governorate}</td>
                 <td>{user.city}</td>
                 <td style={{  }}>
-
                   <label style={{ position:"relative" }} class="popup" ref={(el) => (popupRefs.current[user.id] = el)}>
                     <input
                       type="checkbox"
