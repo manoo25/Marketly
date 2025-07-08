@@ -51,8 +51,12 @@ const AddProductModal = () => {
   };
 
   const handleAddPro = async () => {
-    try {
+    console.log(formik.values);
+    try { 
       const imageUrls = await uploadImagesToSupabase(formik.values.image, 'products');
+      console.log(imageUrls);
+     
+      
       const values = {
         ...formik.values,
         image: imageUrls[0],
@@ -101,7 +105,7 @@ const AddProductModal = () => {
       endprice: 0,
       quantity: 1,
       category_id: "",
-      trader_id: "",
+      trader_id: "dd4b4c52-1de5-4974-b341-30e91e536c5c",
       company_id: "",
       unit: "",
       quantity_per_unit: 12,

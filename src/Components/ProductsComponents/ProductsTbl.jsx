@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../../css/Table.css";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProducts } from "../../Redux/Slices/ProductSlice";
+import { deleteSelectedProduct, fetchProducts } from "../../Redux/Slices/ProductSlice";
 
 const rowsPerPage = 4;
 
@@ -9,16 +9,40 @@ const ProductsTbl = () => {
   const dispatch = useDispatch();
   const { products } = useSelector((state) => state.Products);
 
-
   const [currentPage, setCurrentPage] = useState(1);
+  const [SelectedProducts, SetSelectedProducts] = useState([]);
 
   useEffect(() => {
     dispatch(fetchProducts());
-  }, []);
+  }, [dispatch]);
 
   const totalPages = Math.ceil(products.length / rowsPerPage);
   const startIndex = (currentPage - 1) * rowsPerPage;
   const currentProducts = products.slice(startIndex, startIndex + rowsPerPage);
+
+  const selectAll = (checked) => {
+    if (checked) {
+      SetSelectedProducts(currentProducts);
+    } else {
+      SetSelectedProducts([]);
+    }
+  };
+
+  const isSelected = (id) => SelectedProducts.some((p) => p.id === id);
+
+  const handleCheckboxChange = (e, product) => {
+    if (e.target.checked) {
+      SetSelectedProducts((prev) => [...prev, product]);
+    } else {
+      SetSelectedProducts((prev) => prev.filter((p) => p.id !== product.id));
+    }
+  };
+
+  const handleDeleteSelected = async () => {
+    await dispatch(deleteSelectedProduct(SelectedProducts));
+    SetSelectedProducts([]);
+    dispatch(fetchProducts());
+  };
 
   return (
     <>
@@ -26,10 +50,19 @@ const ProductsTbl = () => {
         <table border="1" width="100%" dir="rtl" className="table">
           <thead>
             <tr>
-              <th >
+              <th>
                 <label className="checkbox-wrapper">
-                    <input type="checkbox" />
-                    </label>
+                  <input
+                    type="checkbox"
+                    checked={
+                      currentProducts.length > 0 &&
+                      currentProducts.every((p) =>
+                        SelectedProducts.some((sp) => sp.id === p.id)
+                      )
+                    }
+                    onChange={(e) => selectAll(e.target.checked)}
+                  />
+                </label>
               </th>
               <th>صورة</th>
               <th>اسم المنتج</th>
@@ -41,18 +74,27 @@ const ProductsTbl = () => {
               <th>الوحدة</th>
               <th>الكمية فى الوحدة</th>
               <th>الكمية</th>
-              <th></th>
+              <th>
+                {SelectedProducts.length > 0 && (
+                  <button className="bg-transparent" onClick={handleDeleteSelected}>
+                    <i className="fa-solid fa-trash ms-2"></i>
+                  </button>
+                )}
+              </th>
             </tr>
           </thead>
           <tbody>
             {currentProducts.map((product) => (
               <tr key={product.id}>
-              
-              <td >
-                <label className="checkbox-wrapper">
-                    <input type="checkbox" />
-                    </label>
-              </td>
+                <td>
+                  <label className="checkbox-wrapper">
+                    <input
+                      type="checkbox"
+                      checked={isSelected(product.id)}
+                      onChange={(e) => handleCheckboxChange(e, product)}
+                    />
+                  </label>
+                </td>
                 <td>
                   {product.image ? (
                     <img
@@ -162,9 +204,7 @@ const ProductsTbl = () => {
         ))}
 
         <button
-          onClick={() =>
-            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-          }
+          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
         >
           &gt;
         </button>
