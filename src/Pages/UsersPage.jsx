@@ -44,13 +44,38 @@ export default function UsersPage() {
     });
 
     const handleSearchClick = () => {
-        setFilters({
+        setFilters((prevFilters) => ({
+            ...prevFilters,
             governorate: selectedGovernorate,
             role: selectedRole,
-            name: searchName,
-            email: searchEmail,
+        }));
+    };
+
+    useEffect(() => {
+        const delay = setTimeout(() => {
+            setFilters((prevFilters) => ({
+                ...prevFilters,
+                name: searchName,
+                email: searchEmail,
+            }));
+        }, 500);
+
+        return () => clearTimeout(delay);
+    }, [searchName, searchEmail]);
+
+    const handleResetFilters = () => {
+        setSearchName("");
+        setSearchEmail("");
+        setSelectedGovernorate("");
+        setSelectedRole("");
+        setFilters({
+            governorate: '',
+            role: '',
+            name: '',
+            email: '',
         });
     };
+      
 
     return (
         <>
@@ -69,7 +94,11 @@ export default function UsersPage() {
                 selectedRole={selectedRole}
                 setSelectedRole={setSelectedRole}
 
-                onSearchClick={handleSearchClick} />
+                onSearchClick={handleSearchClick} 
+                onResetFilters={handleResetFilters}
+                />
+
+                
             {loading ? (
                 <div className="text-center py-5">
                     <div className="spinner-border text-primary" role="status">
