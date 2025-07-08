@@ -20,7 +20,7 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
 
   const filteredUsers = users.filter((user) => {
     const matchGovernorate = selectedGovernorate
-      ? user.location === selectedGovernorate
+      ? user.governorate === selectedGovernorate
       : true;
 
     const matchRole = selectedRole
@@ -115,10 +115,11 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
           <thead>
             <tr>
               <th>
-                <div className="checkbox-header">
+                <label className="checkbox-wrapper">
                   <input type="checkbox" id="select-all" />
 
-                </div>
+                  {/* <span>{}</span> */}
+                </label>
               </th>
               <th>
 
@@ -160,8 +161,8 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
                 >
                   {user.role}
                 </td>
-                <td>{user.location}</td>
-                <td>{user.location}</td>
+                <td>{user.governorate}</td>
+                <td>{user.city}</td>
                 <td style={{  }}>
 
                   <label style={{ position:"relative" }} class="popup" ref={(el) => (popupRefs.current[user.id] = el)}>
@@ -171,11 +172,8 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
                       onChange={() => {
                         const rect = popupRefs.current[user.id]?.getBoundingClientRect();
                         const windowHeight = window.innerHeight;
-
-                        // هل المساحة اللي تحت العنصر تكفي لعرض القائمة؟
                         const spaceBelow = windowHeight - rect.bottom;
-                        const menuHeight = 150; // عدّلها حسب ارتفاع المنيو عندك
-
+                        const menuHeight = 150;
                         setMenuDirection(spaceBelow < menuHeight ? "up" : "down");
                         setOpenIndex((prev) => (prev === user.id ? null : user.id));
                       }}

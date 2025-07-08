@@ -5,17 +5,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers } from "../Redux/Slices/Users";
 import PrimaryButton from "../Components/globalComonents/PrimaryButton";
 import { updateUser, deleteUser } from "../Redux/Slices/Users";
-import HeaderComponent from "../Components/UsersComponents/HeaderComponent";
-
+import UsersPageHeader from "../Components/UsersComponents/usersPageHeader";
 
 
 export default function UsersPage() {
-    
+
     // فنكشن الحظر
     const handleToggleBlock = (user) => {
         dispatch(updateUser({ id: user.id, updatedData: { isBlocked: !user.isBlocked } }));
     };
-    
+
     // فنكشن الحذف
     const handleDeleteUser = (userId) => {
         dispatch(deleteUser(userId));
@@ -23,7 +22,7 @@ export default function UsersPage() {
 
     // getting user from store and subabase
     const dispatch = useDispatch();
-    useEffect(()=>{
+    useEffect(() => {
         dispatch(fetchUsers());
     }, [dispatch])
 
@@ -54,10 +53,10 @@ export default function UsersPage() {
     };
 
     return (
-        <>  
-            <HeaderComponent/>
-            <UsersFilter 
-                
+        <>
+            <UsersPageHeader />
+            <UsersFilter
+
                 searchName={searchName}
                 setSearchName={setSearchName}
 
@@ -70,7 +69,7 @@ export default function UsersPage() {
                 selectedRole={selectedRole}
                 setSelectedRole={setSelectedRole}
 
-                onSearchClick={handleSearchClick}/>
+                onSearchClick={handleSearchClick} />
             {loading ? (
                 <div className="text-center py-5">
                     <div className="spinner-border text-primary" role="status">
