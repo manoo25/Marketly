@@ -9,6 +9,7 @@ import { createProduct } from '../../Redux/Slices/ProductSlice';
 import { uploadImagesToSupabase } from '../../Redux/uploadingImage';
 import { GetCategories } from '../../Redux/Slices/Categories';
 import { GetUnits } from '../../Redux/Slices/units';
+import { fetchCompanies } from '../../Redux/Slices/CompaniesSlice';
 
 const AddProductModal = () => {
   const [images, setImages] = useState([]);
@@ -17,6 +18,7 @@ const AddProductModal = () => {
   const [EndPrice, SetEndPrice] = useState('');
   const {categories}=useSelector((state)=>state.Categories);
   const {Units}=useSelector((state)=>state.Units);
+  const {companies}=useSelector((state)=>state.Companies);
 
   
   const dispatch = useDispatch();
@@ -24,6 +26,7 @@ const AddProductModal = () => {
     useEffect(() => {
       dispatch(GetCategories());
       dispatch(GetUnits());
+      dispatch(fetchCompanies());
     }, []);
 
   const handleImageChange = (e) => {
@@ -36,12 +39,12 @@ const AddProductModal = () => {
   const getPriceOfPiece = (price) => {
     const taxes = price * 0.02;
     const total = Number(price) + Number(taxes);
-    SetEndPrice(total);
+    SetEndPrice(total.toFixed(2));
 
     const quantity = Number(formik.values.quantity_per_unit);
     if (quantity > 0) {
       const pricePerPiece = total / quantity;
-      SetPiecePrice(pricePerPiece);
+      SetPiecePrice(pricePerPiece.toFixed(2));
     } else {
       SetPiecePrice(0);
     }
@@ -96,12 +99,12 @@ const AddProductModal = () => {
       description: '',
       traderprice: 0,
       endprice: 0,
-      quantity: 0,
-      category_id: "4bbea67b-f092-4af4-8608-761a8c9294ec",
-      trader_id: "52688acd-ffad-4f79-a904-b1af85f996f5",
-      company_id: "c4dedf2e-1a44-44a9-8dcb-502917676bb1",
+      quantity: 1,
+      category_id: "",
+      trader_id: "",
+      company_id: "",
       unit: "",
-      quantity_per_unit: 10,
+      quantity_per_unit: 12,
       image: ''
     },
     validationSchema,
@@ -152,7 +155,7 @@ const AddProductModal = () => {
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                   >
-                    <option value="" selected={true}>اختر التصنيف</option>
+                    <option value="" >اختر التصنيف</option>
                     {categories.map((category)=>(
  <option value={category.id}>{category.name}</option>
                     ))};
@@ -172,7 +175,7 @@ const AddProductModal = () => {
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                   >
-                    <option value="">اختر الوحدة</option>
+                    <option value="" >اختر الوحدة</option>
                       {Units.map((unit)=>(
  <option value={unit.name}>{unit.name}</option>
                     ))};
@@ -186,16 +189,19 @@ const AddProductModal = () => {
               <Col md={6} className="mb-3">
                 <Form.Group>
                   <Form.Label>الشركة المصنعة</Form.Label>
-                  <Form.Select
-                    name="company_id"
-                    value={formik.values.company_id}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                  >
-                    <option value="">اختر الشركة</option>
-                    <option value="c4dedf2e-1a44-44a9-8dcb-502917676bb1">شركة 1</option>
-                    <option value="2">شركة 2</option>
-                  </Form.Select>
+                <Form.Select
+  name="company_id"
+  value={formik.values.company_id}
+  onChange={formik.handleChange}
+  onBlur={formik.handleBlur}
+>
+  <option value="">اختر الشركة</option>
+  {companies.map((company) => (
+    <option key={company.id} value={company.id}>
+      {company.name}
+    </option>
+  ))}
+</Form.Select>
                   {formik.touched.company_id && formik.errors.company_id && (
                     <div className="text-danger">{formik.errors.company_id}</div>
                   )}
