@@ -1,24 +1,23 @@
 import React, { useEffect, useState } from "react";
 import "../../css/Table.css";
 import { useDispatch, useSelector } from "react-redux";
-import { getOrders } from "../../Redux/Slices/OrdersSlice";
+import { getReturns } from "../../Redux/Slices/ReturnsSlice";
 
 const rowsPerPage = 10;
 
-const OrdersTbl = () => {
+const ReturnsTbl = () => {
     const dispatch = useDispatch();
-    const { orders } = useSelector((state) => state.Orders);
-    console.log(orders);
+    const { returns } = useSelector((state) => state.Returns);
+    console.log(returns);
 
     const [currentPage, setCurrentPage] = useState(1);
-
     useEffect(() => {
-        dispatch(getOrders());
+        dispatch(getReturns());
     }, [dispatch]);
 
-    const totalPages = Math.ceil(orders.length / rowsPerPage);
+    const totalPages = Math.ceil(returns.length / rowsPerPage);
     const startIndex = (currentPage - 1) * rowsPerPage;
-    const currentOrders = orders.slice(startIndex, startIndex + rowsPerPage);
+    const currentReturns = returns.slice(startIndex, startIndex + rowsPerPage);
 
     return (
         <>
@@ -31,43 +30,34 @@ const OrdersTbl = () => {
                                     <input type="checkbox" />
                                 </label>
                             </th>
-                            <th>رقم مسلسل</th>
-                            <th>رقم العميل</th>
-                            <th>المحافظة</th>
-                            <th>العنوان</th>
+                            <th>رقم المسلسل</th>
+                            <th>رقم الطلب</th>
+                            <th>سبب الاسترجاع</th>
                             <th>الحاله</th>
-                            <th>طريقة الدفع</th>
-                            <th>المجموع</th>
-                             <th>تاريخ الطلب</th>
+                            <th>تاريخ الاسترجاع</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        {currentOrders.map((order) => (
-                            <tr key={order.id}>
+                        {currentReturns.map((returnItem) => (
+                            <tr key={returnItem.id}>
                                 <td >
                                     <label className="checkbox-wrapper">
                                         <input type="checkbox" />
                                     </label>
                                 </td>
-                              
-                                 <td>{order.user?.name || "--"}</td>
-                                <td>{order.user?.phone || "--"}</td>
-                                <td>{order.user?.city || "--"}</td>
-                                <td>{order.user?.location || "--"}</td>
-                                <td>{order.status}</td>
-                                <td>{order.payment_method}</td>
-                                <td>{order.total} <span className="px-1">ج.م</span></td>
-                                <td>{new Date(order.created_at).toLocaleDateString()}</td>
+                                <td>{returnItem.id  || "--"}</td>
+                                <td>{returnItem.order_id  || "--"}</td>
+                                <td>{returnItem.reason  || "--"}</td>
+                                <td>{returnItem.status  || "--"}</td>
+                                <td>{new Date(returnItem.created_at).toLocaleDateString()  || "--"}</td>
 
-                                
-                             
                                 <td>
                                     <div className="dropdown">
                                         <button
                                             className="btn"
                                             type="button"
-                                            id={`dropdownMenu${order.id}`}
+                                            id={`dropdownMenu${returnItem.id}`}
                                             data-bs-toggle="dropdown"
                                             data-bs-auto-close="outside"
                                             aria-expanded="false"
@@ -100,12 +90,12 @@ const OrdersTbl = () => {
                                         </button>
                                         <ul
                                             className="dropdown-menu"
-                                            aria-labelledby={`dropdownMenu${order.id}`}
+                                            aria-labelledby={`dropdownMenu${returnItem.id}`}
                                         >
                                             <li>
                                                 <button
                                                     className="dropdown-item"
-                                                    onClick={() => console.log("Edit", order.id)}
+                                                    onClick={() => console.log("Edit", returnItem.id)}
                                                 >
                                                     تعديل
                                                 </button>
@@ -126,7 +116,6 @@ const OrdersTbl = () => {
                     </tbody>
                 </table>
             </div>
-
             <div className="pagination">
                 <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
                     &laquo;
@@ -162,5 +151,5 @@ const OrdersTbl = () => {
         </>
     );
 };
-
-export default OrdersTbl;
+        
+export default ReturnsTbl;
