@@ -4,11 +4,11 @@ import OrdersTbl from "../Components/OrdersComponents/ordersTbl";
 
 
 function Orders() {
-    return (  
-<>
-<OrdersPageHeader/>
-<OrdersTbl/>
-</>
+    return (
+        <>
+            <OrdersPageHeader />
+            <OrdersTbl />
+        </>
 
     );
 }

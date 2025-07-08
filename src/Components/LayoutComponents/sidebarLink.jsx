@@ -11,7 +11,8 @@ function SidebarLink({SetPageTitle}) {
     { text: 'الأصناف', icon: 'fa-solid fa-layer-group', path: '/Dashboard/Categories' },
     { text: 'المبيعات', icon: 'fa-solid fa-chart-line', path: '/Dashboard/Sales' },
     { text: 'الشركات', icon: 'fa-solid fa-chart-line', path: '/Dashboard/companies' },
-    { text: 'الطلبات', icon: 'fa-solid fa-receipt', path: '/Dashboard/Orders' }
+    { text: 'الطلبات', icon: 'fa-solid fa-receipt', path: '/Dashboard/Orders' },
+    { text: 'المرتجعات', icon: 'fa-solid fa-undo', path: '/Dashboard/Returns' }
   ];
 
   return (
