@@ -40,6 +40,26 @@ export const updateUser = createAsyncThunk("users/updateUser", async ({ id, upda
   }
 });
 
+export const updateSelectedUsers = createAsyncThunk(
+  "users/updateSelectedUsers",
+  async ({ userIds, updatedData }, { rejectWithValue }) => {
+    try {
+      const { data, error } = await supabase
+        .from("users")
+        .update(updatedData)
+        .in("id", userIds)
+        .select(); 
+
+      if (error) throw error;
+
+      return data; 
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+
 
 
 export const deleteUser = createAsyncThunk("users/deleteUser", async (id, { rejectWithValue }) => {
@@ -88,7 +108,6 @@ const usersSlice = createSlice({
         state.error = action.payload;
       })
 
-     
       .addCase(updateUser.fulfilled, (state, action) => {
         const index = state.users.findIndex(user => user.id === action.payload.id);
         if (index !== -1) {
@@ -101,7 +120,19 @@ const usersSlice = createSlice({
         state.error = action.payload;
       })
 
- 
+      .addCase(updateSelectedUsers.fulfilled, (state, action) => {
+        action.payload.forEach(updatedUser => {
+          const index = state.users.findIndex(user => user.id === updatedUser.id);
+          if (index !== -1) {
+            state.users[index] = updatedUser;
+          }
+        });
+      })
+      .addCase(updateSelectedUsers.rejected, (state, action) => {
+        state.error = action.payload;
+      })
+      
+
       .addCase(deleteUser.fulfilled, (state, action) => {
         state.users = state.users.filter(user => user.id !== action.payload);
       })

@@ -1,0 +1,25 @@
+.dropdown-menu.custom-drop {
+    min-width: 100% !important;
+    width: 100% !important;
+    left: 0 !important;
+    right: auto !important;
+    top: 100% !important;
+    transform: none !important;
+}
+
+
+.role-item:hover {
+    background-color: transparent;
+}
+
+.role-admin:hover {
+    background-color: #cce0ff !important;
+}
+
+.role-trader:hover {
+    background-color: #c6f6d5 !important;
+}
+
+.role-user:hover {
+    background-color: #fff3cd !important;
+}

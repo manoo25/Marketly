@@ -47,7 +47,7 @@ function Layout() {
         id="offcanvasRight"
         aria-labelledby="offcanvasRightLabel"
       >
-        <div className="px-3 py-2">
+        <div className="px-3 py-0">
           <div className="offcanvas-header p-0 m-0">
             <img
               style={{ width: '100px', height: '80px' }}
@@ -63,7 +63,7 @@ function Layout() {
           />
         </div>
 
-        <div className="offcanvas-body m-0  p-0">
+        <div className="offcanvas-body m-0  p-0  mt-0">
           <SidebarLink SetPageTitle={SetPageTitle} />
         </div>
       </div>

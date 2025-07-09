@@ -48,3 +48,9 @@ label nav ul li button.custom-btn-menu:hover {
     background-color: var(--delete-color-light) !important;
     color: var(--black-color) !important;
 }
+
+
+.popup-window {
+    z-index: 9999 !important;
+    position: absolute !important;
+}

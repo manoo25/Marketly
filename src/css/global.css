@@ -105,8 +105,8 @@ background-color:var( --primary-color) ;
   display: flex;
   align-items: center;
   color:var(--white-color);
-  font-weight: 400;
-  font-size: 18px;
+  font-weight: 600;
+  font-size: 16px;
   gap:10px;
   padding: 10px;
 }
