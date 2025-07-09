@@ -1,4 +1,4 @@
-import AddProductModal from "../modalsComponents/ProductModal";
+import AddProductModal from "../modalsComponents/AddProductModal";
 
 function ProductsPageHeader() {
   return (

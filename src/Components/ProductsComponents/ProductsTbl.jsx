@@ -9,6 +9,7 @@ import {
 import ProductsFilter from "./ProductsFilter";
 import CustomMenu from "../globalComonents/CustomMenu";
 import ModalConfirm from "../UsersComponents/ModalConfirm";
+import EditProductModal from "../modalsComponents/EditProductModal";
 
 
 const rowsPerPage = 4;
@@ -17,10 +18,12 @@ const ProductsTbl = () => {
   const dispatch = useDispatch();
   const { products } = useSelector((state) => state.Products);
   const [currentPage, setCurrentPage] = useState(1);
+  const [show, setShow] = useState(false);
+  const [EditProduct, setEditProduct] = useState({});
+ 
   const [currentProducts, setcurrentProducts] = useState([]);
   const [SelectedProducts, SetSelectedProducts] = useState([]);
-  const [searchName, setSearchName] = useState("");
-  const [selectedCat, setselectedCat] = useState("");
+  const [searchName, setSearchName] = useState(""); const [selectedCat, setselectedCat] = useState("");
   const [searchTrader, setSearchTrader] = useState("");
   const [selectedCompany, setselectedCompany] = useState("");
   const [confirmModal, setConfirmModal] = useState({
@@ -226,7 +229,10 @@ function onResetFilters() {
                                  <CustomMenu
                                  id={product.id}
                                  options={[
-                                   { label: "تعديل", icon: "fa-solid fa-paper-plane", color: "green"},
+                                   { label: "تعديل", icon: "fa-solid fa-paper-plane", color: "green",onClick:()=>{
+                                    setShow(true)
+                                  setEditProduct(product)
+                                  }},
                                    { label: "حذف" , icon: "fa-solid fa-trash", color: "red",onClick:()=>{handleDeletePro(product)}}
                                      
                                  ]}
@@ -284,6 +290,7 @@ function onResetFilters() {
           &raquo;
         </button>
       </div>
+      <EditProductModal show={show}  setShow={setShow} product={EditProduct}/>
     </>
   );
 };
