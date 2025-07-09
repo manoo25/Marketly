@@ -72,16 +72,14 @@ export const deleteProduct = createAsyncThunk(
   "products/deleteproduct",
   async ({ id, image }, { rejectWithValue }) => {
     try {
-      // استخراج اسم الصورة من URL
+
       let imagePath = null;
       if (image) {
-        const parts = image.split("products/");
-        if (parts.length > 1) {
-          imagePath = `products/${decodeURIComponent(parts[1])}`;
-        }
+        const parts = image.split("/");
+        const filename = parts.pop();
+        imagePath = decodeURIComponent(filename);
       }
 
-      // حذف الصورة من التخزين إن وجدت
       if (imagePath) {
         const { error: storageError } = await supabase.storage
           .from("products")
@@ -92,8 +90,6 @@ export const deleteProduct = createAsyncThunk(
           throw storageError;
         }
       }
-
-      // حذف المنتج من قاعدة البيانات
       const { error } = await supabase
         .from("products")
         .delete()
@@ -107,6 +103,7 @@ export const deleteProduct = createAsyncThunk(
     }
   }
 );
+
 
 
 export const deleteSelectedProduct = createAsyncThunk(

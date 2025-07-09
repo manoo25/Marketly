@@ -20,7 +20,7 @@ function UsersFilter({
     onResetFilters
 }) {
     return (
-        <div className="d-flex gap-3 align-items-center justify-content-center">
+        <div className="d-flex gap-3 align-items-center justify-content-between w-100  px-2">
 
             <NameSearch
                 searchName={searchName}
