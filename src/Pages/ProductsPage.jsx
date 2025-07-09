@@ -1,6 +1,16 @@
+
+import ProductsFilter from "../Components/ProductsComponents/ProductsFilter";
+import ProductsPageHeader from "../Components/ProductsComponents/productsPageHeader";
+import ProductsTbl from "../Components/ProductsComponents/ProductsTbl";
+import NameSearch from "../Components/UsersComponents/FilteredComponents/NameSearch";
+import UsersFilter from "../Components/UsersComponents/UsersFilter";
+
+
 function Products() {
+   
     return ( <>
-    <p>Products Page</p>
+    <ProductsPageHeader/>
+  <ProductsTbl/>
     </> );
 }
 

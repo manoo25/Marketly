@@ -1,0 +1,56 @@
+:root {
+    --main-font: "El Messiri", sans-serif;
+    --primary-color: #915EF6;
+    --primary-color-light: rgba(145, 94, 246, 0.129);
+    --accent-color: #327AFF;
+    --background-color: #f8f7fa;
+    --side-bar-color: #1B0F31;
+    --Activeside-bar-color: #FFFFFF14;
+    --black-color: #27242F;
+    --delete-color: red;
+    --delete-color-light: rgba(244, 113, 113, 0.118);
+    --black-color: #27242F;
+    --dark-gray-color: #424047;
+    --mid-gray-color: #7B7686;
+    --very-light-gray-color: #A6A1B1;
+    --very-very-light-gray-color: #CDC5DC;
+    --border-color: #EFECF3;
+    --white-color: #FFFFFF;
+    --primary-color-light: rgba(145, 94, 246, 0.129);
+    --delete-color: red;
+    --delete-color-light: rgba(244, 113, 113, 0.118);
+}
+
+
+div table tbody tr td {
+    background-color: transparent !important;
+}
+
+
+.blocked-row {
+    background-color: var(--delete-color-light);
+}
+
+.not-blocked-row {
+    background-color: white !important;
+}
+
+
+
+
+
+label nav ul li button.custom-btn-menu {
+    background-color: var(--white-color) !important;
+    color: var(--black-color) !important;
+}
+
+label nav ul li button.custom-btn-menu:hover {
+    background-color: var(--delete-color-light) !important;
+    color: var(--black-color) !important;
+}
+
+
+.popup-window {
+    z-index: 9999 !important;
+    position: absolute !important;
+}

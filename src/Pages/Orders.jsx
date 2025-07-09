@@ -1,8 +1,14 @@
+import OrdersPageHeader from "../Components/OrdersComponents/ordersPageHeader";
+import OrdersTbl from "../Components/OrdersComponents/ordersTbl";
+
+
+
 function Orders() {
-    return (  
-<>
-<p>Orders Page</p>
-</>
+    return (
+        <>
+            <OrdersPageHeader />
+            <OrdersTbl />
+        </>
 
     );
 }

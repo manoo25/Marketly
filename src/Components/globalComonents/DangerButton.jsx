@@ -14,6 +14,7 @@ export default function DangerButton({ label = "", icon = null, className = "", 
     return (
         <button
             type={type}
+            style={{ width:"100%" }}
             className={`btn-danger ${className} ${selectedSize}`}
             onClick={onClick}
         >

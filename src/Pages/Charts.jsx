@@ -1,6 +1,7 @@
 function Charts() {
     return ( <>
     <p>Charts Page</p>
+  
     </> );
 }
 

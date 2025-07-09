@@ -1,7 +1,6 @@
 import AvatarDropdown from "./Avatar";
 
 function Nav({handleToggleSidebar,isSidebarOpen,PageTitle}) {
-  console.log(PageTitle);
   
     return ( 
         <nav style={{

@@ -13,6 +13,7 @@ export default function LightButton({ label = "", icon = null, className = "", t
 
     return (
         <button
+        style={{ width:"100%" }}
         type={type}
             className={`btn-light ${className} ${selectedSize}`}
         onClick={onClick}

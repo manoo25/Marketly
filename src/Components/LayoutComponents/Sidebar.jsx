@@ -1,9 +1,9 @@
 // import { useState, useRef, useEffect } from 'react';
 // import Logo from '../../assets/Images/logo.png';
 // import * as bootstrap from 'bootstrap';
-// import SidebarLink from './sidebarLink';
-// import Nav from './Nav';
-// import UsersTbl from '../UsersComponents/UsersTbl';
+import SidebarLink from './sidebarLink';
+import Nav from './Nav';
+import UsersTbl from '../UsersComponents/UsersTbl';
 
 // function Sidebar() {
 //   const [margin, setMargin] = useState('0');
@@ -19,7 +19,7 @@
 //       offcanvasRef.current = new bootstrap.Offcanvas(el, {
 //         backdrop: false,
 //         scroll: true,
-       
+
 //       });
 //     }
 //   }, []);
@@ -70,7 +70,7 @@
 //       </div>
 
 //       <div style={{ marginRight: margin }} className="pages position-relative pt-5 ">
-     
+
 
 //        <div className="fixed fixed-top"  style={{ marginRight: margin }}>
 //          <Nav 
@@ -78,7 +78,7 @@
 //         isSidebarOpen={isSidebarOpen}
 //         // PageTitle={PageTitle}
         
-       
+  
 //         />
 //        </div>
 
