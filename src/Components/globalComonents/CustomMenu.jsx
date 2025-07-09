@@ -97,21 +97,6 @@ function CustomMenu({id="", options=[]}) {
                         </button>
                     </li>
                 ))}
-
-                    {/* <li>
-                        <button
-                            className="custom-btn-menu"
-                            onClick={() => {
-
-                                setOpenIndex(null);
-                            }}
-
-                        >
-                            <span style={{ color: "blue" }} className='fa-regular fa-user  '></span>
-                            <span className='mb-2'>إرسال رسالة</span>
-
-                        </button>
-                    </li> */}
                 </ul>
             </nav>
         </label>

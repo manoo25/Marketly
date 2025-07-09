@@ -3,9 +3,11 @@ import UsersTbl from "../Components/UsersComponents/UsersTbl";
 import UsersFilter from "../Components/UsersComponents/UsersFilter";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers } from "../Redux/Slices/Users";
-import PrimaryButton from "../Components/globalComonents/PrimaryButton";
-import { updateUser, deleteUser } from "../Redux/Slices/Users";
+import { updateUser, updateSelectedUsers, deleteUser } from "../Redux/Slices/Users";
 import UsersPageHeader from "../Components/UsersComponents/usersPageHeader";
+import Toast from 'react-bootstrap/Toast';
+import ToastContainer from 'react-bootstrap/ToastContainer';
+import { sendMessage } from "../Redux/Slices/MessagesSlice";
 
 
 export default function UsersPage() {
@@ -75,8 +77,126 @@ export default function UsersPage() {
             email: '',
         });
     };
-      
 
+
+    // Update User Role
+    const handleUpdateUserRole = (userId, newRole) => {
+        dispatch(updateUser({ id: userId, updatedData: { role: newRole } }));
+    };
+    // Update User Role
+
+    const handleUpdateSelectedUsersRoles = async (userIds, newRole) => {
+        try {
+            const result = await dispatch(updateSelectedUsers({ userIds, updatedData: { role: newRole } })).unwrap();
+            console.log("TOAST MESSAGE:", toastMessage);
+            if (result?.length > 0) {
+                setToastMessage(`تم تعديل صلاحية ${result.length} مستخدم بنجاح`);
+                setToastVariant("success");
+                setShowToast(true);
+            } else {
+                setToastMessage("لم يتم تعديل أي مستخدم");
+                setToastVariant("warning");
+                setShowToast(true);
+            }
+        } catch (e) {
+            setToastMessage("حدث خطأ أثناء التعديل");
+            setToastVariant("danger");
+            console.log(e)
+            setShowToast(true);
+        }
+    };
+    // Update Selected Usres Role
+
+    // Block And UnBlock Selected Users
+    const handleBlockSelectedUsers = async (userIds) => {
+        try {
+            const result = await dispatch(updateSelectedUsers({
+                userIds,
+                updatedData: { isBlocked: true }
+            }));
+
+            if (result?.payload?.length > 0) {
+                setToastMessage(`✅ تم حظر ${result.payload.length} مستخدم بنجاح`);
+            } else {
+                setToastMessage("⚠️ لم يتم حظر أي مستخدم");
+            }
+        } catch (error) {
+            setToastMessage("❌ حدث خطأ أثناء الحظر");
+            console.error(error);
+        } finally {
+            setShowToast(true);
+        }
+    };
+
+    const handleUnblockSelectedUsers = async (userIds) => {
+        try {
+            const result = await dispatch(updateSelectedUsers({
+                userIds,
+                updatedData: { isBlocked: false }
+            }));
+
+            if (result?.payload?.length > 0) {
+                setToastMessage(`✅ تم إلغاء حظر ${result.payload.length} مستخدم بنجاح`);
+            } else {
+                setToastMessage("⚠️ لم يتم إلغاء الحظر عن أي مستخدم");
+            }
+        } catch (error) {
+            setToastMessage("❌ حدث خطأ أثناء إلغاء الحظر");
+            console.error(error);
+        } finally {
+            setShowToast(true);
+        }
+    };
+
+    // Block And UnBlock Selected Users
+
+    // const test = async () => {
+    //     const result = await supabase.from("UsersMessage").insert([
+    //         {
+    //             sender: "f875575f-b8c4-46ac-99e2-f9043b7e2cdc",
+    //             receiver: "228b042b-00b7-4ccb-adaf-b52561ae82d7",
+    //             Message: "رسالة اختبار مباش رة sss"
+    //         }
+    //     ]);
+    //     console.log(result);
+    // };
+    // test();
+
+    // Send Msg to Users
+    const handleSendMessage = (receiverIds, messageText) => {
+        if (receiverIds.length === 0) {
+            setToastMessage("⚠️ من فضلك اختر مستخدمين لإرسال الرسالة");
+            setToastVariant("warning");
+            setShowToast(true);
+            return;
+        }
+
+        dispatch(sendMessage({
+            senderId: "28fe037d-a829-4ecf-8f9d-2c1e4f492bba", // ثابت مؤقتًا
+            receiverIds,
+            message: messageText
+        }))
+            .unwrap()
+            .then(() => {
+                setToastMessage(`📩 تم إرسال الرسالة إلى ${receiverIds.length} مستخدم`);
+                setToastVariant("success");
+                setShowToast(true);
+            })
+            .catch((error) => {
+                setToastMessage(`❌ فشل في إرسال الرسالة: ${error}`);
+                setToastVariant("danger");
+                setShowToast(true);
+            });
+    };
+
+    // Send Msg to Users
+
+    // Toast
+    const [showToast, setShowToast] = useState(false);
+    const [toastMessage, setToastMessage] = useState("");
+    const [toastVariant, setToastVariant] = useState("success");
+
+    // Toast
     return (
         <>
             <UsersPageHeader />
@@ -94,11 +214,12 @@ export default function UsersPage() {
                 selectedRole={selectedRole}
                 setSelectedRole={setSelectedRole}
 
-                onSearchClick={handleSearchClick} 
+                onSearchClick={handleSearchClick}
                 onResetFilters={handleResetFilters}
-                />
 
-                
+            />
+
+
             {loading ? (
                 <div className="text-center py-5">
                     <div className="spinner-border text-primary" role="status">
@@ -114,8 +235,32 @@ export default function UsersPage() {
                     searchEmail={filters.email}
                     onDeleteUser={handleDeleteUser}
                     onBlockUser={handleToggleBlock}
+
+                    onUpdateUserRole={handleUpdateUserRole}
+                    onUpdateSelectedUseresRole={handleUpdateSelectedUsersRoles}
+
+                    onBlockSelectedUsers={handleBlockSelectedUsers}
+                    onUnblockSelectedUsers={handleUnblockSelectedUsers}
+
+                    onSendMessage={handleSendMessage}
                 />
             )}
+            <ToastContainer position="top-center" className="p-3" style={{ zIndex: 999999 }}>
+                <Toast
+                    onClose={() => setShowToast(false)}
+                    show={showToast}
+                    delay={3000}
+                    autohide
+                    bg={toastVariant} // ← ديناميكي
+                >
+                    <Toast.Header>
+                        <strong className="ms-auto">رسالة النظام</strong>
+                    </Toast.Header>
+                    <Toast.Body className="text-white">{toastMessage}</Toast.Body>
+                </Toast>
+
+            </ToastContainer>
+
         </>
     )
 }
