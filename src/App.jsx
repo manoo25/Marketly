@@ -28,10 +28,10 @@ let routes= createBrowserRouter([
   return (
     <>
    {/* <RouterProvider router={routes}/> */}
-   <SigninPage/>
+   <SignUp/>
    
     </>
   );
 }
 
-export default App;
+export default App; 
