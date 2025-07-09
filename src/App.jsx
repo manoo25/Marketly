@@ -11,24 +11,30 @@ import Returns from "./Pages/Returns";
 import SignUp from "./Pages/auth/SignUp";
 import SigninPage from "./Pages/auth/SignIn"
 import SignUpPage from "./Pages/auth/SignUp";
+import MostSellingProducts from "./Pages/Products/MostSellingProducts";
+import LeastSellingProducts from "./Pages/Products/LeastSellingProducts";
 
 
 
 function App() {
 let routes= createBrowserRouter([
   {path:'/',element:<Layout></Layout>},
-  {path:'Dashboard',element:<Layout></Layout>,children:[
-     {path:'Charts',element:<Charts></Charts>},
-     {path:'Products',element:<Products></Products>},
-     {path:'Categories',element:<Categories></Categories>},
-     {path:'Users',element:<Users></Users>},
-     {path:'Orders',element:<Orders></Orders>},
-     {path:'companies',element:<Companies></Companies>},
-     {path:'Returns',element:<Returns></Returns>}
-
-  ]}, 
+  {
+    path: 'Dashboard', element: <Layout />, children: [
+      { path: 'Charts', element: <Charts /> },
+      { path: 'Products', element: <Products /> },
+      { path: 'Products/MostSelling', element: <MostSellingProducts /> },
+      { path: 'Products/LeastSelling', element: <LeastSellingProducts /> },
+      { path: 'Categories', element: <Categories /> },
+      { path: 'Users', element: <Users /> },
+      { path: 'Orders', element: <Orders /> },
+      { path: 'companies', element: <Companies /> },
+      { path: 'Returns', element: <Returns /> }
+    ]
+  },
+  
   {path:'SignUp',element:<SignUpPage/>},
-     {path:'SigninPage',element:<SigninPage/>},
+    {path:'SigninPage',element:<SigninPage/>},
 ])
 
 
@@ -36,8 +42,7 @@ let routes= createBrowserRouter([
     <>
   <RouterProvider router={routes}/>
    {/* <RouterProvider router={routes}/> */}
- 
-   
+
     </>
   );
 }
