@@ -1,0 +1,25 @@
+.transition-submenu {
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    -webkit-transition: max-height 0.3s ease, opacity 0.3s ease;
+    -moz-transition: max-height 0.3s ease, opacity 0.3s ease;
+    -ms-transition: max-height 0.3s ease, opacity 0.3s ease;
+    -o-transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+
+.transition-submenu.closed {
+    max-height: 0;
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+}
+
+.transition-submenu.open {
+    max-height: 300px;
+    opacity: 1;
+}
+
+.dropdown-arrow {
+    margin-right: 2px;
+    font-size: 1rem;
+}
