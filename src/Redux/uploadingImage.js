@@ -19,7 +19,7 @@ export const uploadImagesToSupabase = async (files,store) => {
 
     uploadedUrls.push(publicUrlData.publicUrl);
   }
-  console.log(uploadedUrls);
+
   
   return uploadedUrls;
 };

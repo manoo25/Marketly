@@ -104,6 +104,34 @@ export const deleteProduct = createAsyncThunk(
   }
 );
 
+export async function deleteImageFromStore(imageUrl) {
+  if (!imageUrl) return;
+
+  try {
+    const storageBase = "https://auxwhdusfpgyzbwgjize.supabase.co/storage/v1/object/public/products/";
+    
+    if (!imageUrl.startsWith(storageBase)) {
+      console.warn("الرابط لا ينتمي لمجلد التخزين المتوقّع");
+      return;
+    }
+
+    const imagePath = decodeURIComponent(imageUrl.replace(storageBase, ""));
+
+    const { error: storageError } = await supabase.storage
+      .from("products")
+      .remove([imagePath]);
+
+    if (storageError) {
+      console.error(" Storage deletion error:", storageError);
+      throw storageError;
+    }
+
+    console.log("✅ Image deleted from storage:", imagePath);
+  } catch (error) {
+    console.error("❌ Unexpected error while deleting image:", error);
+  }
+}
+
 
 
 export const deleteSelectedProduct = createAsyncThunk(

@@ -149,9 +149,9 @@ p {
   font-family: var(--main-font);
   font-size: 1rem;
   padding: 0.6rem 1rem;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border-color) !important;
   border-radius: 10px;
-  outline-color: var(--primary-color);
+  outline-color: var(--primary-color) !important;
 }
 
 
@@ -160,9 +160,9 @@ p {
   font-size: 1rem;
   text-align: right;
   padding: 0.5rem 0.5rem .5rem .5rem;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border-color) !important;
   border-radius: 10px;
-  outline-color: var(--primary-color);
+  outline-color: var(--primary-color) !important;
 }
 
 
@@ -174,7 +174,7 @@ p {
   font-family: var(--main-font);
   font-size: 1rem;
   padding: 0.6rem 1rem;
-  border: 1.5px solid var(--border-color);
+  border: 1.5px solid var(--border-color) !important;
   border-radius: 10px;
   background-color: #fff;
   color: var(--black-color);
@@ -184,7 +184,7 @@ p {
 .modal-content input:focus,
 .modal-content textarea:focus,
 .modal-content select:focus {
-  border-color: var(--primary-color);
+  border-color: var(--primary-color) !important;
   box-shadow: none;
   outline: none;
 }
