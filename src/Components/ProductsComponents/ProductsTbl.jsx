@@ -17,6 +17,8 @@ const rowsPerPage = 4;
 const ProductsTbl = () => {
   const dispatch = useDispatch();
   const { products } = useSelector((state) => state.Products);
+  console.log(products);
+  
   const [currentPage, setCurrentPage] = useState(1);
   const [show, setShow] = useState(false);
   const [EditProduct, setEditProduct] = useState({});
@@ -168,13 +170,12 @@ function onResetFilters() {
               <th>صورة</th>
               <th>اسم المنتج</th>
               <th>الصنف</th>
-              <th>سعر التاجر</th>
-              <th>سعر العميل</th>
-              <th>الشركة</th>
+              <th>سعر المنتج</th>              
               <th>التاجر</th>
+              <th> الشركةالمصنعة</th>
+
               <th>الوحدة</th>
               <th>الكمية فى الوحدة</th>
-              <th>الكمية</th>
               <th>
                 {SelectedProducts.length > 0 && (
                   <button
@@ -189,7 +190,7 @@ function onResetFilters() {
           </thead>
           <tbody>
             {currentProducts.map((product) => (
-              <tr key={product.id}>
+              <tr key={product.id} className={product.state?'':'blocked-row'}>
                 <td>
                   <label className="checkbox-wrapper">
                     <input
@@ -218,12 +219,11 @@ function onResetFilters() {
                 <td>{product.name}</td>
                 <td>{product.category?.name || "--"}</td>
                 <td>{product.traderprice}</td>
-                <td>{product.endprice}</td>
-                <td>{product.company?.name || "--"}</td>
                 <td>{product.trader?.name || "--"}</td>
+                <td>{product.company?.name || "--"}</td>
                 <td>{product.unit || "--"}</td>
                 <td>{product.quantity_per_unit || "--"}</td>
-                <td>{product.quantity}</td>
+                <td className={product.state?'text-success':'text-danger'}>{product.state?'متاح':'غير متاح'}</td>
                <td style={{  }}>
                
                                  <CustomMenu

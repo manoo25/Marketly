@@ -23,16 +23,27 @@ export const getAllOrderItems = createAsyncThunk(
   "orderItems/getAllOrderItems",
   async (_, { rejectWithValue }) => {
     try {
-      const { data, error } = await supabase
-        .from("order_items")
-        .select(`*,
-          OrderState:order_id(status),
-          ProductName:product_id(name,endprice,image,
-         Company:company_id(name),
-         Category:category_id(name)
-          )
-
-          `);
+     // ...existing code...
+const { data, error } = await supabase
+  .from("order_items")
+  .select(`
+    *,
+    product_id (
+      name,
+      image,
+      traderprice,
+      company_id (
+        name
+      ),
+      category_id (
+        name
+      )
+    ),
+    order_id (
+      status
+    )
+  `);
+// ...existing code...
       if (error) throw error;
       return data;
     } catch (error) {
@@ -40,6 +51,7 @@ export const getAllOrderItems = createAsyncThunk(
     }
   }
 );
+
 
 const orderItemsSlice = createSlice({
   name: "orderItems",

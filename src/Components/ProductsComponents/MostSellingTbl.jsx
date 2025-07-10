@@ -10,8 +10,7 @@ const rowsPerPage = 4;
 const MostSellingTbl = () => {
   const dispatch = useDispatch();
   const data = useSelector((state) => state.OrderItems.items);
-console.log(data);
-
+  console.log(data);
 
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -26,9 +25,7 @@ console.log(data);
     confirmClass: "btn-primary",
     onConfirm: () => {},
   });
-if (currentProducts) {
-    console.log(currentProducts);
-}
+
   useEffect(() => {
     dispatch(getAllOrderItems());
   }, [dispatch]);
@@ -38,7 +35,7 @@ if (currentProducts) {
       const mergedMap = new Map();
 
       for (const item of items) {
-        const key = item.ProductName?.name;
+        const key = item.product_id?.name;
         if (!mergedMap.has(key)) {
           mergedMap.set(key, { ...item });
         } else {
@@ -67,18 +64,18 @@ if (currentProducts) {
     const filtered = products.filter((x) => {
       const matchName =
         searchName === "" ||
-        (x.ProductName.name &&
-          x.ProductName.name.toLowerCase().includes(searchName.toLowerCase()));
+        (x.product_id?.name &&
+          x.product_id.name.toLowerCase().includes(searchName.toLowerCase()));
 
       const matchCat =
         selectedCat === "" ||
-        (x.ProductName.Category?.name &&
-          x.ProductName.Category.name.toLowerCase().includes(selectedCat.toLowerCase()));
+        (x.product_id?.category_id?.name &&
+          x.product_id.category_id.name.toLowerCase().includes(selectedCat.toLowerCase()));
 
       const matchCompany =
         selectedCompany === "" ||
-        (x.ProductName.Company?.name &&
-          x.ProductName.Company.name.toLowerCase().includes(selectedCompany.toLowerCase()));
+        (x.product_id?.company_id?.name &&
+          x.product_id.company_id.name.toLowerCase().includes(selectedCompany.toLowerCase()));
 
       return matchName && matchCat && matchCompany;
     });
@@ -101,7 +98,6 @@ if (currentProducts) {
         setSearchName={setSearchName}
         selectedCat={selectedCat}
         setselectedCat={setSelectedCat}
-       
         selectedCompany={selectedCompany}
         setselectedCompany={setSelectedCompany}
         onSearchClick={handleSearchClick}
@@ -123,33 +119,34 @@ if (currentProducts) {
           </thead>
           <tbody>
             {currentProducts
-  .filter((x) => x.OrderState?.status === "done")
-  .sort((a, b) => b.quantity - a.quantity).map((product) => (
-              <tr key={product.id}>
-                <td>
-                  {product.ProductName.image ? (
-                    <img
-                      src={product.ProductName.image}
-                      alt={product.ProductName.name}
-                      style={{
-                        width: "50px",
-                        height: "50px",
-                        objectFit: "cover",
-                        borderRadius: "6px",
-                      }}
-                    />
-                  ) : (
-                    <span>--</span>
-                  )}
-                </td>
-                <td>{product.ProductName.name}</td>
-                <td>{product.ProductName.Category?.name || "--"}</td>
-                <td>{product.ProductName.Company?.name || "--"}</td>
-                <td>{product.quantity}</td>
-                <td>{product.ProductName.endprice}</td>
-                <td>{product.price}</td>
-              </tr>
-            ))}
+              .filter((x) => x.order_id?.status === "done")
+              .sort((a, b) => b.quantity - a.quantity)
+              .map((product) => (
+                <tr key={product.id}>
+                  <td>
+                    {product.product_id?.image ? (
+                      <img
+                        src={product.product_id.image}
+                        alt={product.product_id.name}
+                        style={{
+                          width: "50px",
+                          height: "50px",
+                          objectFit: "cover",
+                          borderRadius: "6px",
+                        }}
+                      />
+                    ) : (
+                      <span>--</span>
+                    )}
+                  </td>
+                  <td>{product.product_id?.name}</td>
+                  <td>{product.product_id?.category_id?.name || "--"}</td>
+                  <td>{product.product_id?.company_id?.name || "--"}</td>
+                  <td>{product.quantity}</td>
+                  <td>{product.product_id?.traderprice}</td>
+                  <td>{product.price}</td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
