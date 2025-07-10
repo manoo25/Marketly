@@ -1,138 +1,492 @@
-import React from "react";
-import { Form, Button, Row, Col } from "react-bootstrap";
+import React, { useState } from "react";
+import { Form, Button, Col, Row, Modal } from "react-bootstrap";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { supabase } from "../../supabase/supabaseClient";
+import { uploadImagesToSupabase } from "../../Redux/uploadingImage";
+import { FaCamera ,FaMapMarkerAlt } from "react-icons/fa";
 import styles from "../../css/AuthLayout.module.css";
-import "../../css/global.css";
-import Logo from "../../assets/Images/Logo.png"
-const SignUpPage = () => {
+import Logo from "../../assets/Images/Logo.png";
+import { useNavigate } from "react-router-dom";
+
+const SignUp = () => {
+  const [imagePreview, setImagePreview] = useState(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submittedRole, setSubmittedRole] = useState(""); 
+
+  const validationSchema = Yup.object({
+    name: Yup.string().required("الاسم مطلوب"),
+    email: Yup.string().email("صيغة البريد غير صحيحة").required("البريد مطلوب"),
+    phone: Yup.string()
+      .matches(/^\d{10,15}$/, "رقم غير صالح")
+      .required("رقم الهاتف مطلوب"),
+    password: Yup.string()
+      .min(6, "كلمة المرور قصيرة")
+      .required("كلمة المرور مطلوبة"),
+    governorate: Yup.string().required("المحافظة مطلوبة"),
+    city: Yup.string().required("المدينة مطلوبة"),
+    role: Yup.string().required("الصلاحية مطلوبة"),
+    location: Yup.string().required("العنوان مطلوب"),
+    userImage: Yup.mixed()
+      .required("الصورة مطلوبة")
+      .test("fileSize", "حجم الصورة كبير جداً (الحد الأقصى 2MB)", (value) => {
+        if (!value || value.length === 0) return false;
+        return value[0].size <= 2000000;
+      })
+      .test("fileType", "نوع الملف غير مدعوم (JPEG, PNG فقط)", (value) => {
+        if (!value || value.length === 0) return false;
+        return ["image/jpeg", "image/png", "image/jpg"].includes(value[0].type);
+      }),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      email: "",
+      phone: "",
+      password: "",
+      governorate: "",
+      city: "",
+      role: "",
+      location: "",
+      userImage: null,
+    },
+    validationSchema,
+    onSubmit: async (values) => {
+      setIsSubmitting(true);
+      try {
+        const { data: existingUsers, error: fetchError } = await supabase
+          .from("users")
+          .select("email, phone");
+        if (fetchError) throw fetchError;
+
+        const emailExists = existingUsers.some((u) => u.email === values.email);
+        const phoneExists = existingUsers.some((u) => u.phone === values.phone);
+
+        if (emailExists) {
+          formik.setFieldError("email", "البريد مسجل مسبقًا");
+          return;
+        }
+        if (phoneExists) {
+          formik.setFieldError("phone", "رقم الهاتف مستخدم من قبل");
+          return;
+        }
+
+        const imageUrls = await uploadImagesToSupabase(
+          values.userImage,
+          "users"
+        );
+
+        const newUser = {
+          name: values.name,
+          email: values.email,
+          phone: values.phone,
+          password: values.password,
+          governorate: values.governorate,
+          city: values.city,
+          role: values.role,
+          location: values.location,
+          image: imageUrls[0],
+          isBlocked: false,
+        };
+
+        const { error } = await supabase.from("users").insert([newUser]);
+        if (error) throw error;
+
+        setSubmittedRole(values.role); 
+        setShowSuccessModal(true);
+        formik.resetForm();
+        setImagePreview(null);
+      } catch (error) {
+        console.error("❌ خطأ في التسجيل:", error.message);
+        alert("حدث خطأ أثناء التسجيل: " + error.message);
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+  });
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      formik.setFieldValue("userImage", [file]);
+      const preview = URL.createObjectURL(file);
+      setImagePreview(preview);
+    }
+  };
+
+  const navigate = useNavigate();
+
+  const handleModalClose = () => {
+    setShowSuccessModal(false);
+    if (submittedRole === "admin" || submittedRole === "trader") {
+      navigate("/Dashboard/Charts");
+    } else {
+      navigate("/Landing");
+    }
+  };
+
+  const getLocationAndSetAddress = () => {
+    if (!navigator.geolocation) {
+      alert("المتصفح لا يدعم تحديد الموقع الجغرافي");
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+
+        try {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=ar`
+          );
+          const data = await response.json();
+          const address = data.display_name;
+
+          if (address) {
+            alert("تم الحصول على موقعك بنجاح!");
+            formik.setFieldValue("location", address);
+          } else {
+            alert("لم يتم العثور على عنوان دقيق للموقع.");
+          }
+        } catch (error) {
+          console.error("خطأ في جلب العنوان:", error);
+          alert("حدث خطأ أثناء جلب العنوان.");
+        }
+      },
+      (error) => {
+        console.error("حدث خطأ أثناء الحصول على الموقع:", error);
+        alert("يجب السماح بالوصول إلى الموقع لتحديد العنوان تلقائيًا.");
+      }
+    );
+  };
+
   return (
     <div className={styles.signupPage}>
       <Row className="g-0 justify-content-center align-items-center min-vh-100">
         <Col
           md={4}
-          className={`d-none d-md-flex align-items-center justify-content-center rounded-3  ${styles.signupImageSection}`}
+          className={`d-none d-md-flex align-items-center justify-content-center ${styles.signupImageSection}`}
         >
-          <img
-            src={Logo}
-            alt="تسجيل مستخدم"
-            className={styles.signupSideImg}
-          />
+          <img src={Logo} alt="شعار" className={styles.signupSideImg} />
         </Col>
 
-        <Col md={7} >
+        <Col md={7}>
           <div className={styles.signupFormWrapper}>
-            <h4 className="mb-3">إنشاء حساب</h4>
-            <p className="text-muted mb-4">
-              هنساعدك تكمل البيانات علشان نقدر نتحقق من المعلومات الخاصة بيك ونخصص حسابك.
-            </p>
-
-            <Form dir="rtl">
-              <Row className="gy-3">
-                {/* اسم المؤسسة */}
-                <Col md={6}>
-                  <Form.Group controlId="institution">
-                    <Form.Label>اسم المؤسسة</Form.Label>
-                    <div className="position-relative">
-                      <Form.Control type="text" placeholder="ادخل اسم المؤسسة" className="py-2" />
-                      <i className="fas fa-building input-icon"></i>
+            <h4 className="mb-3 text-end">إنشاء حساب</h4>
+            <Form onSubmit={formik.handleSubmit}>
+              {/* صورة المستخدم */}
+              <Row className="mb-4 justify-content-center">
+                <Col md={3} className="text-center">
+                  <div className="position-relative d-inline-block">
+                    <div
+                      onClick={() =>
+                        document.getElementById("userImageInput").click()
+                      }
+                      className="rounded-circle overflow-hidden border border-3  mx-auto"
+                      style={{
+                        width: "100px",
+                        height: "100px",
+                        cursor: "pointer",
+                        position: "relative",
+                      }}
+                    >
+                      <img
+                        src={
+                          imagePreview ||
+                          "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                        }
+                        alt="user"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                      />
+                      <div
+                        className="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+                        style={{
+                          background: "rgba(0,0,0,0.5)",
+                          color: "white",
+                          opacity: 0,
+                          transition: "0.3s",
+                        }}
+                        onMouseEnter={(e) =>
+                          (e.currentTarget.style.opacity = 1)
+                        }
+                        onMouseLeave={(e) =>
+                          (e.currentTarget.style.opacity = 0)
+                        }
+                      >
+                        <FaCamera size={24} />
+                      </div>
                     </div>
+                    <input
+                      id="userImageInput"
+                      name="userImage"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      onBlur={formik.handleBlur}
+                      className="d-none"
+                    />
+                    {formik.touched.userImage && formik.errors.userImage && (
+                      <div className="text-danger mt-2 small">
+                        {formik.errors.userImage}
+                      </div>
+                    )}
+                  </div>
+                </Col>
+              </Row>
+
+              {/* باقي الحقول */}
+              <Row className="g-3">
+                {/* الاسم */}
+                <Col md={6}>
+                  <Form.Group>
+                    <Form.Label className="fw-semibold">
+                      الاسم الكامل
+                    </Form.Label>
+                    <Form.Control
+                      name="name"
+                      type="text"
+                      value={formik.values.name}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      placeholder="أدخل الاسم الكامل"
+                      className="py-2"
+                    />
+                    {formik.touched.name && formik.errors.name && (
+                      <div className="text-danger small">
+                        {formik.errors.name}
+                      </div>
+                    )}
                   </Form.Group>
                 </Col>
 
-                {/* نوع المنفذ */}
+                {/* البريد */}
                 <Col md={6}>
-                  <Form.Group controlId="outletType">
-                    <Form.Label>نوع المنفذ</Form.Label>
-                    <div className="position-relative">
-                      <Form.Select className="py-2 custom-select" dir="rtl">
-                        <option>اختر النوع</option>
-                        <option>صيدلية</option>
-                        <option>معمل تحاليل</option>
-                        <option>مستشفى</option>
-                      </Form.Select>
-                    </div>
+                  <Form.Group>
+                    <Form.Label className="fw-semibold">
+                      البريد الإلكتروني
+                    </Form.Label>
+                    <Form.Control
+                      name="email"
+                      type="email"
+                      value={formik.values.email}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      placeholder="أدخل البريد الإلكتروني"
+                      className="py-2"
+                    />
+                    {formik.touched.email && formik.errors.email && (
+                      <div className="text-danger small">
+                        {formik.errors.email}
+                      </div>
+                    )}
                   </Form.Group>
                 </Col>
 
-                {/* رقم الهاتف */}
+                {/* الهاتف */}
                 <Col md={6}>
-                  <Form.Group controlId="phone">
-                    <Form.Label>رقم الهاتف</Form.Label>
-                    <div className="position-relative">
-                      <Form.Control type="text" placeholder="ادخل رقم الهاتف" className="py-2" />
-                      <i className="fas fa-phone input-icon"></i>
-                    </div>
+                  <Form.Group>
+                    <Form.Label className="fw-semibold">رقم الهاتف</Form.Label>
+                    <Form.Control
+                      name="phone"
+                      value={formik.values.phone}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      placeholder="أدخل رقم الهاتف"
+                      className="py-2"
+                    />
+                    {formik.touched.phone && formik.errors.phone && (
+                      <div className="text-danger small">
+                        {formik.errors.phone}
+                      </div>
+                    )}
                   </Form.Group>
                 </Col>
 
-                {/* العنوان */}
+                {/* الباسورد */}
                 <Col md={6}>
-                  <Form.Group controlId="address">
-                    <Form.Label>العنوان</Form.Label>
-                    <div className="position-relative">
-                      <Form.Control type="text" placeholder="ادخل العنوان بالتفصيل" className="py-2" />
-                      <i className="fas fa-map-marker-alt input-icon"></i>
-                    </div>
+                  <Form.Group>
+                    <Form.Label className="fw-semibold">كلمة المرور</Form.Label>
+                    <Form.Control
+                      name="password"
+                      type="password"
+                      value={formik.values.password}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      placeholder="أدخل كلمة المرور"
+                      className="py-2"
+                    />
+                    {formik.touched.password && formik.errors.password && (
+                      <div className="text-danger small">
+                        {formik.errors.password}
+                      </div>
+                    )}
                   </Form.Group>
                 </Col>
 
                 {/* المحافظة */}
                 <Col md={6}>
-                  <Form.Group controlId="governorate">
-                    <Form.Label>المحافظة</Form.Label>
-                    <Form.Select className="py-2 custom-select" dir="rtl">
-                      <option>اختر المحافظة</option>
-                      <option>القاهرة</option>
-                      <option>الجيزة</option>
-                      <option>الإسكندرية</option>
-                      <option>المنصورة</option>
+                  <Form.Group>
+                    <Form.Label className="fw-semibold">المحافظة</Form.Label>
+                    <Form.Select
+                      name="governorate"
+                      value={formik.values.governorate}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      className="py-2"
+                    >
+                      <option value="">اختر المحافظة</option>
+                      <option value="cairo">القاهرة</option>
+                      <option value="giza">الجيزة</option>
+                      <option value="alexandria">الإسكندرية</option>
+                      <option value="mansoura">المنصورة</option>
                     </Form.Select>
+                    {formik.touched.governorate &&
+                      formik.errors.governorate && (
+                        <div className="text-danger small">
+                          {formik.errors.governorate}
+                        </div>
+                      )}
                   </Form.Group>
                 </Col>
 
                 {/* المدينة */}
                 <Col md={6}>
-                  <Form.Group controlId="city">
-                    <Form.Label>المدينة</Form.Label>
-                    <Form.Select className="py-2 custom-select" dir="rtl">
-                      <option>اختر المدينة</option>
-                      <option>مدينة نصر</option>
-                      <option>المعادي</option>
-                      <option>6 أكتوبر</option>
+                  <Form.Group>
+                    <Form.Label className="fw-semibold">المدينة</Form.Label>
+                    <Form.Select
+                      name="city"
+                      value={formik.values.city}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      className="py-2"
+                    >
+                      <option value="">اختر المدينة</option>
+                      {formik.values.governorate === "cairo" && (
+                        <>
+                          <option value="nasr city">مدينة نصر</option>
+                          <option value="maadi">المعادي</option>
+                        </>
+                      )}
+                      {formik.values.governorate === "giza" && (
+                        <>
+                          <option value="6 oct">6 أكتوبر</option>
+                          <option value="dokki">الدقي</option>
+                        </>
+                      )}
+                      {formik.values.governorate === "alexandria" && (
+                        <>
+                          <option value="sidi gaber">سيدي جابر</option>
+                          <option value="smouha">سموحة</option>
+                        </>
+                      )}
                     </Form.Select>
+                    {formik.touched.city && formik.errors.city && (
+                      <div className="text-danger small">
+                        {formik.errors.city}
+                      </div>
+                    )}
                   </Form.Group>
                 </Col>
 
-                {/* الإيميل */}
+                {/* الصلاحية */}
                 <Col md={6}>
-                  <Form.Group controlId="email">
-                    <Form.Label>البريد الإلكتروني</Form.Label>
-                    <div className="position-relative">
-                      <Form.Control type="email" placeholder="ادخل البريد الإلكتروني" className="py-2" />
-                      <i className="fas fa-envelope input-icon"></i>
-                    </div>
+                  <Form.Group>
+                    <Form.Label className="fw-semibold">الصلاحية</Form.Label>
+                    <Form.Select
+                      name="role"
+                      value={formik.values.role}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      className="py-2"
+                    >
+                      <option value="user">مستخدم عادي</option>
+                      <option value="trader">تاجر</option>
+                      <option value="admin">مدير نظام</option>
+                    </Form.Select>
+                    {formik.touched.role && formik.errors.role && (
+                      <div className="text-danger small">
+                        {formik.errors.role}
+                      </div>
+                    )}
                   </Form.Group>
                 </Col>
+               <Col md={6}>
+  <Form.Group className="position-relative">
+    <Form.Label className="fw-semibold">العنوان التفصيلي</Form.Label>
+    <div style={{ position: "relative" }}>
+      <Form.Control
+        name="location"
+        value={formik.values.location}
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+        placeholder="الحي، الشارع، رقم المبني"
+        className="py-2 pe-5"
+      />
+      <FaMapMarkerAlt
+        onClick={getLocationAndSetAddress}
+        style={{
+          position: "absolute",
+          top: "50%",
+          right: "10px",
+          transform: "translateY(-50%)",
+          cursor: "pointer",
+          color: "grey",
+          fontSize: "18px",
+        }}
+        title="تحديد موقعي تلقائيًا"
+      />
+    </div>
+    {formik.touched.location && formik.errors.location && (
+      <div className="text-danger small mt-1">
+        {formik.errors.location}
+      </div>
+    )}
+  </Form.Group>
+</Col>
 
-                {/* كلمة المرور */}
-                <Col md={6}>
-                  <Form.Group controlId="password">
-                    <Form.Label>كلمة المرور</Form.Label>
-                    <div className="position-relative">
-                      <Form.Control type="password" placeholder="ادخل كلمة المرور" className="py-2" />
-                      <i className="fas fa-lock input-icon"></i>
-                    </div>
-                  </Form.Group>
-                </Col>
-
-                {/* الزرار */}
-                <Col md={12} className="text-end">
-                  <Button type="submit" className="btn btn-primary px-4 mt-3">
-                    التالي →
-                  </Button>
-                </Col>
               </Row>
+
+              {/* زرار التسجيل */}
+              <Button
+                variant="primary"
+                type="submit"
+                className="mt-4 w-100 py-2 fw-bold"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "جاري التسجيل..." : "تسجيل حساب جديد"}
+              </Button>
             </Form>
- 
+
+             <Modal show={showSuccessModal} onHide={handleModalClose} centered>
+              <div className="container d-flex justify-content-between">
+                  <Modal.Title className=" text-muted p-2">
+                  تم التسجيل بنجاح!
+                </Modal.Title>
+  <Modal.Header closeButton></Modal.Header>
+            
+              </div>
+            
+              <Modal.Body className="text-center">
+                <i className="fas fa-check-circle fs-1 mb-3 text-muted"></i>
+                <p>
+                  تم إنشاء حسابك بنجاح.
+                  {submittedRole === "user"
+                    ? " يمكنك الآن تسجيل الدخول والبدء في استخدام الخدمة."
+                    : " يمكنك الآن تسجيل الدخول للوحة التحكم."}
+                </p>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="primary" onClick={handleModalClose}>
+                  حسناً
+                </Button>
+              </Modal.Footer>
+            </Modal>
           </div>
         </Col>
       </Row>
@@ -140,4 +494,4 @@ const SignUpPage = () => {
   );
 };
 
-export default SignUpPage;
+export default SignUp;
