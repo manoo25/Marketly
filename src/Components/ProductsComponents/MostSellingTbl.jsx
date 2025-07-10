@@ -10,11 +10,9 @@ const rowsPerPage = 4;
 const MostSellingTbl = () => {
   const dispatch = useDispatch();
   const data = useSelector((state) => state.OrderItems.items);
-  console.log(data);
 
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [currentProducts, setCurrentProducts] = useState([]);
   const [searchName, setSearchName] = useState("");
   const [selectedCat, setSelectedCat] = useState("");
   const [selectedCompany, setSelectedCompany] = useState("");
@@ -25,10 +23,6 @@ const MostSellingTbl = () => {
     confirmClass: "btn-primary",
     onConfirm: () => {},
   });
-
-  useEffect(() => {
-    dispatch(getAllOrderItems());
-  }, [dispatch]);
 
   useEffect(() => {
     const mergeByProductName = (items) => {
@@ -52,16 +46,10 @@ const MostSellingTbl = () => {
     setProducts(merged);
   }, [data]);
 
-  useEffect(() => {
-    const startIndex = (currentPage - 1) * rowsPerPage;
-    const sliced = products.slice(startIndex, startIndex + rowsPerPage);
-    setCurrentProducts(sliced);
-  }, [products, currentPage]);
 
-  const totalPages = Math.ceil(products.length / rowsPerPage);
-
-  const handleSearchClick = () => {
-    const filtered = products.filter((x) => {
+  const filteredProducts = products
+    .filter((x) => x.order_id?.status === "done")
+    .filter((x) => {
       const matchName =
         searchName === "" ||
         (x.product_id?.name &&
@@ -78,17 +66,26 @@ const MostSellingTbl = () => {
           x.product_id.company_id.name.toLowerCase().includes(selectedCompany.toLowerCase()));
 
       return matchName && matchCat && matchCompany;
-    });
+    })
+    .sort((a, b) => b.quantity - a.quantity);
 
-    setCurrentProducts(filtered);
-  };
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchName, selectedCat, selectedCompany]);
+
+  const totalPages = Math.ceil(filteredProducts.length / rowsPerPage);
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const currentProducts = filteredProducts.slice(startIndex, startIndex + rowsPerPage);
+
+  useEffect(() => {
+    dispatch(getAllOrderItems());
+  }, [dispatch]);
 
   const onResetFilters = () => {
     setSearchName("");
     setSelectedCat("");
     setSelectedCompany("");
     setCurrentPage(1);
-    setCurrentProducts(products);
   };
 
   return (
@@ -100,7 +97,7 @@ const MostSellingTbl = () => {
         setselectedCat={setSelectedCat}
         selectedCompany={selectedCompany}
         setselectedCompany={setSelectedCompany}
-        onSearchClick={handleSearchClick}
+        onSearchClick={() => {}} // لم يعد له داعي
         onResetFilters={onResetFilters}
       />
 
@@ -118,35 +115,32 @@ const MostSellingTbl = () => {
             </tr>
           </thead>
           <tbody>
-            {currentProducts
-              .filter((x) => x.order_id?.status === "done")
-              .sort((a, b) => b.quantity - a.quantity)
-              .map((product) => (
-                <tr key={product.id}>
-                  <td>
-                    {product.product_id?.image ? (
-                      <img
-                        src={product.product_id.image}
-                        alt={product.product_id.name}
-                        style={{
-                          width: "50px",
-                          height: "50px",
-                          objectFit: "cover",
-                          borderRadius: "6px",
-                        }}
-                      />
-                    ) : (
-                      <span>--</span>
-                    )}
-                  </td>
-                  <td>{product.product_id?.name}</td>
-                  <td>{product.product_id?.category_id?.name || "--"}</td>
-                  <td>{product.product_id?.company_id?.name || "--"}</td>
-                  <td>{product.quantity}</td>
-                  <td>{product.product_id?.traderprice}</td>
-                  <td>{product.price}</td>
-                </tr>
-              ))}
+            {currentProducts.map((product) => (
+              <tr key={product.id}>
+                <td>
+                  {product.product_id?.image ? (
+                    <img
+                      src={product.product_id.image}
+                      alt={product.product_id.name}
+                      style={{
+                        width: "50px",
+                        height: "50px",
+                        objectFit: "cover",
+                        borderRadius: "6px",
+                      }}
+                    />
+                  ) : (
+                    <span>--</span>
+                  )}
+                </td>
+                <td>{product.product_id?.name}</td>
+                <td>{product.product_id?.category_id?.name || "--"}</td>
+                <td>{product.product_id?.company_id?.name || "--"}</td>
+                <td>{product.quantity}</td>
+                <td>{product.product_id?.traderprice}</td>
+                <td>{product.price}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
