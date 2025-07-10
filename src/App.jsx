@@ -10,6 +10,7 @@ import Returns from "./Pages/Returns";
 import SigninPage from "./Pages/auth/SignIn";
 import SignUpPage from "./Pages/auth/SignUp";
 import Landing from "./Pages/landingPage"; 
+import MostSellingTbl from "./Components/ProductsComponents/MostSellingTbl";
 
 function App() {
   const routes = createBrowserRouter([
@@ -21,6 +22,7 @@ function App() {
       children: [
         { path: 'Charts', element: <Charts /> },
         { path: 'Products', element: <Products /> },
+        { path: 'Products/MostSelling', element: <MostSellingTbl /> },
         { path: 'Categories', element: <Categories /> },
         { path: 'Users', element: <Users /> },
         { path: 'Orders', element: <Orders /> },
