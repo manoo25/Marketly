@@ -12,7 +12,7 @@ import SignUp from "./Pages/auth/SignUp";
 import SigninPage from "./Pages/auth/SignIn"
 import SignUpPage from "./Pages/auth/SignUp";
 import MostSellingProducts from "./Pages/Products/MostSellingProducts";
-import LeastSellingProducts from "./Pages/Products/LeastSellingProducts";
+
 
 
 
@@ -24,7 +24,6 @@ let routes= createBrowserRouter([
       { path: 'Charts', element: <Charts /> },
       { path: 'Products', element: <Products /> },
       { path: 'Products/MostSelling', element: <MostSellingProducts /> },
-      { path: 'Products/LeastSelling', element: <LeastSellingProducts /> },
       { path: 'Categories', element: <Categories /> },
       { path: 'Users', element: <Users /> },
       { path: 'Orders', element: <Orders /> },

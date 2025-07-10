@@ -18,7 +18,7 @@ function SidebarLink({ SetPageTitle }) {
   const productsSubLinks = [
     { text: 'تقرير المنتجات', icon: 'fa-solid fa-table-list', path: '/Dashboard/Products' },
     { text: 'الأكثر مبيعا', icon: 'fa-solid fa-arrow-trend-up', path: '/Dashboard/Products/MostSelling' },
-    { text: 'الأقل مبيعا', icon: 'fa-solid fa-arrow-trend-down', path: '/Dashboard/Products/LeastSelling' },
+  
   ];
 
   return (
