@@ -10,6 +10,7 @@ function SidebarLink({ SetPageTitle }) {
     { text: 'المستخدمين', icon: 'fa-solid fa-users', path: '/Dashboard/Users' },
     { text: 'الأصناف', icon: 'fa-solid fa-layer-group', path: '/Dashboard/Categories' },
     { text: 'المبيعات', icon: 'fa-solid fa-chart-line', path: '/Dashboard/Sales' },
+    { text: 'المناديب', icon: 'fa-solid fa-user-tie', path: '/Dashboard/Delegates' },
     { text: 'الشركات', icon: 'fa-solid fa-chart-line', path: '/Dashboard/companies' },
     { text: 'الطلبات', icon: 'fa-solid fa-receipt', path: '/Dashboard/Orders' },
     { text: 'المرتجعات', icon: 'fa-solid fa-undo', path: '/Dashboard/Returns' }
@@ -17,8 +18,8 @@ function SidebarLink({ SetPageTitle }) {
 
   const productsSubLinks = [
     { text: 'تقرير المنتجات', icon: 'fa-solid fa-table-list', path: '/Dashboard/Products' },
-    { text: 'الأكثر مبيعا', icon: 'fa-solid fa-arrow-trend-up', path: '/Dashboard/Products/MostSelling' },
-    { text: 'الأقل مبيعا', icon: 'fa-solid fa-arrow-trend-down', path: '/Dashboard/Products/LeastSelling' },
+    { text: 'الأكثر مبيعا', icon: 'fa-solid fa-arrow-trend-up', path: '/Dashboard/Products/MostSellingProducts' },
+
   ];
 
   return (
@@ -28,7 +29,8 @@ function SidebarLink({ SetPageTitle }) {
         <Link to={link.path} key={index}
           onClick={() => {
             setIsProductsMenuOpen(false);
-            SetPageTitle(link.text)}}
+            SetPageTitle(link.text)
+          }}
           className="text-decoration-none"
         >
           <div className={`sidebarLink ${location.pathname === link.path ? 'ActivesidebarLink' : ''}`}>
@@ -40,46 +42,48 @@ function SidebarLink({ SetPageTitle }) {
       {/* المنتجات (دروب منيو) */}
       <div
         className={`sidebarLink ${productsSubLinks.some(item => location.pathname === item.path)
-            ? ''
-            : ''
+          ? ''
+          : ''
           }`}
         onClick={() => setIsProductsMenuOpen(!isProductsMenuOpen)}
         style={{ cursor: 'pointer' }}
       >
         <p><span className="fa-solid fa-box-open"></span> المنتجات
-        <span
+          <span
             className="fa-solid fa-chevron-down dropdown-arrow"
             style={{
               transform: isProductsMenuOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-              transition: 'transform 0.3s ease',}}
-        ></span>
-        
+              transition: 'transform 0.3s ease',
+            }}
+          ></span>
+
         </p>
       </div>
 
       {/* روابط المنتجات الفرعية */}
-      
-        <div className={`products-submenu transition-submenu ${isProductsMenuOpen ? 'open' : 'closed'}`}>
-          {productsSubLinks.map((sublink, idx) => (
-            <Link
-              to={sublink.path}
-              key={idx}
-              className="text-decoration-none"
-              onClick={() => SetPageTitle(sublink.text)}
-            >
-              <div className={`sidebarLink subLink ${location.pathname === sublink.path ? 'ActivesidebarLink' : ''}`}>
-                <p><span className={sublink.icon}></span> {sublink.text}</p>
-              </div>
-            </Link>
-          ))}
-        </div>
+
+      <div className={`products-submenu transition-submenu ${isProductsMenuOpen ? 'open' : 'closed'}`}>
+        {productsSubLinks.map((sublink, idx) => (
+          <Link
+            to={sublink.path}
+            key={idx}
+            className="text-decoration-none"
+            onClick={() => SetPageTitle(sublink.text)}
+          >
+            <div className={`sidebarLink subLink ${location.pathname === sublink.path ? 'ActivesidebarLink' : ''}`}>
+              <p><span className={sublink.icon}></span> {sublink.text}</p>
+            </div>
+          </Link>
+        ))}
+      </div>
 
       {/* باقي العناصر */}
       {sidebarLinks.slice(2).map((link, index) => (
         <Link to={link.path} key={index + 2}
           onClick={() => {
             setIsProductsMenuOpen(false);
-            SetPageTitle(link.text)}}
+            SetPageTitle(link.text)
+          }}
           className="text-decoration-none"
         >
           <div className={`sidebarLink ${location.pathname === link.path ? 'ActivesidebarLink' : ''}`}>
