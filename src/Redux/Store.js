@@ -8,6 +8,7 @@ import returnsSlice from "./Slices/ReturnsSlice";
 import UnitsSlice from "./Slices/units";
 import CompaniesSlice from "./Slices/CompaniesSlice";
 import messagesSlice from "./Slices/MessagesSlice";
+import delegatesSlice from "./Slices/DelegatesSlice";
 
 export const Store = configureStore({
   reducer: {
@@ -20,5 +21,6 @@ export const Store = configureStore({
     Returns: returnsSlice.reducer,
     Companies: CompaniesSlice.reducer,
     messages: messagesSlice.reducer,
+    Delegates: delegatesSlice.reducer,
   },
 });

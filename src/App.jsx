@@ -11,6 +11,8 @@ import SigninPage from "./Pages/auth/SignIn";
 import SignUpPage from "./Pages/auth/SignUp";
 import Landing from "./Pages/landingPage"; 
 import MostSellingTbl from "./Components/ProductsComponents/MostSellingTbl";
+import MostSellingProducts from "./Pages/Products/MostSellingProducts";
+import DelegatesPage from "./Pages/DelegatesPage";
 
 function App() {
   const routes = createBrowserRouter([
@@ -23,12 +25,14 @@ function App() {
         { path: 'Charts', element: <Charts /> },
         { path: 'Products', element: <Products /> },
         { path: 'Products/MostSelling', element: <MostSellingTbl /> },
+        { path: 'Products/MostSellingProducts', element: <MostSellingProducts /> },
         { path: 'Categories', element: <Categories /> },
         { path: 'Users', element: <Users /> },
         { path: 'Orders', element: <Orders /> },
         { path: 'companies', element: <Companies /> },
         { path: 'Returns', element: <Returns /> },
-       ]
+        { path: 'Delegates', element: <DelegatesPage /> },
+      ]
     },
     { path: 'SignUp', element: <SignUpPage /> },
     { path: 'SigninPage', element: <SigninPage /> },

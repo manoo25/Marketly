@@ -6,7 +6,7 @@ export default function UpdateRolesModal({ show, onClose, onConfirm, selectedCou
 
     const handleConfirm = () => {
         if (!selectedRole) return;
-        onConfirm(selectedRole); // نبعته للكونفيرم مودال
+        onConfirm(selectedRole); 
     };
 
     return (

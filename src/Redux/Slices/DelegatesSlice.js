@@ -1,0 +1,149 @@
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { supabase } from "../../Supabase/supabaseClient";
+
+
+export const fetchDelegates = createAsyncThunk(
+  "delegates/fetchDelegates",
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data, error } = await supabase.from("delegates").select("*");
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+
+export const createDelegate = createAsyncThunk(
+  "delegates/createDelegate",
+  async (delegateData, { rejectWithValue }) => {
+    try {
+      const { data, error } = await supabase
+        .from("delegates")
+        .insert(delegateData)
+        .select();
+      if (error) throw error;
+      return data[0];
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+
+export const updateDelegate = createAsyncThunk(
+  "delegates/updateDelegate",
+  async ({ id, updatedData }, { rejectWithValue }) => {
+    try {
+      const { data, error } = await supabase
+        .from("delegates")
+        .update(updatedData)
+        .eq("id", id)
+        .select();
+      if (error) throw error;
+      return data[0];
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const updateSelectedDelegates = createAsyncThunk(
+  "delegates/updateSelectedDelegates",
+  async ({ delegateIds, updatedData }, { rejectWithValue }) => {
+    try {
+      const { data, error } = await supabase
+        .from("delegates")
+        .update(updatedData)
+        .in("id", delegateIds)
+        .select();
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+
+export const deleteDelegate = createAsyncThunk(
+  "delegates/deleteDelegate",
+  async (id, { rejectWithValue }) => {
+    try {
+      const { error } = await supabase.from("delegates").delete().eq("id", id);
+      if (error) throw error;
+      return id;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+
+const delegatesSlice = createSlice({
+  name: "delegates",
+  initialState: {
+    delegates: [],
+    loading: false,
+    error: null,
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchDelegates.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchDelegates.fulfilled, (state, action) => {
+        state.loading = false;
+        state.delegates = action.payload;
+      })
+      .addCase(fetchDelegates.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(createDelegate.fulfilled, (state, action) => {
+        state.delegates.push(action.payload);
+      })
+      .addCase(createDelegate.rejected, (state, action) => {
+        state.error = action.payload;
+      })
+
+      .addCase(updateDelegate.fulfilled, (state, action) => {
+        const index = state.delegates.findIndex(
+          (d) => d.id === action.payload.id
+        );
+        if (index !== -1) {
+          state.delegates[index] = action.payload;
+        }
+      })
+      .addCase(updateDelegate.rejected, (state, action) => {
+        state.error = action.payload;
+      })
+
+      .addCase(updateSelectedDelegates.fulfilled, (state, action) => {
+        action.payload.forEach((updated) => {
+          const index = state.delegates.findIndex((d) => d.id === updated.id);
+          if (index !== -1) {
+            state.delegates[index] = updated;
+          }
+        });
+      })
+      .addCase(updateSelectedDelegates.rejected, (state, action) => {
+        state.error = action.payload;
+      })
+
+      .addCase(deleteDelegate.fulfilled, (state, action) => {
+        state.delegates = state.delegates.filter(
+          (d) => d.id !== action.payload
+        );
+      })
+      .addCase(deleteDelegate.rejected, (state, action) => {
+        state.error = action.payload;
+      });
+  },
+});
+
+export default delegatesSlice;
