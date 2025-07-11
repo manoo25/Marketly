@@ -5,27 +5,30 @@ import {
   deleteProduct,
   deleteSelectedProduct,
   fetchProducts,
+  updateProduct,
 } from "../../Redux/Slices/ProductSlice";
 import ProductsFilter from "./ProductsFilter";
 import CustomMenu from "../globalComonents/CustomMenu";
 import ModalConfirm from "../UsersComponents/ModalConfirm";
 import EditProductModal from "../modalsComponents/EditProductModal";
+import Switch from "../globalComonents/Switch";
 
 const rowsPerPage = 4;
 
 const ProductsTbl = () => {
   const dispatch = useDispatch();
   const { products } = useSelector((state) => state.Products);
-  console.log(products);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [show, setShow] = useState(false);
+
   const [EditProduct, setEditProduct] = useState({});
   const [SelectedProducts, SetSelectedProducts] = useState([]);
   const [searchName, setSearchName] = useState("");
   const [selectedCat, setselectedCat] = useState("");
   const [searchTrader, setSearchTrader] = useState("");
   const [selectedCompany, setselectedCompany] = useState("");
+  const [showNotPublished, setShowNotPublished] = useState(false);
   const [confirmModal, setConfirmModal] = useState({
     open: false,
     message: "",
@@ -35,7 +38,7 @@ const ProductsTbl = () => {
   });
 
 
-  const filteredProducts = products.filter((x) => {
+  let filteredProducts = products.filter((x) => {
     const matchName =
       searchName === "" ||
       (x.name && x.name.toLowerCase().includes(searchName.toLowerCase()));
@@ -55,19 +58,34 @@ const ProductsTbl = () => {
       (x.company?.name &&
         x.company.name.toLowerCase().includes(selectedCompany.toLowerCase()));
 
-    return matchName && matchCat && matchTrader && matchCompany;
+    const matchPublish = !showNotPublished || x.publish === false;
+
+    return matchName && matchCat && matchTrader && matchCompany && matchPublish;
   });
 
+  // تفعيل فلترة المنتجات غير المنشورة
+  function selectNotPublished() {
+    setShowNotPublished(true);
+    setCurrentPage(1);
+  }
+
+  // إعادة تعيين الفلاتر
+  function onResetFilters() {
+    setSearchName("");
+    setselectedCat("");
+    setSearchTrader("");
+    setselectedCompany("");
+    setShowNotPublished(false);
+    setCurrentPage(1);
+  }
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchName, selectedCat, searchTrader, selectedCompany]);
-
+  }, [searchName, selectedCat, searchTrader, selectedCompany, showNotPublished]);
 
   const totalPages = Math.ceil(filteredProducts.length / rowsPerPage);
   const startIndex = (currentPage - 1) * rowsPerPage;
   const currentProducts = filteredProducts.slice(startIndex, startIndex + rowsPerPage);
-
 
   useEffect(() => {
     dispatch(fetchProducts());
@@ -98,14 +116,6 @@ const ProductsTbl = () => {
     dispatch(fetchProducts());
   };
 
-  function onResetFilters() {
-    setSearchName("");
-    setselectedCat("");
-    setSearchTrader("");
-    setselectedCompany("");
-    setCurrentPage(1);
-  }
-
   const handleDeletePro = (product) => {
     const isBlocked = product.state === false;
     setConfirmModal({
@@ -133,8 +143,10 @@ const ProductsTbl = () => {
         setSearchTrader={setSearchTrader}
         selectedCompany={selectedCompany}
         setselectedCompany={setselectedCompany}
-        onSearchClick={() => {}} 
+        onSearchClick={() => {}}
         onResetFilters={onResetFilters}
+        selectNotPublished={selectNotPublished}
+        showNotPublished={showNotPublished}
       />
 
       <div className="user-table">
@@ -164,14 +176,15 @@ const ProductsTbl = () => {
               <th>الوحدة</th>
               <th>الكمية فى الوحدة</th>
               <th>الحالة</th>
+              <th>نشر</th>
               <th>
                 {SelectedProducts.length > 0 && (
-                  <button
-                    className="bg-transparent"
+                 <p 
+                  className="tdcontentstate tdDeleteSelected"
                     onClick={handleDeleteSelected}
-                  >
-                    <i className="fa-solid fa-trash ms-2"></i>
-                  </button>
+                 >
+                  حذف 
+                 </p>
                 )}
               </th>
             </tr>
@@ -211,8 +224,19 @@ const ProductsTbl = () => {
                 <td>{product.company?.name || "--"}</td>
                 <td>{product.unit || "--"}</td>
                 <td>{product.quantity_per_unit || "--"}</td>
-                <td className={product.state ? "text-success" : "text-danger"}>
+                <td >
+              <p className={product.state ? "tdcontentstate tdcontentstateSuc" : " tdcontentstate tdcontentstateDanger"}>
                   {product.state ? "متاح" : "غير متاح"}
+                </p>
+                </td>
+                <td>
+                  <Switch
+                    ispublish={product.publish}
+                    setispublish={value =>
+                      dispatch(updateProduct({ id: product.id, updatedData: { publish: value } }))
+                    }
+                    id={`publish-switch-${product.id}`}
+                  />
                 </td>
                 <td>
                   <CustomMenu

@@ -17,10 +17,11 @@ function ProductsFilter({
     selectedCompany,
     setselectedCompany,
     onSearchClick,
+    selectNotPublished,
     onResetFilters
 }) {
     return (
-        <div className="d-flex gap-3 align-items-center justify-content-between w-100 px-2 mt-2">
+        <div className="d-flex gap-3 align-items-center justify-content-between w-100 px-2 mt-2 ">
 
             <NameSearch
                 searchName={searchName}
@@ -43,9 +44,13 @@ function ProductsFilter({
                 setSelectedRole={setselectedCompany}
 
             />
-
+          
+            <div style={{ minWidth: "115px" }}>
+                <LightButton label='قيد المراجعة' onClick={selectNotPublished} className='bg-warning text-white w-100' />
+            </div>
+          
             <div style={{ width: "120px" }}>
-                <LightButton label='بحث' onClick={onSearchClick} className='' />
+                <LightButton label='بحث' onClick={onSearchClick} />
             </div>
 
             <PrimaryButton

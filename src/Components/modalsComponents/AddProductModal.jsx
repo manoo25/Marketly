@@ -95,6 +95,7 @@ const AddProductModal = () => {
       quantity_per_unit: 12,
       image: [],
       state: true,
+      publish: false,
     },
     validationSchema,
     onSubmit: handleAddPro

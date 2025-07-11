@@ -191,3 +191,31 @@ align-content: center;
   z-index: 9999 !important;
   position: absolute !important;
 }
+
+.tdcontentstate{
+ padding: 0 4px;
+ color: white;
+margin: auto;
+ border-radius: 15px;
+ font-size: 17px;
+
+}
+.tdcontentstateDanger{
+background-color:rgba(255, 0, 0, 0.788);
+
+}
+.tdcontentstateSuc{
+background-color:rgba(21, 194, 5, 0.822);
+
+}
+.tdDeleteSelected{
+  cursor: pointer;
+background-color:rgba(255, 0, 0, 0.719);
+font-size: 16px;
+
+}
+.tdDeleteSelected:hover{
+background-color:rgba(34, 25, 25, 0.719);
+
+
+}
