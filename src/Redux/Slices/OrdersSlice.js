@@ -7,7 +7,9 @@ export const getOrders = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const { data, error } = await supabase.from("orders").select(`*,
-        user : user_id(*)`);
+        user : user_id(*),
+        delegator(name)
+        `);
       if (error) throw error;
       return data;
     } catch (error) {
