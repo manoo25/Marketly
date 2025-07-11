@@ -48,7 +48,7 @@ const MostSellingTbl = () => {
 
 
   const filteredProducts = products
-    .filter((x) => x.order_id?.status === "done")
+    .filter((x) => x.order_id?.status ===  "تم التوصيل")
     .filter((x) => {
       const matchName =
         searchName === "" ||
