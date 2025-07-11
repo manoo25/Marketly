@@ -10,7 +10,7 @@ import OrdersFilter from "./OrdersFilter";
 import CustomMenu from "../globalComonents/CustomMenu";
 import LabeledMenu from "../globalComonents/LabeledMenu";
 import { supabase } from "../../Supabase/supabaseClient";
-import { FaEye } from "react-icons/fa";
+import { FaEye, FaPrint } from "react-icons/fa";
 
 const rowsPerPage = 4;
 
@@ -26,6 +26,7 @@ const OrdersTbl = () => {
     const [searchName, setSearchName] = useState("");
     const [selectedGovernorate, setselectedGovernorate] = useState("");
     const [selectedState, setselectedState] = useState("");
+    
 
     // fetch all Orders once
     useEffect(() => {
@@ -160,24 +161,67 @@ const OrdersTbl = () => {
     const [viewModalOpen, setViewModalOpen] = useState(false);
     const [orderItems, setOrderItems] = useState([]);
     const [viewOrderId, setViewOrderId] = useState(null);
-  const handleViewOrder = async (orderId) => {
-    setViewOrderId(orderId);
-    setViewModalOpen(true);
-    // جلب بيانات order_items مع بيانات المنتج المرتبط
-    const { data, error } = await supabase
-        .from("order_items")
-        .select(`
+    const handleViewOrder = async (orderId) => {
+        setViewOrderId(orderId);
+        setViewModalOpen(true);
+        // جلب بيانات order_items مع بيانات المنتج المرتبطة
+        const { data, error } = await supabase
+            .from("order_items")
+            .select(`
             *,
             product_id (
                 name,
                 image
             )
         `)
-        .eq("order_id", orderId);
+            .eq("order_id", orderId);
 
-    if (!error) setOrderItems(data || []);
-    else setOrderItems([]);
-};
+        if (!error) setOrderItems(data || []);
+        else setOrderItems([]);
+    };
+
+    // دالة طباعة الفاتورة
+    const handlePrintInvoice = () => {
+        const printContents = document.getElementById("order-invoice-print").innerHTML;
+        const win = window.open('', '', 'height=700,width=900');
+        win.document.write('<html><head><title>فاتورة الطلب</title>');
+        win.document.write(`
+      <style>
+        body{direction:rtl;font-family:tahoma,Arial,sans-serif;background:#fff;}
+        .invoice-container{border:2px solid #000;border-radius:12px;padding:24px;max-width:700px;margin:0 auto;background:#fff;}
+        h2{color:#007bff;text-align:center;font-weight:bold;}
+        .invoice-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;}
+        .invoice-header .order-id{font-size:15px;}
+        .customer-info{font-size:16px;margin-bottom:8px;}
+        .table{width:100%;border-collapse:collapse;margin:24px 0;}
+        .table th,.table td{border:1px solid #ccc;padding:8px;text-align:center;}
+        .table th{background:#f8f9fa;}
+        .summary{display:flex;justify-content:start;align-items:center;margin-top:24px;font-size:18px;}
+        .summary-box{border:1px solid #eee;padding:16px;border-radius:8px;background:#f7f7f7;min-width:250px;}
+        .summary-box div{display:flex;justify-content:space-between;margin-bottom:8px;} 
+        .thanks{text-align:center;margin-top:32px;font-size:15px;color:#888;}
+      </style>
+    `);
+        win.document.write('</head><body >');
+        win.document.write(`<div class="invoice-container">${printContents}</div>`);
+        win.document.write('</body></html>');
+        win.document.close();
+        win.focus();
+        win.print();
+        win.close();
+    };
+
+    // دالة لتنسيق التاريخ: يوم-شهر-سنة بالأرقام العربية
+    const formatArabicDate = (dateString) => {
+        if (!dateString) return "--";
+        const date = new Date(dateString);
+        // تحويل الأرقام إلى أرقام عربية
+        const toArabicDigits = n => n.toString().replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+        const day = toArabicDigits(date.getDate());
+        const month = toArabicDigits(date.getMonth() + 1);
+        const year = toArabicDigits(date.getFullYear());
+        return `${day}-${month}-${year}`;
+    };
 
     return (
         <>
@@ -289,7 +333,7 @@ const OrdersTbl = () => {
                                 </td>
                                 <td>{order.payment_method}</td>
                                 <td>{order.total} <span className="px-1">ج.م</span></td>
-                                <td>{new Date(order.created_at).toLocaleDateString()}</td>
+                                <td>{formatArabicDate(order.created_at)}</td>
                                 <td>
                                     <button className="btn btn-link p-0" title="عرض الطلب" onClick={() => handleViewOrder(order.id)}>
                                         <FaEye size={20} color="#000000" />
@@ -308,7 +352,7 @@ const OrdersTbl = () => {
                                     />
 
                                 </td>
-                                
+
                             </tr>
                         ))}
                     </tbody>
@@ -444,103 +488,122 @@ const OrdersTbl = () => {
                 </div>
             )}
 
-        
-{viewModalOpen && (
-  <div className="modal show fade d-block modal-lg" tabIndex="-1" role="dialog" style={{ backgroundColor: "rgba(0,0,0,0.4)" }}>
-    <div className="modal-dialog modal-dialog-centered" role="document">
-      <div className="modal-content text-end">
-        <div className="modal-header">
-          <h5 className="modal-title w-100 text-center fw-bold">
-            تفاصيل الطلب رقم {viewOrderId}
-          </h5>
-          <button
-            type="button"
-            className="btn-close"
-            onClick={() => setViewModalOpen(false)}
-          ></button>
-        </div>
-        <div className="modal-body">
-          {/* جدول المنتجات */}
-          {orderItems.length === 0 ? (
-            <div className="text-center">لا توجد عناصر لهذا الطلب</div>
-          ) : (
-            <table className="table table-bordered text-center mb-4">
-              <thead>
-                <tr>
-                  <th>صورة المنتج</th>
-                  <th>اسم المنتج</th>
-                  <th>الكمية</th>
-                  <th>السعر</th>
-                </tr>
-              </thead>
-              <tbody>
-                {orderItems.map(item => (
-                  <tr key={item.id}>
-                    <td>
-                      {item.product_id?.image ? (
-                        <img
-                          src={item.product_id.image}
-                          alt={item.product_id.name}
-                          style={{
-                            width: "50px",
-                            height: "50px",
-                            objectFit: "cover",
-                            borderRadius: "6px",
-                          }}
-                        />
-                      ) : (
-                        <span>--</span>
-                      )}
-                    </td>
-                    <td>{item.product_id?.name || item.name || '--'}</td>
-                    <td>{item.quantity}</td>
-                    <td>{item.price}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
 
-          {/* تفاصيل الطلب تحت المنتجات */}
-          {orders.filter(x => x.id === viewOrderId).map(order => (
-            <div key={order.id} className="order-details-box p-3 border rounded bg-light mb-2">
-             <div className="d-flex justify-content-between px-3">
-                 <p><strong>اسم العميل:</strong> {order.user?.name || "--"}</p>
-              <p><strong>رقم الهاتف:</strong> {order.user?.phone || "--"}</p>
-             </div>
-             <div className="d-flex justify-content-between px-3">
-                <p><strong>المدينة:</strong> {order.user?.city || "--"}</p>
-              <p><strong>العنوان:</strong> {order.user?.location || "--"}</p>
-             </div>
-             <div className="d-flex justify-content-between px-3">
-                <p>
-                <strong>حالة الطلب:</strong>
-                <span style={{ color: getStatusBgColor(order.status), fontWeight: 'bold', marginRight: 8 }}>
-                  {order.status}
-                </span>
-              </p>
-              <p><strong>طريقة الدفع:</strong> {order.payment_method}</p>
-             </div>
-             <div className="d-flex justify-content-between px-3">
-                <p><strong>المجموع:</strong> {order.total} <span className="px-1">ج.م</span></p>
-              <p><strong>تاريخ الطلب:</strong> {new Date(order.created_at).toLocaleDateString()}</p>
-             </div>
-             
-             
-             
-             
-            </div>
-          ))}
-        </div>
-        <div className="modal-footer justify-content-end">
-          <button className="btn btn-secondary" onClick={() => setViewModalOpen(false)}>
-            إغلاق
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-)}
+            {viewModalOpen && (
+                <div className="modal show fade d-block modal-lg" tabIndex="-1" role="dialog" style={{ backgroundColor: "rgba(0,0,0,0.4)" }}>
+                    <div className="modal-dialog modal-dialog-centered" role="document">
+                        <div className="modal-content text-end">
+                            <div className="modal-header">
+                                <h5 className="modal-title w-100 text-center fw-bold">
+                                    فاتورة الطلب رقم {viewOrderId}
+                                </h5>
+                                <button
+                                    type="button"
+                                    className="btn-close"
+                                    onClick={() => setViewModalOpen(false)}
+                                ></button>
+                            </div>
+                            <div className="modal-body" id="order-invoice-print">
+                                <div style={{ border: '2px solid #000000', borderRadius: 12, padding: 24, background: '#fff', maxWidth: 700, margin: '0 auto' }}>
+                                    {/* رأس الفاتورة */}
+                                    <div className="d-flex justify-content-between align-items-center mb-4">
+                                        <div>
+                                            <h2 className="fw-bold mb-1" >فاتورة بيع</h2>
+                                            <div style={{ fontSize: 15 }}>رقم الطلب: <span className="fw-bold">{viewOrderId}</span></div>
+                                        </div>
+                                        {/* <div>
+                <img src="/logo192.png" alt="شعار" style={{height:60}} />
+              </div> */}
+                                    </div>
+                                    {/* بيانات العميل */}
+                                    {orders.filter(x => x.id === viewOrderId).map(order => (
+                                        <>
+                                            <div className="mb-2" style={{ fontSize: 16 }}>
+                                                <span className="fw-bold">اسم العميل:</span> {order.user?.name || "--"}
+                                            </div>
+                                            <div className="mb-2" style={{ fontSize: 16 }}>
+                                                <span className="fw-bold"> رقم الهاتف:</span> {order.user?.phone || "--"}
+                                            </div>
+                                            <div className="mb-2" style={{ fontSize: 16 }}>
+                                                <span className="fw-bold">المدينة:</span> {order.user?.city || "--"}                </div>
+                                            <div className="mb-2" style={{ fontSize: 16 }}>
+                                                <span className="fw-bold">العنوان:</span> {order.user?.location || "--"}
+                                            </div>
+                                            <div className="mb-2" style={{ fontSize: 16 }}>
+                                                <span className="fw-bold">تاريخ الطلب:</span> {formatArabicDate(order.created_at)}
+                                            </div>
+                                        </>
+                                    ))}
+                                    {/* جدول المنتجات */}
+                                    <table className="table table-bordered text-center mb-4 mt-4" style={{ fontSize: 16 }}>
+                                        <thead className="table-light">
+                                            <tr>
+                                                <th>م</th>
+                                                <th>اسم المنتج</th>
+                                                <th>صورة المنتج</th>
+                                                <th>الكمية</th>
+                                                <th>السعر</th>
+                                                <th>الإجمالي</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {orderItems.map((item, idx) => (
+                                                <tr key={item.id}>
+                                                    <td>{idx + 1}</td>
+                                                    <td>{item.product_id?.name || item.name || '--'}</td>
+                                                    <td>
+                                                        {item.product_id?.image || item.image ? (
+                                                            <img
+                                                                src={item.product_id?.image || item.image}
+                                                                alt={item.product_id?.name || item.name || '--'}
+                                                                style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '6px' }}
+                                                            />
+                                                        ) : (
+                                                            <span>--</span>
+                                                        )}
+                                                    </td>
+                                                    <td>{item.quantity}</td>
+                                                    <td>{item.price}</td>
+                                                    <td>{item.price * item.quantity}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                    {/* ملخص */}
+                                    {orders.filter(x => x.id === viewOrderId).map(order => (
+                                        <div key={order.id} className="d-flex justify-content-start align-items-center mt-3" style={{ fontSize: 18 }}>
+                                            <div className="border p-3 rounded bg-light" style={{ minWidth: 250 }}>
+                                                <div className="d-flex justify-content-between mb-2">
+                                                    <span>المجموع الكلي:</span>
+                                                    <span className="fw-bold">{order.total} ج.م</span>
+                                                </div>
+                                                <div className="d-flex justify-content-between mb-2">
+                                                    <span>طريقة الدفع:</span>
+                                                    <span>{order.payment_method}</span>
+                                                </div>
+                                                <div className="d-flex justify-content-between mb-2">
+                                                    <span>حالة الطلب:</span>
+                                                    <span style={{ color: getStatusBgColor(order.status), fontWeight: 'bold' }}>{order.status}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    <div className="text-center mt-4" style={{ fontSize: 15, color: '#888' }}>شكرًا لتعاملكم معنا</div>
+                                </div>
+                            </div>
+                            <div className="modal-footer justify-content-end">
+                                <button className="btn btn-primary d-flex align-items-center gap-2" onClick={handlePrintInvoice}>
+                                    <FaPrint size={18} />
+                                    <span>طباعة</span>
+                                </button>
+                                <button className="btn btn-secondary" onClick={() => setViewModalOpen(false)}>
+                                    إغلاق
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
         </>
     );
