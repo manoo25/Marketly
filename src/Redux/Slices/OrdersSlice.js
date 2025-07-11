@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { supabase } from "../../Supabase/supabaseClient";
 
-
+// ✅ Fetch all Orders with related tables
 export const getOrders = createAsyncThunk(
   "orders/getOrders",
   async (_, { rejectWithValue }) => {
@@ -16,7 +16,7 @@ export const getOrders = createAsyncThunk(
   }
 );
 
-
+// ✅ Create a new Order
 export const addOrder = createAsyncThunk(
   "orders/addOrder",
   async (orderData, { rejectWithValue }) => {
@@ -35,7 +35,13 @@ export const updateOrder = createAsyncThunk(
   "orders/updateOrder",
   async ({ id, updatedData }, { rejectWithValue }) => {
     try {
-      const { data, error } = await supabase.from("orders").update(updatedData).eq("id", id).select();
+      const { data, error } = await supabase
+      .from("orders")
+      .update(updatedData)
+      .eq("id", id)
+      .select(`*,
+        user : user_id(*)
+        `);
       if (error) throw error;
       return data[0];
     } catch (error) {
@@ -44,7 +50,7 @@ export const updateOrder = createAsyncThunk(
   }
 );
 
-
+// ✅ Delete single Order by ID
 export const deleteOrder = createAsyncThunk(
   "orders/deleteOrder",
   async (id, { rejectWithValue }) => {
@@ -58,6 +64,19 @@ export const deleteOrder = createAsyncThunk(
   }
 );
 
+export const deleteSelectedOrders = createAsyncThunk(
+  "orders/deleteSelectedOrders",
+  async (selectedOrders, { rejectWithValue }) => {
+    try {
+      const ids = selectedOrders.map(order => order.id);
+      const { error } = await supabase.from("orders").delete().in("id", ids);
+      if (error) throw error;
+      return ids; // return the deleted IDs
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
 
 const ordersSlice = createSlice({
   name: "orders",
@@ -68,7 +87,7 @@ const ordersSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      
+      // Fetch
       .addCase(getOrders.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -81,7 +100,7 @@ const ordersSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-
+      // Create
       .addCase(addOrder.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -95,7 +114,7 @@ const ordersSlice = createSlice({
         state.error = action.payload;
       })
 
-     
+      // Update
       .addCase(updateOrder.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -112,7 +131,7 @@ const ordersSlice = createSlice({
         state.error = action.payload;
       })
 
-   
+      // Delete Single
       .addCase(deleteOrder.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -124,7 +143,23 @@ const ordersSlice = createSlice({
       .addCase(deleteOrder.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
+
+      // Delete Multiple
+      .addCase(deleteSelectedOrders.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteSelectedOrders.fulfilled, (state, action) => {
+        state.loading = false;
+        const deletedIds = action.payload;
+        state.orders = state.orders.filter(order => !deletedIds.includes(order.id));
+      })
+      .addCase(deleteSelectedOrders.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      }
+      );
   },
 });
 
