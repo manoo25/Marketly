@@ -1,3 +1,4 @@
+// ✅ مكون ChatModal (لا تنس تضمينه في الأعلى)
 import React, { useEffect, useState } from "react";
 import "../../css/Table.css";
 import "./CustomMenu.css";
@@ -10,36 +11,18 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import LabeledMenuButton from "../globalComonents/LabeledMenu";
 import LabeledMenu from "../globalComonents/LabeledMenu";
 import UpdateRolesModal from "../modalsComponents/UpdateRolesModal";
-
-// const fakeUsers = Array.from({ length: 100 }, (_, i) => ({
-//   id: i + 1,
-//   username: `user${i + 1}`,
-//   email: `user${i + 1}@example.com`,
-//   role: ["أدمن", "تاجر", "مستخدم"][i % 3],
-//   governorate: "القاهرة",
-//   city: "القاهرة",
-// }));
-
-
+import ChatModal from "../UsersComponents/ChatModal";
+import { generateConversationId } from "../../utils/generateConversationId";
+import { getCurrentUserId } from "../../utils/getCurrentUserId";
 
 const rowsPerPage = 10;
 
 const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, searchEmail, onBlockUser, onUpdateUserRole, onUpdateSelectedUseresRole, onBlockSelectedUsers, onUnblockSelectedUsers, onSendMessage }) => {
-
-
   const filteredUsers = users.filter((user) => {
-    const matchGovernorate = selectedGovernorate
-      ? user.governorate === selectedGovernorate
-      : true;
-
-    const matchRole = selectedRole
-      ? user.role === selectedRole
-      : true;
-
+    const matchGovernorate = selectedGovernorate ? user.governorate === selectedGovernorate : true;
+    const matchRole = selectedRole ? user.role === selectedRole : true;
     const matchName = searchName ? user.name.toLowerCase().includes(searchName.toLowerCase()) : true;
-
     const matchEmail = searchEmail ? user.email.toLowerCase().includes(searchEmail.toLowerCase()) : true;
-
     return matchGovernorate && matchRole && matchName && matchEmail;
   });
 
@@ -47,20 +30,39 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
   const totalPages = Math.ceil(filteredUsers.length / rowsPerPage);
   const startIndex = (currentPage - 1) * rowsPerPage;
   const currentUsers = filteredUsers.slice(startIndex, startIndex + rowsPerPage);
+  useEffect(() => setCurrentPage(1), [selectedRole, selectedGovernorate]);
+
+  const [confirmModal, setConfirmModal] = useState({ open: false, message: "", confirmText: "تأكيد", confirmClass: "btn-primary", onConfirm: () => { } });
+  const [selectedUserIds, setSelectedUserIds] = useState([]);
+  const [bulkRoleModalOpen, setBulkRoleModalOpen] = useState(false);
+  const [chatModalOpen, setChatModalOpen] = useState(false);
+  const [conversationId, setConversationId] = useState(null);
+  const [targetUser, setTargetUser] = useState(null);
 
 
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [selectedRole, selectedGovernorate]);
-  
+  const [currentAdminId, setCurrentAdminId] = useState(null);
+  useEffect(() => { getCurrentUserId().then(setCurrentAdminId); }, []);
 
-  const [confirmModal, setConfirmModal] = useState({
-    open: false,
-    message: "",
-    confirmText: "تأكيد",
-    confirmClass: "btn-primary",
-    onConfirm: () => { },
-  });
+  const openChatModal = (user) => {
+    const convId = generateConversationId(currentAdminId, user.id);
+    setConversationId(convId);
+    setTargetUser(user);
+    setChatModalOpen(true);
+  };
+
+  const openMessageModal = (userIds) => {
+    if (!userIds || userIds.length === 0) {
+      alert("من فضلك اختر مستخدمين لإرسال الرسالة");
+      return;
+    }
+    if (userIds.length === 1) {
+      const target = users.find((u) => u.id === userIds[0]);
+      openChatModal(target);
+    } else {
+      setMessageTargetIds(userIds);
+      setShowMessageModal(true);
+    }
+  };
   
   // Modals for  Block And Delete Confirm  
   const handleBlockUser = (user) => {
@@ -133,7 +135,7 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
 
 
   // Checkbox for select users and select all page 
-  const [selectedUserIds, setSelectedUserIds] = useState([]);
+  // const [selectedUserIds, setSelectedUserIds] = useState([]);
 
 
 
@@ -151,7 +153,7 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
   // Checkbox for select users and select all page 
 
   // Update Role for selected Users
-  const [bulkRoleModalOpen, setBulkRoleModalOpen] = useState(false);  
+  // const [bulkRoleModalOpen, setBulkRoleModalOpen] = useState(false);  
   // Update Role for selected Users
 
   // Block Selected Users Confirm
@@ -204,14 +206,14 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
 
   // Send Msg to User or Users
 
-  const openMessageModal = (userIds) => {
-    if (!userIds || userIds.length === 0) {
-      alert("من فضلك اختر مستخدمين لإرسال الرسالة");
-      return;
-    }
-    setMessageTargetIds(userIds);
-    setShowMessageModal(true);
-  };
+  // const openMessageModal = (userIds) => {
+  //   if (!userIds || userIds.length === 0) {
+  //     alert("من فضلك اختر مستخدمين لإرسال الرسالة");
+  //     return;
+  //   }
+  //   setMessageTargetIds(userIds);
+  //   setShowMessageModal(true);
+  // };
   
 
   return (
@@ -395,6 +397,16 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
         confirmText={confirmModal.confirmText}
         confirmClass={confirmModal.confirmClass}
       />
+      
+      {chatModalOpen && (
+        <ChatModal
+          receiver={targetUser}
+          conversationId={conversationId}
+          onClose={() => setChatModalOpen(false)}
+          currentUserId={currentAdminId}
+        />
+      )}
+
 
       {/* Send msg Modal */}
       {showMessageModal && (

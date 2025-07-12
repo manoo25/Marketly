@@ -172,9 +172,8 @@ export default function UsersPage() {
         }
 
         dispatch(sendMessage({
-            senderId: "28fe037d-a829-4ecf-8f9d-2c1e4f492bba", // ثابت مؤقتًا
             receiverIds,
-            message: messageText
+            content: messageText
         }))
             .unwrap()
             .then(() => {
@@ -188,6 +187,8 @@ export default function UsersPage() {
                 setShowToast(true);
             });
     };
+
+
 
     // Send Msg to Users
 
