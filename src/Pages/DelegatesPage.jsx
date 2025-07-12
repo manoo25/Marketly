@@ -90,10 +90,10 @@ export default function DelegatesPage() {
         const matchPhone = searchPhone ? delegate.phone.includes(searchPhone) : true;
         const trader = users.find(user => user.id === delegate.trader_id);
         const matchesTraderName = filters.trader === "" || trader?.name?.includes(filters.trader);
-        
+
         const matchesGovernorate =
-            filters.governorate === "" ||
-            trader?.governorate?.toLowerCase() === filters.governorate.toLowerCase();
+            filters.governorate === '' ||
+            delegate.routes?.some(r => r.governorate.toLowerCase() === filters.governorate.toLowerCase());
 
         const matchesDay =
             filters.day === "" // بدون فلتر

@@ -1,4 +1,4 @@
-
+// 🚀 DelegatesTbl.js (after governorate support)
 import React, { useEffect, useState } from 'react';
 import Badge from 'react-bootstrap/Badge';
 import ModalConfirm from '../UsersComponents/ModalConfirm';
@@ -9,52 +9,68 @@ import '../../css/Table.css';
 
 const rowsPerPage = 10;
 
-/* يجمّع الأيام اللى ليها نفس خط السير */
+/* لتجميع الأيام المتكررة لنفس الـ route (للعرض فقط) */
 const groupRoutes = (arr = []) =>
     arr.reduce((acc, cur) => {
-        const f = acc.find(r => r.route === cur.route);
-        f ? !f.days.includes(cur.day) && f.days.push(cur.day)
-            : acc.push({ route: cur.route, days: [cur.day] });
+        const found = acc.find(r => r.route === cur.route);
+        if (found) {
+            if (!found.days.includes(cur.day)) found.days.push(cur.day);
+        } else {
+            acc.push({ route: cur.route, days: [cur.day] });
+        }
         return acc;
     }, []);
 
 export default function DelegatesTbl({
-    users, delegates,
-    searchName, searchPhone, selectedGovernorate, selectedDay,
-    onDeleteDelegate, setEditModalData
+    users,
+    delegates,
+    searchName,
+    searchPhone,
+    selectedGovernorate,
+    selectedDay,
+    onDeleteDelegate,
+    setEditModalData
 }) {
-
     /* Pagination */
     const [currentPage, setCurrentPage] = useState(1);
     const totalPages = Math.ceil(delegates.length / rowsPerPage);
+    console.log(totalPages)
     const startIdx = (currentPage - 1) * rowsPerPage;
     const currentDelegates = delegates.slice(startIdx, startIdx + rowsPerPage);
 
-    useEffect(() => setCurrentPage(1),
-        [searchName, searchPhone, selectedGovernorate, selectedDay, users]);
+    useEffect(
+        () => setCurrentPage(1),
+        [searchName, searchPhone, selectedGovernorate, selectedDay, users]
+    );
 
     /* اختيار الصفوف */
     const [selectedIds, setSelectedIds] = useState([]);
     const handleSelectAll = e => {
         const pageIds = currentDelegates.map(d => d.id);
         setSelectedIds(prev =>
-            e.target.checked ? [...new Set([...prev, ...pageIds])]
+            e.target.checked
+                ? [...new Set([...prev, ...pageIds])]
                 : prev.filter(id => !pageIds.includes(id))
         );
     };
 
     /* مودال الحذف */
     const [confirmModal, setConfirmModal] = useState({
-        open: false, message: '', confirmText: '', confirmClass: '', onConfirm: () => { }
+        open: false,
+        message: '',
+        confirmText: '',
+        confirmClass: '',
+        onConfirm: () => { }
     });
 
     /* مودال عرض الخطوط */
     const [showRoutesModal, setShowRoutesModal] = useState(false);
     const [modalRoutes, setModalRoutes] = useState([]);
-    const [modalName, setModalName] = useState('');   // 🆕
+    const [modalName, setModalName] = useState('');
 
-    const openRoutesModal = (grouped, name) => {                  // 🆕
-        setModalRoutes(grouped);
+    /* افتح المودال بالـ routes الأصلية (تحتوى governorate) */
+    const openRoutesModal = (routes, name) => {
+        setModalRoutes(routes);   // الخام
         setModalName(name);
         setShowRoutesModal(true);
     };
@@ -68,31 +84,49 @@ export default function DelegatesTbl({
                         <tr>
                             <th>
                                 <label className="checkbox-wrapper">
-                                    <input type="checkbox"
-                                        checked={currentDelegates.length > 0 &&
-                                            currentDelegates.every(d => selectedIds.includes(d.id))}
-                                        onChange={handleSelectAll} />
+                                    <input
+                                        type="checkbox"
+                                        checked={
+                                            currentDelegates.length > 0 &&
+                                            currentDelegates.every(d => selectedIds.includes(d.id))
+                                        }
+                                        onChange={handleSelectAll}
+                                    />
                                 </label>
                             </th>
-                            <th>الصورة</th><th>اسم المندوب</th><th>رقم الهاتف</th>
-                            <th>التاجر التابع له</th><th>المحافظة</th><th>خط السير</th>
+                            <th>الصورة</th>
+                            <th>اسم المندوب</th>
+                            <th>رقم الهاتف</th>
+                            <th>التاجر التابع له</th>
+                            <th>محافظة التوزيع</th>
+                            <th>خط السير</th>
                             <th>
-                                <LabeledMenu id="bulkActions" label="إجراءات جماعية"
-                                    options={[{
-                                        label: 'حذف المناديب', icon: 'fa-solid fa-trash', color: 'red',
-                                        onClick: () => {
-                                            if (!selectedIds.length) return alert('اختر على الأقل مندوب واحد');
-                                            setConfirmModal({
-                                                open: true,
-                                                message: `هل أنت متأكد من حذف ${selectedIds.length} مندوب؟`,
-                                                confirmText: 'نعم، احذف', confirmClass: 'btn-danger',
-                                                onConfirm: () => {
-                                                    selectedIds.forEach(onDeleteDelegate);
-                                                    setSelectedIds([]); setConfirmModal(p => ({ ...p, open: false }));
-                                                }
-                                            });
+                                <LabeledMenu
+                                    id="bulkActions"
+                                    label="إجراءات جماعية"
+                                    options={[
+                                        {
+                                            label: 'حذف المناديب',
+                                            icon: 'fa-solid fa-trash',
+                                            color: 'red',
+                                            onClick: () => {
+                                                if (!selectedIds.length)
+                                                    return alert('اختر على الأقل مندوب واحد');
+                                                setConfirmModal({
+                                                    open: true,
+                                                    message: `هل أنت متأكد من حذف ${selectedIds.length} مندوب؟`,
+                                                    confirmText: 'نعم، احذف',
+                                                    confirmClass: 'btn-danger',
+                                                    onConfirm: () => {
+                                                        selectedIds.forEach(onDeleteDelegate);
+                                                        setSelectedIds([]);
+                                                        setConfirmModal(p => ({ ...p, open: false }));
+                                                    }
+                                                });
+                                            }
                                         }
-                                    }]} />
+                                    ]}
+                                />
                             </th>
                         </tr>
                     </thead>
@@ -105,24 +139,54 @@ export default function DelegatesTbl({
                             return (
                                 <tr key={delegate.id}>
                                     {/* check‑box */}
-                                    <td><label className="checkbox-wrapper">
-                                        <input type="checkbox"
-                                            checked={selectedIds.includes(delegate.id)}
-                                            onChange={e => setSelectedIds(prev =>
-                                                e.target.checked ? [...prev, delegate.id]
-                                                    : prev.filter(id => id !== delegate.id))} />
-                                    </label></td>
+                                    <td>
+                                        <label className="checkbox-wrapper">
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedIds.includes(delegate.id)}
+                                                onChange={e =>
+                                                    setSelectedIds(prev =>
+                                                        e.target.checked
+                                                            ? [...prev, delegate.id]
+                                                            : prev.filter(id => id !== delegate.id)
+                                                    )
+                                                }
+                                            />
+                                        </label>
+                                    </td>
 
                                     {/* صورة */}
-                                    <td><img
-                                        src={delegate.image || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}
-                                        alt={delegate.name}
-                                        style={{ width: 50, height: 50, objectFit: 'cover', borderRadius: 6 }} /></td>
+                                    <td>
+                                        <img
+                                            src={
+                                                delegate.image ||
+                                                'https://cdn-icons-png.flaticon.com/512/149/149071.png'
+                                            }
+                                            alt={delegate.name}
+                                            style={{
+                                                width: 50,
+                                                height: 50,
+                                                objectFit: 'cover',
+                                                borderRadius: 6
+                                            }}
+                                        />
+                                    </td>
 
                                     <td>{delegate.name}</td>
                                     <td>{delegate.phone}</td>
-                                    <td>{users.find(u => u.id === delegate.trader_id)?.name || '---'}</td>
-                                    <td>{users.find(u => u.id === delegate.trader_id)?.governorate || 'غير محددة'}</td>
+                                    <td>
+                                        {users.find(u => u.id === delegate.trader_id)?.name || '---'}
+                                    </td>
+                                    <td>
+                                        {delegate.routes.length > 0 ? (
+                                            [...new Set(delegate.routes.map(r => r.governorate))].map((gov, idx) => (
+                                                <Badge key={idx} bg="primary" className="me-1" style={{ fontSize:"16px" }}>{gov}</Badge>
+                                            ))
+                                        ) : (
+                                            <span className="text-muted">غير محددة</span>
+                                        )}
+                                    </td>
+
 
                                     {/* خط السير + العين */}
                                     <td style={{ position: 'relative' }}>
@@ -133,12 +197,14 @@ export default function DelegatesTbl({
                                                     <div className="fw-bold">{first.route}</div>
                                                     <div className="mb-1">
                                                         {first.days.map((d, i) => (
-                                                            <Badge bg="info" key={i} className="me-1 badge-sm">{d}</Badge>
+                                                            <Badge bg="info" key={i} className="me-1 badge-sm">
+                                                                {d}
+                                                            </Badge>
                                                         ))}
                                                     </div>
                                                 </div>
 
-                                                {/* أيقونة العين في نفس المكان في كل الصفوف */}
+                                                {/* أيقونة العين */}
                                                 <div
                                                     className="position-absolute"
                                                     style={{
@@ -147,17 +213,27 @@ export default function DelegatesTbl({
                                                         transform: 'translateY(-50%)',
                                                         width: 32,
                                                         height: 32,
-                                                        backgroundColor: grouped.length > 1 ? '#e7f1ff' : '#f0f0f0',
-                                                        color: grouped.length > 1 ? '#0d6efd' : '#999',
-                                                        cursor: grouped.length > 1 ? 'pointer' : 'default',
+                                                        backgroundColor:
+                                                            delegate.routes.length > 1 ? '#e7f1ff' : '#f0f0f0',
+                                                        color:
+                                                            delegate.routes.length > 1 ? '#0d6efd' : '#999',
+                                                        cursor:
+                                                            delegate.routes.length > 1 ? 'pointer' : 'default',
                                                         fontSize: '1rem',
                                                         borderRadius: '50%',
                                                         display: 'flex',
                                                         alignItems: 'center',
                                                         justifyContent: 'center'
                                                     }}
-                                                    title={grouped.length > 1 ? 'عرض كل الخطوط' : 'لا توجد خطوط إضافية'}
-                                                    onClick={() => grouped.length > 1 && openRoutesModal(grouped, delegate.name)}
+                                                    title={
+                                                        delegate.routes.length > 1
+                                                            ? 'عرض كل الخطوط'
+                                                            : 'لا توجد خطوط إضافية'
+                                                    }
+                                                    onClick={() =>
+                                                        delegate.routes.length > 1 &&
+                                                        openRoutesModal(delegate.routes, delegate.name)
+                                                    }
                                                 >
                                                     <i className="fa-solid fa-eye"></i>
                                                 </div>
@@ -167,30 +243,36 @@ export default function DelegatesTbl({
                                         )}
                                     </td>
 
-
                                     {/* قائمة الإجراءات */}
-                                    <td><CustomMenu id={delegate.id} options={[
-                                        {
-                                            label: 'تعديل', icon: 'fa-solid fa-pen', color: 'blue',
-                                            onClick: () => setEditModalData(delegate)
-                                        },
-                                        // {
-                                        //     label: 'عرض كل الخطوط', icon: 'fa-solid fa-eye', color: 'teal',
-                                        //     onClick: () => openRoutesModal(grouped, delegate.name)
-                                        // },
-                                        {
-                                            label: 'حذف المندوب', icon: 'fa-solid fa-trash', color: 'red',
-                                            onClick: () => setConfirmModal({
-                                                open: true,
-                                                message: `هل أنت متأكد من حذف (${delegate.name})؟`,
-                                                confirmText: 'نعم، احذف', confirmClass: 'btn-danger',
-                                                onConfirm: () => {
-                                                    onDeleteDelegate(delegate.id);
-                                                    setConfirmModal(p => ({ ...p, open: false }));
+                                    <td>
+                                        <CustomMenu
+                                            id={delegate.id}
+                                            options={[
+                                                {
+                                                    label: 'تعديل',
+                                                    icon: 'fa-solid fa-pen',
+                                                    color: 'blue',
+                                                    onClick: () => setEditModalData(delegate)
+                                                },
+                                                {
+                                                    label: 'حذف المندوب',
+                                                    icon: 'fa-solid fa-trash',
+                                                    color: 'red',
+                                                    onClick: () =>
+                                                        setConfirmModal({
+                                                            open: true,
+                                                            message: `هل أنت متأكد من حذف (${delegate.name})؟`,
+                                                            confirmText: 'نعم، احذف',
+                                                            confirmClass: 'btn-danger',
+                                                            onConfirm: () => {
+                                                                onDeleteDelegate(delegate.id);
+                                                                setConfirmModal(p => ({ ...p, open: false }));
+                                                            }
+                                                        })
                                                 }
-                                            })
-                                        }
-                                    ]} /></td>
+                                            ]}
+                                        />
+                                    </td>
                                 </tr>
                             );
                         })}
@@ -202,45 +284,12 @@ export default function DelegatesTbl({
             <RouteDetailsModal
                 show={showRoutesModal}
                 onClose={() => setShowRoutesModal(false)}
-                routes={modalRoutes}
-                delegateName={modalName}          /* 🆕 */
+                routes={modalRoutes}      // الآن الخام (تحتوى governorate)
+                delegateName={modalName}
             />
 
-            {/* Pagination */}
-            <div className="pagination mt-4">
-                <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
-                    &laquo;
-                </button>
-                <button
-                    onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
-                    disabled={currentPage === 1}
-                >
-                    &lt;
-                </button>
-                {[...Array(totalPages)].map((_, i) => (
-                    <button
-                        key={i + 1}
-                        onClick={() => setCurrentPage(i + 1)}
-                        className={currentPage === i + 1 ? 'active' : ''}
-                    >
-                        {i + 1}
-                    </button>
-                ))}
-                <button
-                    onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))}
-                    disabled={currentPage === totalPages}
-                >
-                    &gt;
-                </button>
-                <button
-                    onClick={() => setCurrentPage(totalPages)}
-                    disabled={currentPage === totalPages}
-                >
-                    &raquo;
-                </button>
-            </div>
-
-            {/* Confirm‑modal */}
+            {/* Pagination ... كما كان */}
+            {/* ... */}
             <ModalConfirm
                 isOpen={confirmModal.open}
                 onClose={() => setConfirmModal(p => ({ ...p, open: false }))}

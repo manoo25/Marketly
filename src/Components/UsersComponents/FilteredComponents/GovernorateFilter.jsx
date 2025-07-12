@@ -3,7 +3,7 @@ import PrimarySelector from '../../globalComonents/PrimarySelector'
 
 function GovernorateFilter({ selectedGovernorate, setSelectedGovernorate }) {
 
-  const governorates = [{ label: "كل المحافظات", value: "" }, { label: "القاهرة", value: "cairo" }, { label: "الأسكندرية", value: "alex" }]
+  const governorates = [{ label: "كل المحافظات", value: "" }, { label: "القاهرة", value: "cairo" }, { label: "الغربية", value: "gharbia" }, { label: "الدقهلية", value: "dakahlia" }, { label: "الجيزة", value: "giza" }]
 
   return (
     <div style={{ width:"200px" }}>
