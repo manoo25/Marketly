@@ -198,11 +198,13 @@ align-content: center;
 margin: auto;
  border-radius: 15px;
  font-size: 17px;
+ min-width: 45px;
+
 
 }
 .tdcontentstateDanger{
 background-color:rgba(255, 0, 0, 0.788);
-
+min-width: 65px;
 }
 .tdcontentstateSuc{
 background-color:rgba(21, 194, 5, 0.822);
