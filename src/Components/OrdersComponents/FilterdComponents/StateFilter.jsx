@@ -1,31 +1,14 @@
-import React, { useEffect } from 'react'
 import PrimarySelector from '../../globalComonents/PrimarySelector'
-import { useDispatch, useSelector } from 'react-redux';
-import { getOrders } from '../../../Redux/Slices/OrdersSlice';
 
 function StateFilter({ selectedState, setSelectedState }) {
 
-    const dispatch = useDispatch();
-    const { status } = useSelector((state) => state.Orders);
-    let OptionsData = [];
+        const states = [{ label: "كل الحالات", value: "" }, { label: "قيد التنفيذ", value: "قيد التنفيذ" }, { label: "تم التوصيل", value: "تم التوصيل" }, { label: "ملغي", value: "ملغي" }]
 
-    if (Array.isArray(status)) {
-        status.forEach(statu => {
-            OptionsData.push({
-                label: statu.name,
-                value: statu.name
-            });
-        });
-    }
-
-    useEffect(() => {
-        dispatch(getOrders());
-    }, []);
 
     return (
         <div style={{ width: "220px" }}>
             <PrimarySelector
-                options={OptionsData}
+                options={states}
                 label='إختر الحالة'
                 value={selectedState}
                 onChange={(val) => setSelectedState(val)}

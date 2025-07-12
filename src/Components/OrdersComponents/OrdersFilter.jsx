@@ -13,7 +13,6 @@ function OrdersFilter({
     setSelectedGovernorate,
     selectedState,
     setSelectedState,
-    onSearchClick,
     onResetFilters
 }) {
     return (
@@ -22,7 +21,6 @@ function OrdersFilter({
             <NameSearch
                 searchName={searchName}
                 setSearchName={setSearchName}
-                onSearchClick={onSearchClick}
             />
 
             <GovFilter
@@ -35,14 +33,9 @@ function OrdersFilter({
                 setSelectedState={setSelectedState}
             />
 
-            <div style={{ width: "120px" }}>
-                <LightButton label='بحث' onClick={onSearchClick} className='' />
-            </div>
-
             <PrimaryButton
                 label="مسح "
                 onClick={onResetFilters}
-            // className="btn btn-outline-secondary me-2"
             />
 
         </div>

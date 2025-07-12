@@ -23,10 +23,11 @@ const OrdersTbl = () => {
     const [currentPage, setCurrentPage] = useState(1);
 
     const [currentOrders, setcurrentOrders] = useState([]);
+    const [filteredOrders, setFilteredOrders] = useState([]);
     const [SelectedOrders, SetSelectedOrders] = useState([]);
     const [searchName, setSearchName] = useState("");
-    const [selectedGovernorate, setselectedGovernorate] = useState("");
-    const [selectedState, setselectedState] = useState("");
+    const [selectedGovernorate, setSelectedGovernorate] = useState("");
+    const [selectedState, setSelectedState] = useState("");
     const [OrderLocaction, SetOrderLocaction] = useState({});
     const [showDelegateModal, setshowDelegateModal] = useState(false);
     
@@ -36,47 +37,42 @@ const OrdersTbl = () => {
         dispatch(getOrders());
     }, [dispatch]);
 
-    // update current Orders based on pagination or full list change
+    // effect for filtering
     useEffect(() => {
-        const startIndex = (currentPage - 1) * rowsPerPage;
-        const sliced = orders.slice(startIndex, startIndex + rowsPerPage);
-        setcurrentOrders(sliced);
-    }, [orders, currentPage]);
-
-    const totalPages = Math.ceil(orders.length / rowsPerPage);
-
-
-
-
-
-    const handleSearchClick = () => {
-        const filtered = orders.filter((x) => {
+        const filtered = orders.filter((order) => {
             const matchName =
                 searchName === "" ||
-                (x.name && x.name.toLowerCase().includes(searchName.toLowerCase()));
+                (order.user?.name && order.user.name.toLowerCase().includes(searchName.toLowerCase()));
 
             const matchState =
                 selectedState === "" ||
-                (x.state?.name &&
-                    x.category.name.toLowerCase().includes(selectedState.toLowerCase()));
+                (order.status && order.status.toLowerCase().includes(selectedState.toLowerCase()));
 
             const matchGov =
                 selectedGovernorate === "" ||
-                (x.trader?.name &&
-                    x.trader.name.toLowerCase().includes(selectedGovernorate.toLowerCase()));
+                (order.user?.governorate && order.user.governorate.toLowerCase().includes(selectedGovernorate.toLowerCase()));
 
-            // ابحث بجميع القيم المدخلة (اللي مش فاضية)
             return matchName && matchState && matchGov;
         });
+        setFilteredOrders(filtered);
+        setCurrentPage(1); 
+    }, [searchName, selectedGovernorate, selectedState, orders]);
 
-        setcurrentOrders(filtered);
-    };
+
+    // update current Orders based on pagination or filtered list change
+    useEffect(() => {
+        const startIndex = (currentPage - 1) * rowsPerPage;
+        const sliced = filteredOrders.slice(startIndex, startIndex + rowsPerPage);
+        setcurrentOrders(sliced);
+    }, [filteredOrders, currentPage]);
+
+    const totalPages = Math.ceil(filteredOrders.length / rowsPerPage);
+
     function onResetFilters() {
         setSearchName("");
-        setselectedState("");
-        setselectedGovernorate("");
-        setCurrentPage(1); // اختياري، لو عايز ترجع لأول
-        setcurrentOrders(orders); // رجّع كل المنتجات الأصلية
+        setSelectedState("");
+        setSelectedGovernorate("");
+        setCurrentPage(1);
     }
 
     // Checkbox for select Orders and select all page 
@@ -235,10 +231,9 @@ const OrdersTbl = () => {
                 searchName={searchName}
                 setSearchName={setSearchName}
                 selectedState={selectedState}
-                setselectedState={setselectedState}
+                setSelectedState={setSelectedState}
                 selectedGovernorate={selectedGovernorate}
-                setselectedGovernorate={setselectedGovernorate}
-                onSearchClick={handleSearchClick}
+                setSelectedGovernorate={setSelectedGovernorate}
                 onResetFilters={onResetFilters}
             />
             <div className="user-table">
@@ -331,12 +326,12 @@ const OrdersTbl = () => {
 
                                 <td>{order.user?.name || "--"}</td>
                                 <td>{order.user?.phone || "--"}</td>
-                                <td>{order.user?.city || "--"}</td>
+                                <td>{order.user?.governorate || "--"}</td>
                                 <td>{order.user?.location || "--"}</td>
                                 <td style={{ color: getStatusBgColor(order.status), fontWeight: 'bold' }}>
                                     {order.status}
                                 </td>
-                                <td>{order.delegator.name}</td>
+                                <td>{order.delegator?.name || "--"}</td>
                                 <td>{order.total} <span className="px-1">ج.م</span></td>
                                 <td>{formatArabicDate(order.created_at)}</td>
                                 <td>
