@@ -269,7 +269,7 @@ const OrdersTbl = () => {
                             </th>
                             <th>رقم العميل</th>
                             <th>المحافظة</th>
-                            <th>العنوان</th>
+                            <th>المدينة</th>
                             <th>الحاله</th>
                             <th>المندوب</th>
                             <th>المجموع</th>
@@ -327,7 +327,7 @@ const OrdersTbl = () => {
                                 <td>{order.user?.name || "--"}</td>
                                 <td>{order.user?.phone || "--"}</td>
                                 <td>{order.user?.governorate || "--"}</td>
-                                <td>{order.user?.location || "--"}</td>
+                                <td>{order.user?.city || "--"}</td>
                                 <td style={{ color: getStatusBgColor(order.status), fontWeight: 'bold' }}>
                                     {order.status}
                                 </td>
