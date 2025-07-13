@@ -13,7 +13,9 @@ import Landing from "./Pages/landingPage";
 import MostSellingTbl from "./Components/ProductsComponents/MostSellingTbl";
 import MostSellingProducts from "./Pages/Products/MostSellingProducts";
 import DelegatesPage from "./Pages/DelegatesPage";
-
+import ChooseRole from "./Pages/auth/ChooseRole";
+import CheckDelegates from "./Pages/auth/CheckDelegates";
+ 
 function App() {
   const routes = createBrowserRouter([
     { path: '/', element: <Layout /> },
@@ -36,7 +38,9 @@ function App() {
     },
     { path: 'SignUp', element: <SignUpPage /> },
     { path: 'SigninPage', element: <SigninPage /> },
-  ]);
+    { path: 'choose-role', element: <ChooseRole /> },
+    { path: 'check-delegates', element: <CheckDelegates /> },
+   ]);
 
   return (
     <RouterProvider router={routes} />
