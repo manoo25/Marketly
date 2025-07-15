@@ -15,7 +15,7 @@ import Switch from "../globalComonents/Switch";
 import Loading from "../globalComonents/loading";
 import { UserRole } from "../../Redux/Slices/token";
 
-const rowsPerPage = 4;
+const rowsPerPage = 8;
 
 const ProductsTbl = () => {
   const dispatch = useDispatch();
@@ -42,7 +42,7 @@ const ProductsTbl = () => {
     if (!products || products.length === 0) {
       dispatch(fetchProducts());
     }
-  }, [dispatch, products]);
+  }, [dispatch]);
 
   useEffect(() => {
     setCurrentPage(1);

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../../css/Table.css";
 import { useDispatch, useSelector } from "react-redux";
 import ModalConfirm from "../UsersComponents/ModalConfirm";
-import { getAllOrderItems } from "../../Redux/Slices/OrderItems";
+import { fetchOrderItems } from "../../Redux/Slices/OrderItems";
 import BestProFilter from "./bestProFilter";
 import Loading from "../globalComonents/loading";
 const rowsPerPage = 4;
@@ -79,7 +79,9 @@ const MostSellingTbl = () => {
   const currentProducts = filteredProducts.slice(startIndex, startIndex + rowsPerPage);
 
   useEffect(() => {
-    dispatch(getAllOrderItems());
+   if(!data||data.length==0){
+     dispatch(fetchOrderItems());
+   }
   }, [dispatch]);
 
   const onResetFilters = () => {

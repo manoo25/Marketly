@@ -12,9 +12,9 @@ function AvatarDropdown() {
    
 const navigate = useNavigate();
 function Logout() {
-  navigate("/");
+  navigate("/");  
+   window.location.reload();
   localStorage.removeItem('userID');
-
 }
 
   return (

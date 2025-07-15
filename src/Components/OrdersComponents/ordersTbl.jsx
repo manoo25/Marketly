@@ -13,6 +13,7 @@ import { supabase } from "../../Supabase/SupabaseClient";
 import { FaEye, FaPrint } from "react-icons/fa";
 import  DelegatorListModal  from "../OrdersComponents/delegatorListModal";
 import Loading from "../globalComonents/loading";
+import { fetchOrderItems } from "../../Redux/Slices/OrderItems";
 
 const rowsPerPage = 4;
 
@@ -125,6 +126,7 @@ const OrdersTbl = () => {
         await dispatch(updateOrder({ id: orderToEdit.id, updatedData: { status: newStatus } }));
         setStateModalOpen(false);
         setOrderToEdit(null);
+         dispatch(fetchOrderItems());
     };
 
     // مودال تعديل حالة مجموعة طلبات
@@ -273,7 +275,6 @@ const OrdersTbl = () => {
                                 </label>
                             </th>
                             <th>
-
                                 <label htmlFor="select-all">اسم العميل</label>
                             </th>
                             <th>رقم العميل</th>

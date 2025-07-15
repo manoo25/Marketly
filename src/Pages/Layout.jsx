@@ -70,7 +70,7 @@ function Layout() {
           />
         </div>
 
-        <div className="offcanvas-body m-0 p-0 mt-0">
+        <div className="offcanvas-body m-0 p-0 mt-0 SidebarScroller">
           <SidebarLink  SetPageTitle={SetPageTitle} />
         </div>
       </div>

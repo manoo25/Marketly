@@ -12,24 +12,35 @@ import "../../css/global.css";
 import { useDispatch } from "react-redux";
 import { GetToken } from "../../Redux/Slices/token";
 
-const citiesByGovernorate = {
-  cairo: [
-    { value: "nasr city", label: "مدينة نصر" },
-    { value: "maadi", label: "المعادي" },
-  ],
-  giza: [
-    { value: "6 oct", label: "6 أكتوبر" },
-    { value: "dokki", label: "الدقي" },
-  ],
-  alexandria: [
-    { value: "sidi gaber", label: "سيدي جابر" },
-    { value: "smouha", label: "سموحة" },
-  ],
-  mansoura: [
-    { value: "el mansoura", label: "المنصورة" },
-    { value: "talkha", label: "طلخا" },
-  ],
-};
+const citiesByGovernorate = [
+  "الإسكندرية",
+  "الإسماعيلية",
+  "الأقصر",
+  "البحر الأحمر",
+  "البحيرة",
+  "الجيزة",
+  "الدقهلية",
+  "السويس",
+  "الشرقية",
+  "الغربية",
+  "الفيوم",
+  "القاهرة",
+  "القليوبية",
+  "المنوفية",
+  "المنيا",
+  "الوادي الجديد",
+  "بني سويف",
+  "بورسعيد",
+  "جنوب سيناء",
+  "دمياط",
+  "سوهاج",
+  "شمال سيناء",
+  "قنا",
+  "كفر الشيخ",
+  "مطروح",
+  "أسوان",
+  "أسيوط"
+];
 
 const SignUp = () => {
   const [imagePreview, setImagePreview] = useState(null);
@@ -57,16 +68,16 @@ const dispatch=useDispatch();
     governorate: Yup.string().required("المحافظة مطلوبة"),
     city: Yup.string().required("المدينة مطلوبة"),
     location: Yup.string().required("العنوان مطلوب"),
-    userImage: Yup.mixed()
-      .required("الصورة مطلوبة")
-      .test("fileSize", "حجم الصورة كبير جداً (الحد الأقصى 2MB)", (value) => {
-        if (!value || value.length === 0) return false;
-        return value[0].size <= 2000000;
-      })
-      .test("fileType", "نوع الملف غير مدعوم (JPEG, PNG فقط)", (value) => {
-        if (!value || value.length === 0) return false;
-        return ["image/jpeg", "image/png", "image/jpg"].includes(value[0].type);
-      }),
+    // userImage: Yup.mixed()
+    //   .required("الصورة مطلوبة")
+    //   .test("fileSize", "حجم الصورة كبير جداً (الحد الأقصى 2MB)", (value) => {
+    //     if (!value || value.length === 0) return false;
+    //     return value[0].size <= 2000000;
+    //   })
+    //   .test("fileType", "نوع الملف غير مدعوم (JPEG, PNG فقط)", (value) => {
+    //     if (!value || value.length === 0) return false;
+    //     return ["image/jpeg", "image/png", "image/jpg"].includes(value[0].type);
+    //   }),
   });
 
   const formik = useFormik({
@@ -365,10 +376,11 @@ const dispatch=useDispatch();
                       className="py-2"
                     >
                       <option value="">اختر المحافظة</option>
-                      <option value="cairo">القاهرة</option>
-                      <option value="giza">الجيزة</option>
-                      <option value="alexandria">الإسكندرية</option>
-                      <option value="mansoura">المنصورة</option>
+                      {citiesByGovernorate.map((gov) => (
+    <option key={gov} value={gov}>
+      {gov}
+    </option>
+  ))}
                     </Form.Select>
                     {formik.touched.governorate && formik.errors.governorate && (
                       <div className="text-danger small">{formik.errors.governorate}</div>
@@ -377,26 +389,24 @@ const dispatch=useDispatch();
                 </Col>
 
                 {/* المدينة */}
-                <Col md={6}>
-                  <Form.Group>
-                    <Form.Label className="fw-semibold">المدينة</Form.Label>
-                    <Form.Select
-                      name="city"
-                      value={formik.values.city}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      className="py-2"
-                    >
-                      <option value="">اختر المدينة</option>
-                      {citiesByGovernorate[formik.values.governorate]?.map(city => (
-                        <option key={city.value} value={city.value}>{city.label}</option>
-                      ))}
-                    </Form.Select>
-                    {formik.touched.city && formik.errors.city && (
-                      <div className="text-danger small">{formik.errors.city}</div>
-                    )}
-                  </Form.Group>
-                </Col>
+               <Col md={6}>
+  <Form.Group>
+    <Form.Label className="fw-semibold">المدينة</Form.Label>
+    <Form.Control
+      type="text"
+      name="city"
+      value={formik.values.city}
+      onChange={formik.handleChange}
+      onBlur={formik.handleBlur}
+      className="py-2"
+      placeholder="ادخل اسم المدينة"
+    />
+    {formik.touched.city && formik.errors.city && (
+      <div className="text-danger small">{formik.errors.city}</div>
+    )}
+  </Form.Group>
+</Col>
+
 
                 {/* العنوان */}
                 <Col md={12}>
