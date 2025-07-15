@@ -9,16 +9,22 @@ import DelegatesFilter from "../Components/DelegatesComponents/DelegatesFilter";
 import DelegatesTbl from "../Components/DelegatesComponents/DelegatesTbl";
 import { fetchUsers } from "../Redux/Slices/Users";
 import EditDelegateModal from "../Components/modalsComponents/EditDelegateModal";
+import Loading from "../Components/globalComonents/loading";
+
+
 export default function DelegatesPage() {
     const dispatch = useDispatch();
     const { delegates, loading } = useSelector((state) => state.Delegates);
         const { users } = useSelector(state => state.Users);
+ 
+   
     useEffect(() => {
-        dispatch(fetchDelegates());
+       dispatch(fetchDelegates());
         if (users.length === 0) {
                             dispatch(fetchUsers());
                         }
     }, [dispatch, users]);
+
 
     const [searchName, setSearchName] = useState("");
     const [searchPhone, setSearchPhone] = useState("");
@@ -122,11 +128,12 @@ export default function DelegatesPage() {
             />
 
             {loading ? (
-                <div className="text-center py-5">
-                    <div className="spinner-border text-primary" role="status">
-                        <span className="visually-hidden">Loading...</span>
-                    </div>
-                </div>
+                // <div className="text-center py-5">
+                //     <div className="spinner-border text-primary" role="status">
+                //         <span className="visually-hidden">Loading...</span>
+                //     </div>
+                // </div>
+                <Loading/>
             ) : (
                 <DelegatesTbl
                     delegates={filteredDelegates}

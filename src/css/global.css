@@ -235,3 +235,10 @@ select.form-select {
   width: 90% !important;
   /* يجعلها مرنة على الشاشات الصغيرة */
 }
+a{
+    cursor: pointer;   
+
+}
+.loadingBg{
+  background-color: #130729d0;
+}

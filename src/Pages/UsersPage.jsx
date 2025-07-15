@@ -8,6 +8,7 @@ import UsersPageHeader from "../Components/UsersComponents/usersPageHeader";
 import Toast from 'react-bootstrap/Toast';
 import ToastContainer from 'react-bootstrap/ToastContainer';
 import { sendMessage } from "../Redux/Slices/MessagesSlice";
+import Loading from "../Components/globalComonents/loading";
 
 
 export default function UsersPage() {
@@ -222,11 +223,7 @@ export default function UsersPage() {
 
 
             {loading ? (
-                <div className="text-center py-5">
-                    <div className="spinner-border text-primary" role="status">
-                        <span className="visually-hidden">Loading...</span>
-                    </div>
-                </div>
+               <Loading/>
             ) : (
                 <UsersTbl
                     users={users}

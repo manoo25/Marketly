@@ -4,14 +4,22 @@ import * as bootstrap from 'bootstrap';
 import SidebarLink from '../Components/LayoutComponents/sidebarLink';
 import Nav from '../Components/LayoutComponents/Nav';
 import { Outlet } from 'react-router-dom';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { GetToken } from '../Redux/Slices/token';
 
 function Layout() {
   const [margin, setMargin] = useState('0');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const [PageTitle, SetPageTitle] = useState('لوحة التحكم');
+  const [PageTitle, SetPageTitle] = useState('لوحة التحكم');
 
   const offcanvasRef = useRef(null);
+
+  const { token, UserRole } = useSelector(state => state.Token);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(GetToken());
+  }, [dispatch]);
 
   useEffect(() => {
     const el = document.getElementById('offcanvasRight');
@@ -34,7 +42,6 @@ function Layout() {
       offcanvasRef.current.show();
       setMargin('215px');
       setIsSidebarOpen(true);
-  
     }
   };
 
@@ -63,25 +70,23 @@ function Layout() {
           />
         </div>
 
-        <div className="offcanvas-body m-0  p-0  mt-0">
-          <SidebarLink SetPageTitle={SetPageTitle} />
+        <div className="offcanvas-body m-0 p-0 mt-0">
+          <SidebarLink  SetPageTitle={SetPageTitle} />
         </div>
       </div>
 
-      <div style={{ marginRight: margin }} className="pages position-relative pt-5 ">
-     
+      <div style={{ marginRight: margin }} className="pages position-relative pt-5">
+        <div className="fixed fixed-top" style={{ marginRight: margin }}>
+          <Nav 
+            handleToggleSidebar={handleToggleSidebar}
+            isSidebarOpen={isSidebarOpen}
+            PageTitle={PageTitle}
+          />
+        </div>
 
-       <div className="fixed fixed-top"  style={{ marginRight: margin }}>
-         <Nav 
-        handleToggleSidebar={handleToggleSidebar}
-        isSidebarOpen={isSidebarOpen}
-       PageTitle={PageTitle}
-        />
-       </div>
-
-        {/* Routing Pages  */}
-        <div className='bg-light' style={{ padding : '3rem'}}>
-          <Outlet/>
+        {/* Routing Pages */}
+        <div className='bg-light' style={{ padding: '3rem'}}>
+          <Outlet context={{ token, UserRole }} />
         </div>
       </div>
     </>

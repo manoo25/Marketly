@@ -1,15 +1,28 @@
 
 import '../../css/Avatar.css'
 import avatar from "../../assets/Images/user.png"
-function AvatarDropdown() {
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
+
+function AvatarDropdown() {
+  
+     const { userData } = useSelector(state => state.Token);
+     const UserImage = userData?.image;
+   
+const navigate = useNavigate();
+function Logout() {
+  navigate("/");
+  localStorage.removeItem('userID');
+
+}
 
   return (
 
 <label className="popup">
   <input type="checkbox" />
   <div tabIndex="0" className="burger">
-    <img src={avatar} alt="avatar"
+    <img src={UserImage?UserImage:avatar} alt="avatar"
     style={{
       width:'60px',
       height:'60px'
@@ -28,7 +41,7 @@ function AvatarDropdown() {
         </button>
       </li>
       <li>
-        <button>
+        <button onClick={Logout}>
           <span className='mb-2'>تسجيل خروج</span>
          <span className='fa-solid fa-right-from-bracket fa-rotate-180  '></span>
           

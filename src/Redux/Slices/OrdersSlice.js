@@ -1,16 +1,29 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { supabase } from "../../Supabase/supabaseClient";
+import { supabase } from "../../Supabase/SupabaseClient";
+import { UserRole } from "./token";
 
-// ✅ Fetch all Orders with related tables
+// ✅ Fetch Orders - Admin gets all, Trader gets own
 export const getOrders = createAsyncThunk(
   "orders/getOrders",
   async (_, { rejectWithValue }) => {
     try {
-      const { data, error } = await supabase.from("orders").select(`*,
-        user : user_id(*),
+      const userId = localStorage.getItem("userID");
+   
+
+      let query = supabase.from("orders").select(`
+        *,
+        user: user_id (*),
         delegator(name)
-        `);
+      `);
+
+      if (UserRole !== "admin") {
+        query = query.eq("trader_id", userId);
+      }
+
+      const { data, error } = await query;
+
       if (error) throw error;
+
       return data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -38,11 +51,12 @@ export const updateOrder = createAsyncThunk(
   async ({ id, updatedData }, { rejectWithValue }) => {
     try {
       const { data, error } = await supabase
-      .from("orders")
-      .update(updatedData)
-      .eq("id", id)
-      .select(`*,
-        user : user_id(*)
+        .from("orders")
+        .update(updatedData)
+        .eq("id", id)
+        .select(`
+          *,
+          user: user_id (*)
         `);
       if (error) throw error;
       return data[0];
@@ -66,6 +80,7 @@ export const deleteOrder = createAsyncThunk(
   }
 );
 
+// ✅ Delete multiple selected Orders
 export const deleteSelectedOrders = createAsyncThunk(
   "orders/deleteSelectedOrders",
   async (selectedOrders, { rejectWithValue }) => {
@@ -73,13 +88,14 @@ export const deleteSelectedOrders = createAsyncThunk(
       const ids = selectedOrders.map(order => order.id);
       const { error } = await supabase.from("orders").delete().in("id", ids);
       if (error) throw error;
-      return ids; // return the deleted IDs
+      return ids;
     } catch (error) {
       return rejectWithValue(error.message);
     }
   }
 );
 
+// ✅ Orders Slice
 const ordersSlice = createSlice({
   name: "orders",
   initialState: {
@@ -102,6 +118,7 @@ const ordersSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+
       // Create
       .addCase(addOrder.pending, (state) => {
         state.loading = true;
@@ -160,10 +177,8 @@ const ordersSlice = createSlice({
       .addCase(deleteSelectedOrders.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      }
-      );
+      });
   },
 });
-
 
 export default ordersSlice;

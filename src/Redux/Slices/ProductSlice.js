@@ -1,12 +1,15 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { supabase } from "../../Supabase/supabaseClient";
+import { supabase } from "../../Supabase/SupabaseClient";
+import { UserRole } from "./token";
 
-// ✅ Fetch all products with related tables
+
 export const fetchProducts = createAsyncThunk(
   "products/fetchproducts",
   async (_, { rejectWithValue }) => {
     try {
-      const { data, error } = await supabase
+      const userId = localStorage.getItem("userID");
+
+      let query = supabase
         .from("products")
         .select(`
           *,
@@ -14,7 +17,15 @@ export const fetchProducts = createAsyncThunk(
           trader:trader_id (*),
           company:company_id (name, image)
         `);
+
+      if (UserRole !== "admin") {
+        query = query.eq("trader_id", userId);
+      }
+
+      const { data, error } = await query;
+
       if (error) throw error;
+
       return data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -37,7 +48,7 @@ export const createProduct = createAsyncThunk(
           company:company_id (name, image)
         `);
       if (error) throw error;
-      return data[0]; // return the inserted product
+      return data[0];
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -72,7 +83,6 @@ export const deleteProduct = createAsyncThunk(
   "products/deleteproduct",
   async ({ id, image }, { rejectWithValue }) => {
     try {
-
       let imagePath = null;
       if (image) {
         const parts = image.split("/");
@@ -90,6 +100,7 @@ export const deleteProduct = createAsyncThunk(
           throw storageError;
         }
       }
+
       const { error } = await supabase
         .from("products")
         .delete()
@@ -104,12 +115,51 @@ export const deleteProduct = createAsyncThunk(
   }
 );
 
+// ✅ Delete multiple selected products
+export const deleteSelectedProduct = createAsyncThunk(
+  "products/deleteSelected",
+  async (selectedProducts, { rejectWithValue }) => {
+    try {
+      const imagePaths = selectedProducts
+        .map((p) => {
+          const url = p.image;
+          if (!url) return null;
+          const parts = url.split("/");
+          return parts.length > 0 ? decodeURIComponent(parts.pop()) : null;
+        })
+        .filter(Boolean);
+
+      console.log("🧹 حذف الصور التالية من Supabase:", imagePaths);
+
+      if (imagePaths.length > 0) {
+        const { error: storageError } = await supabase.storage
+          .from("products")
+          .remove(imagePaths);
+
+        if (storageError) {
+          console.error("❌ خطأ أثناء حذف الصور:", storageError);
+          throw storageError;
+        }
+      }
+
+      const ids = selectedProducts.map((p) => p.id);
+      const { error } = await supabase.from("products").delete().in("id", ids);
+      if (error) throw error;
+
+      return ids;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+// ✅ Optional: Delete image directly from storage
 export async function deleteImageFromStore(imageUrl) {
   if (!imageUrl) return;
 
   try {
     const storageBase = "https://auxwhdusfpgyzbwgjize.supabase.co/storage/v1/object/public/products/";
-    
+
     if (!imageUrl.startsWith(storageBase)) {
       console.warn("الرابط لا ينتمي لمجلد التخزين المتوقّع");
       return;
@@ -131,49 +181,6 @@ export async function deleteImageFromStore(imageUrl) {
     console.error("❌ Unexpected error while deleting image:", error);
   }
 }
-
-
-
-export const deleteSelectedProduct = createAsyncThunk(
-  "products/deleteSelected",
-  async (selectedProducts, { rejectWithValue }) => {
-    try {
-      // استخراج فقط اسم الصورة بدون المسار الكامل
-      const imagePaths = selectedProducts
-        .map((p) => {
-          const url = p.image;
-          if (!url) return null;
-          const parts = url.split("/");
-          return parts.length > 0 ? decodeURIComponent(parts.pop()) : null;
-        })
-        .filter(Boolean);
-
-      console.log("🧹 حذف الصور التالية من Supabase:", imagePaths);
-
-      // حذف الصور من التخزين
-      if (imagePaths.length > 0) {
-        const { error: storageError } = await supabase.storage
-          .from("products")
-          .remove(imagePaths); // <-- فقط أسماء الملفات
-
-        if (storageError) {
-          console.error("❌ خطأ أثناء حذف الصور:", storageError);
-          throw storageError;
-        }
-      }
-
-      // حذف المنتجات من جدول Supabase
-      const ids = selectedProducts.map((p) => p.id);
-      const { error } = await supabase.from("products").delete().in("id", ids);
-      if (error) throw error;
-
-      return ids;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
-  }
-);
-
 
 // ✅ Product Slice
 const productSlice = createSlice({

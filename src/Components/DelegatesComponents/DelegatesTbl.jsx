@@ -99,7 +99,9 @@ export default function DelegatesTbl({
                             <th>رقم الهاتف</th>
                             <th>التاجر التابع له</th>
                             <th>محافظة التوزيع</th>
+                           
                             <th>خط السير</th>
+                             <th></th>
                             <th>
                                 <LabeledMenu
                                     id="bulkActions"
@@ -204,13 +206,18 @@ export default function DelegatesTbl({
                                                     </div>
                                                 </div>
 
-                                                {/* أيقونة العين */}
+                                               
+                                            </div>
+                                        ) : (
+                                            <span className="text-muted">لا يوجد</span>
+                                        )}
+                                    </td>
+                                    <td>
+                                         {/* أيقونة العين */}
                                                 <div
-                                                    className="position-absolute"
+                                                   
                                                     style={{
-                                                        top: '50%',
-                                                        left: -30,
-                                                        transform: 'translateY(-50%)',
+                                                       
                                                         width: 32,
                                                         height: 32,
                                                         backgroundColor:
@@ -237,10 +244,6 @@ export default function DelegatesTbl({
                                                 >
                                                     <i className="fa-solid fa-eye"></i>
                                                 </div>
-                                            </div>
-                                        ) : (
-                                            <span className="text-muted">لا يوجد</span>
-                                        )}
                                     </td>
 
                                     {/* قائمة الإجراءات */}

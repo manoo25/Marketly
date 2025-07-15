@@ -13,10 +13,24 @@ import Landing from "./Pages/landingPage";
 import MostSellingTbl from "./Components/ProductsComponents/MostSellingTbl";
 import MostSellingProducts from "./Pages/Products/MostSellingProducts";
 import DelegatesPage from "./Pages/DelegatesPage";
+import ChooseRole from "./Pages/auth/ChooseRole";
+import CheckDelegates from "./Pages/auth/CheckDelegates";
 
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { GetToken } from "./Redux/Slices/token";
+ 
 function App() {
+
+
+
+const dispatch=useDispatch();
+ useEffect(() => {
+      dispatch(GetToken())
+    }, []);
+
   const routes = createBrowserRouter([
-    { path: '/', element: <Layout /> },
+    { path: 'Dashboard', element: <Layout /> },
     { path: 'Landing', element: <Landing /> },
     {
       path: 'Dashboard',
@@ -35,8 +49,11 @@ function App() {
       ]
     },
     { path: 'SignUp', element: <SignUpPage /> },
+    { path: '/', element: <SigninPage /> },
     { path: 'SigninPage', element: <SigninPage /> },
-  ]);
+    { path: 'choose-role', element: <ChooseRole /> },
+    { path: 'check-delegates', element: <CheckDelegates /> },
+   ]);
 
   return (
     <RouterProvider router={routes} />

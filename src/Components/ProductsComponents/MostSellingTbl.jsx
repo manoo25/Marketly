@@ -4,12 +4,13 @@ import { useDispatch, useSelector } from "react-redux";
 import ModalConfirm from "../UsersComponents/ModalConfirm";
 import { getAllOrderItems } from "../../Redux/Slices/OrderItems";
 import BestProFilter from "./bestProFilter";
-
+import Loading from "../globalComonents/loading";
 const rowsPerPage = 4;
 
 const MostSellingTbl = () => {
   const dispatch = useDispatch();
   const data = useSelector((state) => state.OrderItems.items);
+  const {loading} = useSelector((state) => state.OrderItems);
 
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -90,7 +91,11 @@ const MostSellingTbl = () => {
 
   return (
     <>
-      <BestProFilter
+    {loading?
+  <Loading/>  
+  :
+  <div>
+<BestProFilter
         searchName={searchName}
         setSearchName={setSearchName}
         selectedCat={selectedCat}
@@ -180,6 +185,9 @@ const MostSellingTbl = () => {
           &raquo;
         </button>
       </div>
+  </div>
+  }
+      
     </>
   );
 };

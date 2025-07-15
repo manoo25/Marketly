@@ -1,19 +1,51 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Button, Col, Row, Modal } from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { supabase } from "../../supabase/supabaseClient";
+import {  supabase } from "../../Supabase/SupabaseClient";
 import { uploadImagesToSupabase } from "../../Redux/uploadingImage";
-import { FaCamera ,FaMapMarkerAlt } from "react-icons/fa";
+import { FaCamera, FaMapMarkerAlt } from "react-icons/fa";
 import styles from "../../css/AuthLayout.module.css";
 import Logo from "../../assets/Images/Logo.png";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
+import "../../css/global.css";
+import { useDispatch } from "react-redux";
+import { GetToken } from "../../Redux/Slices/token";
+
+const citiesByGovernorate = {
+  cairo: [
+    { value: "nasr city", label: "مدينة نصر" },
+    { value: "maadi", label: "المعادي" },
+  ],
+  giza: [
+    { value: "6 oct", label: "6 أكتوبر" },
+    { value: "dokki", label: "الدقي" },
+  ],
+  alexandria: [
+    { value: "sidi gaber", label: "سيدي جابر" },
+    { value: "smouha", label: "سموحة" },
+  ],
+  mansoura: [
+    { value: "el mansoura", label: "المنصورة" },
+    { value: "talkha", label: "طلخا" },
+  ],
+};
 
 const SignUp = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submittedRole, setSubmittedRole] = useState(""); 
+  const [submittedRole, setSubmittedRole] = useState("");
+  const location = useLocation();
+  const navigate = useNavigate();
+  const roleFromRoute = location.state?.role || "";
+const dispatch=useDispatch();
+  useEffect(() => {
+    if (!roleFromRoute) {
+      alert("يجب اختيار نوع الحساب أولاً");
+      navigate("/choose-role");
+    }
+  }, []);
 
   const validationSchema = Yup.object({
     name: Yup.string().required("الاسم مطلوب"),
@@ -21,12 +53,9 @@ const SignUp = () => {
     phone: Yup.string()
       .matches(/^\d{10,15}$/, "رقم غير صالح")
       .required("رقم الهاتف مطلوب"),
-    password: Yup.string()
-      .min(6, "كلمة المرور قصيرة")
-      .required("كلمة المرور مطلوبة"),
+    password: Yup.string().min(6, "كلمة المرور قصيرة").required("كلمة المرور مطلوبة"),
     governorate: Yup.string().required("المحافظة مطلوبة"),
     city: Yup.string().required("المدينة مطلوبة"),
-    role: Yup.string().required("الصلاحية مطلوبة"),
     location: Yup.string().required("العنوان مطلوب"),
     userImage: Yup.mixed()
       .required("الصورة مطلوبة")
@@ -48,7 +77,6 @@ const SignUp = () => {
       password: "",
       governorate: "",
       city: "",
-      role: "",
       location: "",
       userImage: null,
     },
@@ -66,17 +94,16 @@ const SignUp = () => {
 
         if (emailExists) {
           formik.setFieldError("email", "البريد مسجل مسبقًا");
+          setIsSubmitting(false);
           return;
         }
         if (phoneExists) {
           formik.setFieldError("phone", "رقم الهاتف مستخدم من قبل");
+          setIsSubmitting(false);
           return;
         }
 
-        const imageUrls = await uploadImagesToSupabase(
-          values.userImage,
-          "users"
-        );
+        const imageUrls = await uploadImagesToSupabase(values.userImage, "users");
 
         const newUser = {
           name: values.name,
@@ -85,16 +112,25 @@ const SignUp = () => {
           password: values.password,
           governorate: values.governorate,
           city: values.city,
-          role: values.role,
+          role: roleFromRoute,
           location: values.location,
           image: imageUrls[0],
           isBlocked: false,
         };
 
-        const { error } = await supabase.from("users").insert([newUser]);
+        const { data: insertedUsers, error } = await supabase
+          .from("users")
+          .insert([newUser])
+          .select("id");
+
         if (error) throw error;
 
-        setSubmittedRole(values.role); 
+        const userId = insertedUsers[0]?.id;
+        localStorage.setItem("userID", userId);
+        dispatch(GetToken());
+        
+
+        setSubmittedRole(roleFromRoute);
         setShowSuccessModal(true);
         formik.resetForm();
         setImagePreview(null);
@@ -116,11 +152,9 @@ const SignUp = () => {
     }
   };
 
-  const navigate = useNavigate();
-
   const handleModalClose = () => {
     setShowSuccessModal(false);
-    if (submittedRole === "admin" || submittedRole === "trader") {
+    if (roleFromRoute === "admin" || roleFromRoute === "trader") {
       navigate("/Dashboard/Charts");
     } else {
       navigate("/Landing");
@@ -139,52 +173,59 @@ const SignUp = () => {
 
         try {
           const response = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=ar`
+            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=ar`,
+            {
+              headers: {
+                "User-Agent": "wholesale-app/1.0 (wholesale@example.com)",
+              },
+            }
           );
+
           const data = await response.json();
           const address = data.display_name;
 
           if (address) {
-            alert("تم الحصول على موقعك بنجاح!");
+            alert("✅ تم الحصول على عنوانك بنجاح");
             formik.setFieldValue("location", address);
           } else {
-            alert("لم يتم العثور على عنوان دقيق للموقع.");
+            alert("❌ لم يتم العثور على عنوان دقيق.");
           }
         } catch (error) {
-          console.error("خطأ في جلب العنوان:", error);
+          console.error("❌ خطأ في جلب العنوان:", error);
           alert("حدث خطأ أثناء جلب العنوان.");
         }
       },
       (error) => {
-        console.error("حدث خطأ أثناء الحصول على الموقع:", error);
-        alert("يجب السماح بالوصول إلى الموقع لتحديد العنوان تلقائيًا.");
-      }
+        console.error("📛 خطأ في الحصول على الموقع:", error);
+        if (error.code === 1) {
+          alert("رجاءً اسمحي للموقع بالوصول لموقعك من إعدادات المتصفح.");
+        } else {
+          alert("حدث خطأ أثناء تحديد الموقع.");
+        }
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
   };
 
   return (
     <div className={styles.signupPage}>
       <Row className="g-0 justify-content-center align-items-center min-vh-100">
-        <Col
-          md={4}
-          className={`d-none d-md-flex align-items-center justify-content-center ${styles.signupImageSection}`}
-        >
+        <Col md={4} className={`d-none d-md-flex align-items-center justify-content-center ${styles.signupImageSection}`}>
           <img src={Logo} alt="شعار" className={styles.signupSideImg} />
         </Col>
 
         <Col md={7}>
           <div className={styles.signupFormWrapper}>
             <h4 className="mb-3 text-end">إنشاء حساب</h4>
+
             <Form onSubmit={formik.handleSubmit}>
               {/* صورة المستخدم */}
-              <Row className="mb-4 justify-content-center">
+              <Row className="mb-1 justify-content-center">
                 <Col md={3} className="text-center">
                   <div className="position-relative d-inline-block">
                     <div
-                      onClick={() =>
-                        document.getElementById("userImageInput").click()
-                      }
-                      className="rounded-circle overflow-hidden border border-3  mx-auto"
+                      onClick={() => document.getElementById("userImageInput").click()}
+                      className="rounded-circle overflow-hidden border border-3 mx-auto"
                       style={{
                         width: "100px",
                         height: "100px",
@@ -212,12 +253,8 @@ const SignUp = () => {
                           opacity: 0,
                           transition: "0.3s",
                         }}
-                        onMouseEnter={(e) =>
-                          (e.currentTarget.style.opacity = 1)
-                        }
-                        onMouseLeave={(e) =>
-                          (e.currentTarget.style.opacity = 0)
-                        }
+                        onMouseEnter={(e) => (e.currentTarget.style.opacity = 1)}
+                        onMouseLeave={(e) => (e.currentTarget.style.opacity = 0)}
                       >
                         <FaCamera size={24} />
                       </div>
@@ -240,14 +277,11 @@ const SignUp = () => {
                 </Col>
               </Row>
 
-              {/* باقي الحقول */}
               <Row className="g-3">
                 {/* الاسم */}
                 <Col md={6}>
                   <Form.Group>
-                    <Form.Label className="fw-semibold">
-                      الاسم الكامل
-                    </Form.Label>
+                    <Form.Label className="fw-semibold">الاسم الكامل</Form.Label>
                     <Form.Control
                       name="name"
                       type="text"
@@ -258,9 +292,7 @@ const SignUp = () => {
                       className="py-2"
                     />
                     {formik.touched.name && formik.errors.name && (
-                      <div className="text-danger small">
-                        {formik.errors.name}
-                      </div>
+                      <div className="text-danger small">{formik.errors.name}</div>
                     )}
                   </Form.Group>
                 </Col>
@@ -268,9 +300,7 @@ const SignUp = () => {
                 {/* البريد */}
                 <Col md={6}>
                   <Form.Group>
-                    <Form.Label className="fw-semibold">
-                      البريد الإلكتروني
-                    </Form.Label>
+                    <Form.Label className="fw-semibold">البريد الإلكتروني</Form.Label>
                     <Form.Control
                       name="email"
                       type="email"
@@ -281,9 +311,7 @@ const SignUp = () => {
                       className="py-2"
                     />
                     {formik.touched.email && formik.errors.email && (
-                      <div className="text-danger small">
-                        {formik.errors.email}
-                      </div>
+                      <div className="text-danger small">{formik.errors.email}</div>
                     )}
                   </Form.Group>
                 </Col>
@@ -301,14 +329,12 @@ const SignUp = () => {
                       className="py-2"
                     />
                     {formik.touched.phone && formik.errors.phone && (
-                      <div className="text-danger small">
-                        {formik.errors.phone}
-                      </div>
+                      <div className="text-danger small">{formik.errors.phone}</div>
                     )}
                   </Form.Group>
                 </Col>
 
-                {/* الباسورد */}
+                {/* كلمة المرور */}
                 <Col md={6}>
                   <Form.Group>
                     <Form.Label className="fw-semibold">كلمة المرور</Form.Label>
@@ -322,9 +348,7 @@ const SignUp = () => {
                       className="py-2"
                     />
                     {formik.touched.password && formik.errors.password && (
-                      <div className="text-danger small">
-                        {formik.errors.password}
-                      </div>
+                      <div className="text-danger small">{formik.errors.password}</div>
                     )}
                   </Form.Group>
                 </Col>
@@ -346,12 +370,9 @@ const SignUp = () => {
                       <option value="alexandria">الإسكندرية</option>
                       <option value="mansoura">المنصورة</option>
                     </Form.Select>
-                    {formik.touched.governorate &&
-                      formik.errors.governorate && (
-                        <div className="text-danger small">
-                          {formik.errors.governorate}
-                        </div>
-                      )}
+                    {formik.touched.governorate && formik.errors.governorate && (
+                      <div className="text-danger small">{formik.errors.governorate}</div>
+                    )}
                   </Form.Group>
                 </Col>
 
@@ -367,113 +388,84 @@ const SignUp = () => {
                       className="py-2"
                     >
                       <option value="">اختر المدينة</option>
-                      {formik.values.governorate === "cairo" && (
-                        <>
-                          <option value="nasr city">مدينة نصر</option>
-                          <option value="maadi">المعادي</option>
-                        </>
-                      )}
-                      {formik.values.governorate === "giza" && (
-                        <>
-                          <option value="6 oct">6 أكتوبر</option>
-                          <option value="dokki">الدقي</option>
-                        </>
-                      )}
-                      {formik.values.governorate === "alexandria" && (
-                        <>
-                          <option value="sidi gaber">سيدي جابر</option>
-                          <option value="smouha">سموحة</option>
-                        </>
-                      )}
+                      {citiesByGovernorate[formik.values.governorate]?.map(city => (
+                        <option key={city.value} value={city.value}>{city.label}</option>
+                      ))}
                     </Form.Select>
                     {formik.touched.city && formik.errors.city && (
-                      <div className="text-danger small">
-                        {formik.errors.city}
-                      </div>
+                      <div className="text-danger small">{formik.errors.city}</div>
                     )}
                   </Form.Group>
                 </Col>
 
-                {/* الصلاحية */}
-                <Col md={6}>
-                  <Form.Group>
-                    <Form.Label className="fw-semibold">الصلاحية</Form.Label>
-                    <Form.Select
-                      name="role"
-                      value={formik.values.role}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      className="py-2"
-                    >
-                      <option value="user">مستخدم عادي</option>
-                      <option value="trader">تاجر</option>
-                      <option value="admin">مدير نظام</option>
-                    </Form.Select>
-                    {formik.touched.role && formik.errors.role && (
-                      <div className="text-danger small">
-                        {formik.errors.role}
+                {/* العنوان */}
+                <Col md={12}>
+                  <Form.Group className="position-relative">
+                    <Form.Label className="fw-semibold">العنوان التفصيلي</Form.Label>
+                    <div style={{ position: "relative" }}>
+                      <Form.Control
+                        name="location"
+                        value={formik.values.location}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        placeholder="الحي، الشارع، رقم المبني"
+                        className="py-2 pe-5"
+                      />
+                      <FaMapMarkerAlt
+                        onClick={getLocationAndSetAddress}
+                        style={{
+                          position: "absolute",
+                          top: "50%",
+                          right: "10px",
+                          transform: "translateY(-50%)",
+                          cursor: "pointer",
+                          color: "grey",
+                          fontSize: "18px",
+                        }}
+                        title="تحديد موقعي تلقائيًا"
+                      />
+                    </div>
+                    {formik.touched.location && formik.errors.location && (
+                      <div className="text-danger small mt-1">
+                        {formik.errors.location}
                       </div>
                     )}
                   </Form.Group>
                 </Col>
-               <Col md={6}>
-  <Form.Group className="position-relative">
-    <Form.Label className="fw-semibold">العنوان التفصيلي</Form.Label>
-    <div style={{ position: "relative" }}>
-      <Form.Control
-        name="location"
-        value={formik.values.location}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        placeholder="الحي، الشارع، رقم المبني"
-        className="py-2 pe-5"
-      />
-      <FaMapMarkerAlt
-        onClick={getLocationAndSetAddress}
-        style={{
-          position: "absolute",
-          top: "50%",
-          right: "10px",
-          transform: "translateY(-50%)",
-          cursor: "pointer",
-          color: "grey",
-          fontSize: "18px",
-        }}
-        title="تحديد موقعي تلقائيًا"
-      />
-    </div>
-    {formik.touched.location && formik.errors.location && (
-      <div className="text-danger small mt-1">
-        {formik.errors.location}
-      </div>
-    )}
-  </Form.Group>
-</Col>
-
               </Row>
 
-              {/* زرار التسجيل */}
+              {/* زر التسجيل */}
               <Button
                 variant="primary"
                 type="submit"
-                className="mt-4 w-100 py-2 fw-bold"
+                className="mt-3 w-100 py-2 fw-bold"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? "جاري التسجيل..." : "تسجيل حساب جديد"}
               </Button>
+
+              <div className="d-flex align-items-center my-2">
+                <hr className="flex-grow-1" />
+                <span className="mx-2 text-muted">أو</span>
+                <hr className="flex-grow-1" />
+              </div>
+
+              <div className="text-center">
+                <span> لديك حساب بالفعل ؟</span>
+                <Link to="/SigninPage" className="text-decoration-none text-warning fw-bold px-1">
+                  تسجيل الدخول
+                </Link>
+              </div>
             </Form>
 
-             <Modal show={showSuccessModal} onHide={handleModalClose} centered>
+            {/* ✅ المودال بعد التسجيل */}
+            <Modal show={showSuccessModal} onHide={handleModalClose} centered>
               <div className="container d-flex justify-content-between">
-                  <Modal.Title className=" text-muted p-2">
-                  تم التسجيل بنجاح!
-                </Modal.Title>
-  <Modal.Header closeButton></Modal.Header>
-            
+                <Modal.Title className="text-success p-2">تم التسجيل بنجاح!</Modal.Title>
+                <Modal.Header closeButton></Modal.Header>
               </div>
-            
               <Modal.Body className="text-center">
-                <i className="fas fa-check-circle fs-1 mb-3 text-muted"></i>
+                <i className="fas fa-check-circle fs-1 mb-3  text-success"></i>
                 <p>
                   تم إنشاء حسابك بنجاح.
                   {submittedRole === "user"

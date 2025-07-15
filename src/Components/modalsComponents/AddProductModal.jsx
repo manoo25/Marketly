@@ -10,6 +10,10 @@ import { uploadImagesToSupabase } from '../../Redux/uploadingImage';
 import { GetCategories } from '../../Redux/Slices/Categories';
 import { GetUnits } from '../../Redux/Slices/units';
 import { fetchCompanies } from '../../Redux/Slices/CompaniesSlice';
+import { UserRole } from '../../Redux/Slices/token';
+
+
+
 
 const AddProductModal = () => {
   const [images, setImages] = useState([]);
@@ -18,6 +22,7 @@ const AddProductModal = () => {
   const { categories } = useSelector((state) => state.Categories);
   const { Units } = useSelector((state) => state.Units);
   const { companies } = useSelector((state) => state.Companies);
+  const {  token } = useSelector(state => state.Token);
 
   const dispatch = useDispatch();
 
@@ -25,6 +30,7 @@ const AddProductModal = () => {
     dispatch(GetCategories());
     dispatch(GetUnits());
     dispatch(fetchCompanies());
+
   }, []);
 
   const handleImageChange = (e) => {
@@ -89,7 +95,7 @@ const AddProductModal = () => {
       traderprice: 0,
     
       category_id: "",
-      trader_id: "0b803d5d-dfe2-43dc-9b12-a67fec01a1da",
+      trader_id: token,
       company_id: "",
       unit: "",
       quantity_per_unit: 12,
@@ -103,11 +109,13 @@ const AddProductModal = () => {
 
   return (
     <>
+     {UserRole=='trader'&&
       <PrimaryButton
         label="إضافة منتج"
         icon='fa-solid fa-square-plus'
         onClick={() => setShow(true)}
       />
+     }
       <Modal show={show} onHide={() => setShow(false)} centered dialogClassName='AddProductModal'>
         <Modal.Header>
           <div className="border-0 pb-0 d-flex align-items-center justify-content-between w-100">

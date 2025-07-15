@@ -6,13 +6,15 @@ import styles from "../../css/AuthLayout.module.css";
 import "../../css/global.css";
 import Logo from "../../assets/Images/Logo.png";
 import { Link, useNavigate } from "react-router-dom";
-import { supabase } from "../../supabase/supabaseClient";
+import {  supabase } from "../../Supabase/SupabaseClient";
+import { useDispatch } from "react-redux";
+import { GetToken } from "../../Redux/Slices/token";
 
 const SigninPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
-
+const dispatch=useDispatch();
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   const validationSchema = Yup.object({
@@ -51,9 +53,13 @@ const SigninPage = () => {
 
         const user = users[0];
 
+        localStorage.setItem("userID", user.id);
+       dispatch(GetToken());
+        
          if (user.role === "admin" || user.role === "trader") {
           navigate("/Dashboard/Charts");
-        } else {
+        } 
+        else {
           navigate("/Landing");
         }
 

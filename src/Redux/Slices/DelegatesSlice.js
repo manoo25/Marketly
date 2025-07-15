@@ -1,13 +1,25 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { supabase } from "../../Supabase/supabaseClient";
+import { supabase } from "../../Supabase/SupabaseClient";
+import { UserRole } from "./token";
 
-
+// ✅ Fetch Delegates - Admin gets all, Trader gets only their own
 export const fetchDelegates = createAsyncThunk(
   "delegates/fetchDelegates",
   async (_, { rejectWithValue }) => {
     try {
-      const { data, error } = await supabase.from("delegates").select("*");
+      const userId = localStorage.getItem("userID");
+     
+
+      let query = supabase.from("delegates").select("*");
+
+      if (UserRole !== "admin") {
+        query = query.eq("trader_id", userId);
+      }
+
+      const { data, error } = await query;
+
       if (error) throw error;
+
       return data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -15,7 +27,7 @@ export const fetchDelegates = createAsyncThunk(
   }
 );
 
-
+// ✅ Create Delegate
 export const createDelegate = createAsyncThunk(
   "delegates/createDelegate",
   async (delegateData, { rejectWithValue }) => {
@@ -32,7 +44,7 @@ export const createDelegate = createAsyncThunk(
   }
 );
 
-
+// ✅ Update Single Delegate
 export const updateDelegate = createAsyncThunk(
   "delegates/updateDelegate",
   async ({ id, updatedData }, { rejectWithValue }) => {
@@ -50,6 +62,7 @@ export const updateDelegate = createAsyncThunk(
   }
 );
 
+// ✅ Update Multiple Delegates
 export const updateSelectedDelegates = createAsyncThunk(
   "delegates/updateSelectedDelegates",
   async ({ delegateIds, updatedData }, { rejectWithValue }) => {
@@ -67,7 +80,7 @@ export const updateSelectedDelegates = createAsyncThunk(
   }
 );
 
-
+// ✅ Delete Delegate
 export const deleteDelegate = createAsyncThunk(
   "delegates/deleteDelegate",
   async (id, { rejectWithValue }) => {
@@ -81,7 +94,7 @@ export const deleteDelegate = createAsyncThunk(
   }
 );
 
-
+// ✅ Slice
 const delegatesSlice = createSlice({
   name: "delegates",
   initialState: {
@@ -91,6 +104,7 @@ const delegatesSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Fetch
       .addCase(fetchDelegates.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -104,6 +118,7 @@ const delegatesSlice = createSlice({
         state.error = action.payload;
       })
 
+      // Create
       .addCase(createDelegate.fulfilled, (state, action) => {
         state.delegates.push(action.payload);
       })
@@ -111,10 +126,9 @@ const delegatesSlice = createSlice({
         state.error = action.payload;
       })
 
+      // Update Single
       .addCase(updateDelegate.fulfilled, (state, action) => {
-        const index = state.delegates.findIndex(
-          (d) => d.id === action.payload.id
-        );
+        const index = state.delegates.findIndex((d) => d.id === action.payload.id);
         if (index !== -1) {
           state.delegates[index] = action.payload;
         }
@@ -123,6 +137,7 @@ const delegatesSlice = createSlice({
         state.error = action.payload;
       })
 
+      // Update Multiple
       .addCase(updateSelectedDelegates.fulfilled, (state, action) => {
         action.payload.forEach((updated) => {
           const index = state.delegates.findIndex((d) => d.id === updated.id);
@@ -135,10 +150,9 @@ const delegatesSlice = createSlice({
         state.error = action.payload;
       })
 
+      // Delete
       .addCase(deleteDelegate.fulfilled, (state, action) => {
-        state.delegates = state.delegates.filter(
-          (d) => d.id !== action.payload
-        );
+        state.delegates = state.delegates.filter((d) => d.id !== action.payload);
       })
       .addCase(deleteDelegate.rejected, (state, action) => {
         state.error = action.payload;

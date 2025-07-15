@@ -9,16 +9,19 @@ import {
 import OrdersFilter from "./OrdersFilter";
 import CustomMenu from "../globalComonents/CustomMenu";
 import LabeledMenu from "../globalComonents/LabeledMenu";
-import { supabase } from "../../Supabase/supabaseClient";
+import { supabase } from "../../Supabase/SupabaseClient";
 import { FaEye, FaPrint } from "react-icons/fa";
 import  DelegatorListModal  from "../OrdersComponents/delegatorListModal";
+import Loading from "../globalComonents/loading";
 
 const rowsPerPage = 4;
 
+
 const OrdersTbl = () => {
     const dispatch = useDispatch();
-    const { orders } = useSelector((state) => state.Orders);
-    console.log(orders);
+    const { orders,loading } = useSelector((state) => state.Orders);
+ 
+   
 
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -34,8 +37,14 @@ const OrdersTbl = () => {
 
     // fetch all Orders once
     useEffect(() => {
-        dispatch(getOrders());
+          if (!orders || orders.length === 0) {
+              dispatch(getOrders());
+            }
+    
     }, [dispatch]);
+
+
+
 
     // effect for filtering
     useEffect(() => {
@@ -224,10 +233,10 @@ const OrdersTbl = () => {
 
     return (
         <>
-
-       
-
-            <OrdersFilter
+{loading?
+<Loading/>:
+<div>
+  <OrdersFilter
                 searchName={searchName}
                 setSearchName={setSearchName}
                 selectedState={selectedState}
@@ -609,6 +618,11 @@ const OrdersTbl = () => {
                 </div>
             )}
 <DelegatorListModal show={showDelegateModal} Setshow={setshowDelegateModal} location={OrderLocaction} />
+</div>
+}
+       
+
+          
         </>
     );
 };
