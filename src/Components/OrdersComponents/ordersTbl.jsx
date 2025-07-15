@@ -264,7 +264,6 @@ const OrdersTbl = () => {
                                 </label>
                             </th>
                             <th>
-
                                 <label htmlFor="select-all">اسم العميل</label>
                             </th>
                             <th>رقم العميل</th>

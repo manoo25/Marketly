@@ -5,16 +5,22 @@ export const getReturns = createAsyncThunk(
     "returns/getReturns",
     async (_, { rejectWithValue }) => {
         try {
-        const { data, error } = await supabase.from("returns").select(`*,
-            user : order_id(*)`);
-        if (error) throw error;
-        return data;
+            // const { data, error } = await supabase.from("returns").select(`*,
+            //     user : order_id)(*),
+            const { data, error } = await supabase.from("returns")
+                .select(`
+                    *,
+                    orders (*,
+                        users (
+                            *) )
+    `);
+            if (error) throw error;
+            return data;
         } catch (error) {
-        return rejectWithValue(error.message);
+            return rejectWithValue(error.message);
         }
     }
-    );
-
+);
 export const addReturn = createAsyncThunk(
     "returns/addReturn",
     async (returnData, { rejectWithValue }) => {
@@ -32,7 +38,12 @@ export const updateReturn = createAsyncThunk(
     "returns/updateReturn",
     async ({ id, updatedData }, { rejectWithValue }) => {
         try {
-            const { data, error } = await supabase.from("returns").update(updatedData).eq("id", id).select();
+            const { data, error } = await supabase.from("returns").update(updatedData).eq("id", id).select(`
+                    *,
+                    orders (*,
+                        users (
+                            *) )
+    `);
             if (error) throw error;
             return data[0];
         } catch (error) {
@@ -52,6 +63,20 @@ export const deleteReturn = createAsyncThunk(
             return rejectWithValue(error.message);
         }
     }
+);
+
+export const deleteSelectedReturns = createAsyncThunk(
+  "returns/deleteSelectedReturns",
+  async (selectedReturns, { rejectWithValue }) => {
+    try {
+      const ids = selectedReturns.map(ret => ret.id);
+      const { error } = await supabase.from("returns").delete().in("id", ids);
+      if (error) throw error;
+      return ids; // return the deleted IDs
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
 );
 
 const returnsSlice = createSlice({
