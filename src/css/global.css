@@ -1,21 +1,21 @@
 :root {
   --main-font: "El Messiri", sans-serif;
-  --primary-color: #915EF6;
+  --primary-color: #915ef6;
   --primary-color-light: rgba(145, 94, 246, 0.129);
-  --accent-color: #327AFF;
+  --accent-color: #327aff;
   --background-color: #f8f7fa;
-  --side-bar-color: #1B0F31;
-  --Activeside-bar-color: #FFFFFF14;
-  --black-color : #27242F;
+  --side-bar-color: #1b0f31;
+  --Activeside-bar-color: #ffffff14;
+  --black-color: #27242f;
   --delete-color: red;
   --delete-color-light: rgba(244, 113, 113, 0.118);
-  --black-color: #27242F;
+  --black-color: #27242f;
   --dark-gray-color: #424047;
-  --mid-gray-color: #7B7686;
-  --very-light-gray-color: #A6A1B1;
-  --very-very-light-gray-color: #CDC5DC;
-  --border-color: #EFECF3;
-  --white-color: #FFFFFF;
+  --mid-gray-color: #7b7686;
+  --very-light-gray-color: #a6a1b1;
+  --very-very-light-gray-color: #cdc5dc;
+  --border-color: #efecf3;
+  --white-color: #ffffff;
   --primary-color-light: rgba(145, 94, 246, 0.129);
   --delete-color: red;
   --delete-color-light: rgba(244, 113, 113, 0.118);
@@ -35,7 +35,8 @@ body {
   box-sizing: border-box;
   background-color: var(--background-color);
 }
-html, body {
+html,
+body {
   height: 100%;
   overflow: auto; /* أو scroll حسب حاجتك */
   scrollbar-width: none; /* Firefox */
@@ -63,8 +64,6 @@ p {
   cursor: pointer;
 }
 
- 
-
 .btn-primary:hover {
   background-color: var(--accent-color);
 }
@@ -80,34 +79,34 @@ p {
   cursor: pointer;
 }
 .offcanvas.offcanvas-end {
-   width: 228px !important;
+  width: 228px !important;
 }
-.sidebarLink{
-cursor: pointer;
-position: relative;
-width: 100%;
+.sidebarLink {
+  cursor: pointer;
+  position: relative;
+  width: 100%;
 }
-.sidebarLink:hover{
-background-color:var(--Activeside-bar-color);
+.sidebarLink:hover {
+  background-color: var(--Activeside-bar-color);
 }
-.ActivesidebarLink{
-background-color:var(--Activeside-bar-color);
+.ActivesidebarLink {
+  background-color: var(--Activeside-bar-color);
 }
-.ActivesidebarLink::before{
+.ActivesidebarLink::before {
   position: absolute;
-  content: '';
-height: 100%;
-width: 4px;
-background-color:var( --primary-color) ;
+  content: "";
+  height: 100%;
+  width: 4px;
+  background-color: var(--primary-color);
 }
-.sidebarLink p{
+.sidebarLink p {
   margin-right: 15px;
   display: flex;
   align-items: center;
-  color:var(--white-color);
+  color: var(--white-color);
   font-weight: 600;
   font-size: 16px;
-  gap:10px;
+  gap: 10px;
   padding: 10px;
 }
 .btn-light {
@@ -147,16 +146,13 @@ background-color:var( --primary-color) ;
   font-family: var(--main-font);
   font-size: 1rem;
   text-align: right;
-  padding: 0.5rem 0.5rem .5rem .5rem;
+  padding: 0.5rem 0.5rem 0.5rem 0.5rem;
   border: 1px solid var(--border-color) !important;
   border-radius: 10px;
   outline-color: var(--primary-color) !important;
 }
 
-
-
-
- .modal-content input,
+.modal-content input,
 .modal-content textarea,
 .modal-content select {
   font-family: var(--main-font);
@@ -177,29 +173,26 @@ background-color:var( --primary-color) ;
   outline: none;
 }
 
- .modal-content select,
+.modal-content select,
 .modal-content input,
 .modal-content textarea {
   direction: rtl;
   text-align: right;
 }
 
- 
-
- .modal-content select.form-select {
+.modal-content select.form-select {
   background-position: left 0.75rem center;
   padding-left: 2rem;
   padding-right: 0.75rem;
 }
 
-
-  select.form-select {
+select.form-select {
   background-position: left 0.75rem center;
   padding-left: 2rem;
   padding-right: 0.75rem;
 }
 
- .input-icon {
+.input-icon {
   position: absolute;
   left: 15px;
   top: 50%;
@@ -207,14 +200,19 @@ background-color:var( --primary-color) ;
   color: var(--mid-gray-color);
   pointer-events: none;
 }
-.CloseModalBtn{
+.CloseModalBtn {
   font-size: 25px;
   color: rgba(248, 73, 73, 0.74);
 }
-.CloseModalBtn:hover{
- color: black;
+.CloseModalBtn:hover {
+  color: black;
 }
 .AddProductModal {
   max-width: 700px !important; /* عدّل الحجم حسب رغبتك */
-  width: 90% !important;       /* يجعلها مرنة على الشاشات الصغيرة */
+  width: 90% !important; /* يجعلها مرنة على الشاشات الصغيرة */
+}
+
+/* Datepicker */
+.datepicker-popper {
+  z-index: 99999 !important;
 }

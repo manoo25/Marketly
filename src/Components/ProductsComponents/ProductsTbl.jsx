@@ -11,7 +11,6 @@ import CustomMenu from "../globalComonents/CustomMenu";
 import ModalConfirm from "../UsersComponents/ModalConfirm";
 import EditProductModal from "../modalsComponents/EditProductModal";
 
-
 const rowsPerPage = 4;
 
 const ProductsTbl = () => {
@@ -20,19 +19,20 @@ const ProductsTbl = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [show, setShow] = useState(false);
   const [EditProduct, setEditProduct] = useState({});
- 
+
   const [currentProducts, setcurrentProducts] = useState([]);
   const [SelectedProducts, SetSelectedProducts] = useState([]);
-  const [searchName, setSearchName] = useState(""); const [selectedCat, setselectedCat] = useState("");
+  const [searchName, setSearchName] = useState("");
+  const [selectedCat, setselectedCat] = useState("");
   const [searchTrader, setSearchTrader] = useState("");
   const [selectedCompany, setselectedCompany] = useState("");
   const [confirmModal, setConfirmModal] = useState({
-      open: false,
-      message: "",
-      confirmText: "تأكيد",
-      confirmClass: "btn-primary",
-      onConfirm: () => { },
-    });
+    open: false,
+    message: "",
+    confirmText: "تأكيد",
+    confirmClass: "btn-primary",
+    onConfirm: () => {},
+  });
 
   // fetch all products once
   useEffect(() => {
@@ -48,25 +48,22 @@ const ProductsTbl = () => {
 
   const totalPages = Math.ceil(products.length / rowsPerPage);
 
-
   const selectAll = (checked) => {
     if (checked) {
       SetSelectedProducts(currentProducts);
-    } 
-    else {
+    } else {
       SetSelectedProducts([]);
     }
   };
 
-  const isSelected = (id) =>SelectedProducts.some((product) => product.id === id);
-    
+  const isSelected = (id) =>
+    SelectedProducts.some((product) => product.id === id);
+
   const handleCheckboxChange = (e, product) => {
     if (e.target.checked) {
       SetSelectedProducts((prev) => [...prev, product]);
     } else {
-      SetSelectedProducts((prev) =>
-        prev.filter((p) => p.id !== product.id)
-      );
+      SetSelectedProducts((prev) => prev.filter((p) => p.id !== product.id));
     }
   };
 
@@ -76,44 +73,41 @@ const ProductsTbl = () => {
     dispatch(fetchProducts());
   };
 
-const handleSearchClick = () => {
-  const filtered = products.filter((x) => {
-    const matchName =
-      searchName === "" ||
-      (x.name && x.name.toLowerCase().includes(searchName.toLowerCase()));
+  const handleSearchClick = () => {
+    const filtered = products.filter((x) => {
+      const matchName =
+        searchName === "" ||
+        (x.name && x.name.toLowerCase().includes(searchName.toLowerCase()));
 
-    const matchCat =
-      selectedCat === "" ||
-      (x.category?.name &&
-        x.category.name.toLowerCase().includes(selectedCat.toLowerCase()));
+      const matchCat =
+        selectedCat === "" ||
+        (x.category?.name &&
+          x.category.name.toLowerCase().includes(selectedCat.toLowerCase()));
 
-    const matchTrader =
-      searchTrader === "" ||
-      (x.trader?.name &&
-        x.trader.name.toLowerCase().includes(searchTrader.toLowerCase()));
+      const matchTrader =
+        searchTrader === "" ||
+        (x.trader?.name &&
+          x.trader.name.toLowerCase().includes(searchTrader.toLowerCase()));
 
-    const matchCompany =
-      selectedCompany === "" ||
-      (x.company?.name &&
-        x.company.name.toLowerCase().includes(selectedCompany.toLowerCase()));
+      const matchCompany =
+        selectedCompany === "" ||
+        (x.company?.name &&
+          x.company.name.toLowerCase().includes(selectedCompany.toLowerCase()));
 
-    // ابحث بجميع القيم المدخلة (اللي مش فاضية)
-    return matchName && matchCat && matchTrader && matchCompany;
-  });
+      // ابحث بجميع القيم المدخلة (اللي مش فاضية)
+      return matchName && matchCat && matchTrader && matchCompany;
+    });
 
-  setcurrentProducts(filtered);
-};
-function onResetFilters() {
-  setSearchName("");
-  setselectedCat("");
-  setSearchTrader("");
-  setselectedCompany("");
-  setCurrentPage(1); // اختياري، لو عايز ترجع لأول صفحة
-  setcurrentProducts(products); // رجّع كل المنتجات الأصلية
-}
-
-
-
+    setcurrentProducts(filtered);
+  };
+  function onResetFilters() {
+    setSearchName("");
+    setselectedCat("");
+    setSearchTrader("");
+    setselectedCompany("");
+    setCurrentPage(1); // اختياري، لو عايز ترجع لأول صفحة
+    setcurrentProducts(products); // رجّع كل المنتجات الأصلية
+  }
 
   const handleDeletePro = (product) => {
     const isBlocked = product.isBlocked;
@@ -125,17 +119,16 @@ function onResetFilters() {
       confirmText: isBlocked ? "إلغاء الحذف" : "حذف",
       confirmClass: "btn-danger",
       onConfirm: () => {
-       dispatch(deleteProduct({id:product.id,image:product.image}))
+        dispatch(deleteProduct({ id: product.id, image: product.image }));
         setConfirmModal((prev) => ({ ...prev, open: false }));
       },
     });
   };
 
-
   return (
     <>
       <ProductsFilter
-        searchName={searchName} 
+        searchName={searchName}
         setSearchName={setSearchName}
         selectedCat={selectedCat}
         setselectedCat={setselectedCat}
@@ -224,47 +217,51 @@ function onResetFilters() {
                 <td>{product.unit || "--"}</td>
                 <td>{product.quantity_per_unit || "--"}</td>
                 <td>{product.quantity}</td>
-               <td style={{  }}>
-               
-                                 <CustomMenu
-                                 id={product.id}
-                                 options={[
-                                   { label: "تعديل", icon: "fa-solid fa-paper-plane", color: "green",onClick:()=>{
-                                    setShow(true)
-                                  setEditProduct(product)
-                                  }},
-                                   { label: "حذف" , icon: "fa-solid fa-trash", color: "red",onClick:()=>{handleDeletePro(product)}}
-                                     
-                                 ]}
-                                 />
-               
-               
-               
-                             
-                               </td>
+                <td style={{}}>
+                  <CustomMenu
+                    id={product.id}
+                    options={[
+                      {
+                        label: "تعديل",
+                        icon: "fa-solid fa-paper-plane",
+                        color: "green",
+                        onClick: () => {
+                          setShow(true);
+                          setEditProduct(product);
+                        },
+                      },
+                      {
+                        label: "حذف",
+                        icon: "fa-solid fa-trash",
+                        color: "red",
+                        onClick: () => {
+                          handleDeletePro(product);
+                        },
+                      },
+                    ]}
+                  />
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-            <ModalConfirm
-              isOpen={confirmModal.open}
-              onClose={() => setConfirmModal((prev) => ({ ...prev, open: false }))}
-              onConfirm={confirmModal.onConfirm}
-              message={confirmModal.message}
-              confirmText={confirmModal.confirmText}
-              confirmClass={confirmModal.confirmClass}
-            />
+      <ModalConfirm
+        isOpen={confirmModal.open}
+        onClose={() => setConfirmModal((prev) => ({ ...prev, open: false }))}
+        onConfirm={confirmModal.onConfirm}
+        message={confirmModal.message}
+        confirmText={confirmModal.confirmText}
+        confirmClass={confirmModal.confirmClass}
+      />
 
       {/* Pagination */}
       <div className="pagination">
         <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
           &laquo;
         </button>
-        <button
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-        >
+        <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}>
           &lt;
         </button>
 
@@ -279,7 +276,9 @@ function onResetFilters() {
         ))}
 
         <button
-          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+          onClick={() =>
+            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+          }
         >
           &gt;
         </button>
@@ -290,7 +289,7 @@ function onResetFilters() {
           &raquo;
         </button>
       </div>
-      <EditProductModal show={show}  setShow={setShow} product={EditProduct}/>
+      <EditProductModal show={show} setShow={setShow} product={EditProduct} />
     </>
   );
 };

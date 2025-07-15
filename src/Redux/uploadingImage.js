@@ -23,3 +23,28 @@ export const uploadImagesToSupabase = async (files,store) => {
   
   return uploadedUrls;
 };
+
+
+// جرب كده واطبع النتيجة
+export const deleteImageFromStore = async (publicUrl, bucket) => {
+  try {
+    // استخراج اسم الصورة من الرابط
+    const url = new URL(publicUrl);
+    const idx = url.pathname.indexOf(`/public/${bucket}/`);
+    const filePath = url.pathname.slice(idx + `/public/${bucket}/`.length);
+
+    console.log("[DELETE] trying to delete filePath:", filePath, "from bucket:", bucket);
+
+    const { data, error } = await supabase.storage.from(bucket).remove([filePath]);
+
+    if (error) {
+      console.error("[DELETE] Error from supabase:", error);
+    } else {
+      console.log("[DELETE] Deleted data from supabase:", data);
+    }
+
+    return { data, error };
+  } catch (err) {
+    console.error("[DELETE] Exception:", err);
+  }
+};
