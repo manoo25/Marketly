@@ -21,6 +21,7 @@ const ProductsTbl = () => {
   const dispatch = useDispatch();
   const { products, loading } = useSelector((state) => state.Products);
 
+
   const [currentPage, setCurrentPage] = useState(1);
   const [show, setShow] = useState(false);
   const [EditProduct, setEditProduct] = useState({});
@@ -42,7 +43,7 @@ const ProductsTbl = () => {
     if (!products || products.length === 0) {
       dispatch(fetchProducts());
     }
-  }, [dispatch]);
+  }, [dispatch,UserRole]);
 
   useEffect(() => {
     setCurrentPage(1);

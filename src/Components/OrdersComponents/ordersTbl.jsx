@@ -14,6 +14,7 @@ import { FaEye, FaPrint } from "react-icons/fa";
 import  DelegatorListModal  from "../OrdersComponents/delegatorListModal";
 import Loading from "../globalComonents/loading";
 import { fetchOrderItems } from "../../Redux/Slices/OrderItems";
+import { UserRole } from "../../Redux/Slices/token";
 
 const rowsPerPage = 4;
 
@@ -42,7 +43,7 @@ const OrdersTbl = () => {
               dispatch(getOrders());
             }
     
-    }, [dispatch]);
+    }, [dispatch,UserRole]);
 
 
 

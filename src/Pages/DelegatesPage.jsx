@@ -16,6 +16,7 @@ import DelegatesFilter from "../Components/DelegatesComponents/DelegatesFilter";
 import DelegatesTbl from "../Components/DelegatesComponents/DelegatesTbl";
 import EditDelegateModal from "../Components/modalsComponents/EditDelegateModal";
 import Loading from "../Components/globalComonents/loading";
+import { UserRole } from "../Redux/Slices/token";
 
 export default function DelegatesPage() {
   const dispatch = useDispatch();
@@ -50,7 +51,7 @@ export default function DelegatesPage() {
     if (!users || users.length === 0) {
       dispatch(fetchUsers());
     }
-  }, [dispatch]);
+  }, [dispatch,UserRole]);
 
   // ✅ فلترة المناديب بعد تأخير 500ms
   useEffect(() => {

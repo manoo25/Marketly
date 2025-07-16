@@ -9,6 +9,7 @@ import Toast from 'react-bootstrap/Toast';
 import ToastContainer from 'react-bootstrap/ToastContainer';
 import { sendMessage } from "../Redux/Slices/MessagesSlice";
 import Loading from "../Components/globalComonents/loading";
+import { UserRole } from "../Redux/Slices/token";
 
 
 export default function UsersPage() {
@@ -26,8 +27,10 @@ export default function UsersPage() {
     // getting user from store and subabase
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(fetchUsers());
-    }, [dispatch])
+        if (!users || users.length === 0) {
+             dispatch(fetchUsers());
+           }
+    }, [dispatch,UserRole])
 
     const { users, loading } = useSelector((state) => state.Users);
 

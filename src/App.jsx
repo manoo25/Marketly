@@ -16,18 +16,19 @@ import DelegatesPage from "./Pages/DelegatesPage";
 import ChooseRole from "./Pages/auth/ChooseRole";
 import CheckDelegates from "./Pages/auth/CheckDelegates";
 
-import { useDispatch } from "react-redux";
-import { useEffect } from "react";
-import { GetToken } from "./Redux/Slices/token";
+// import { useDispatch } from "react-redux";
+// import { useEffect } from "react";
+// import { GetToken } from "./Redux/Slices/token";
+
  
 function App() {
 
 
 
-const dispatch=useDispatch();
- useEffect(() => {
-      dispatch(GetToken())
-    }, []);
+// const dispatch=useDispatch();
+//  useEffect(() => {
+//       dispatch(GetToken());
+//     }, []);
 
   const routes = createBrowserRouter([
     { path: 'Dashboard', element: <Layout /> },
