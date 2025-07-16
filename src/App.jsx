@@ -15,6 +15,7 @@ import MostSellingProducts from "./Pages/Products/MostSellingProducts";
 import DelegatesPage from "./Pages/DelegatesPage";
 import ChooseRole from "./Pages/auth/ChooseRole";
 import CheckDelegates from "./Pages/auth/CheckDelegates";
+import UploadShopImage from "./Pages/auth/UploadShopImage";
  
 function App() {
   const routes = createBrowserRouter([
@@ -40,6 +41,8 @@ function App() {
     { path: 'SigninPage', element: <SigninPage /> },
     { path: 'choose-role', element: <ChooseRole /> },
     { path: 'check-delegates', element: <CheckDelegates /> },
+   { path:"/upload-shop-image" , element:<UploadShopImage />}
+
    ]);
 
   return (

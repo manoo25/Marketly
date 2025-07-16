@@ -18,13 +18,13 @@ const SignUp = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const roleFromRoute = location.state?.role || "";
+ useEffect(() => {
+  if (!roleFromRoute) {
+    alert("يجب اختيار نوع الحساب أولاً");
+    navigate("/choose-role");
+  }
+}, []);
 
-  useEffect(() => {
-    if (!roleFromRoute) {
-      alert("يجب اختيار نوع الحساب أولاً");
-      navigate("/choose-role");
-    }
-  }, []);
 
   const validationSchema = Yup.object({
     name: Yup.string().required("الاسم مطلوب"),
@@ -138,18 +138,10 @@ localStorage.setItem("userID",userId);
       navigate("/Landing");
     }
   };
-
 const getLocationAndSetAddress = () => {
-  if (!navigator.geolocation) {
-    alert("المتصفح لا يدعم تحديد الموقع الجغرافي");
-    return;
-  }
-
   navigator.geolocation.getCurrentPosition(
     async (position) => {
       const { latitude, longitude } = position.coords;
-
-      console.log("🧭 اللوكيشن:", latitude, longitude);
 
       try {
         const response = await fetch(
@@ -162,28 +154,35 @@ const getLocationAndSetAddress = () => {
         );
 
         const data = await response.json();
-        const address = data.display_name;
 
-        if (address) {
-          alert("✅ تم الحصول على عنوانك بنجاح");
-          formik.setFieldValue("location", address);
-        } else {
-          alert("❌ لم يتم العثور على عنوان دقيق.");
-        }
+        const fullAddress = [
+          data.address.house_number,
+          data.address.road,
+          data.address.residential,
+          data.address.neighbourhood,
+          data.address.suburb,
+          data.address.village,
+          data.address.town,
+          data.address.city,
+          data.address.state_district,
+          data.address.state,
+          data.address.postcode,
+          data.address.country,
+        ]
+          .filter(Boolean)
+          .join(", ");
+
+        formik.setFieldValue("location", fullAddress);
       } catch (error) {
-        console.error("❌ خطأ في جلب العنوان:", error);
-        alert("حدث خطأ أثناء جلب العنوان.");
+        alert("فشل في جلب العنوان من الخدمة.");
+        console.error(error);
       }
     },
     (error) => {
-      console.error("📛 خطأ في الحصول على الموقع:", error);
-      if (error.code === 1) {
-        alert("رجاءً اسمحي للموقع بالوصول لموقعك من إعدادات المتصفح.");
-      } else {
-        alert("حدث خطأ أثناء تحديد الموقع.");
-      }
+      alert("حدث خطأ أثناء تحديد الموقع.");
+      console.error(error);
     },
-    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    { enableHighAccuracy: true, timeout: 10000 }
   );
 };
 
