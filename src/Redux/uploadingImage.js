@@ -10,12 +10,15 @@ export const uploadImagesToSupabase = async (files,store) => {
       .upload(fileName, file);
 
     if (error) {
+console.log("[UPLOAD] Public URL for", fileName, "=>", publicUrlData.publicUrl);
+      
       throw error;
     }
 
     const { data: publicUrlData } = supabase.storage
       .from(store)
       .getPublicUrl(fileName);
+console.log("[UPLOAD] Public URL for", fileName, "=>", publicUrlData.publicUrl);
 
     uploadedUrls.push(publicUrlData.publicUrl);
   }
@@ -23,7 +26,6 @@ export const uploadImagesToSupabase = async (files,store) => {
   
   return uploadedUrls;
 };
-
 
 // جرب كده واطبع النتيجة
 export const deleteImageFromStore = async (publicUrl, bucket) => {
