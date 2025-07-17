@@ -6,13 +6,13 @@ import { FaEye, FaPrint } from "react-icons/fa";
 import ReturnsFilter from "./ReturnsFilter";
 import CustomMenu from "../globalComonents/CustomMenu";
 import LabeledMenu from "../globalComonents/LabeledMenu";
-import { supabase } from "../../Supabase/SupabaseClient";
+import { supabase } from "../../Supabase/supabaseClient";
 import Loading from "../globalComonents/loading";
 
 
 
 
-const rowsPerPage = 10;
+const rowsPerPage = 4;
 
 const ReturnsTbl = () => {
     const dispatch = useDispatch();
@@ -27,18 +27,25 @@ const ReturnsTbl = () => {
 
 
     const [currentPage, setCurrentPage] = useState(1);
+
+
+    // useEffect(() => {
+    //    if (!returns || returns.length === 0) {
+    //      dispatch(getReturns());
+    //    }
+    // }, [dispatch, returns]);
+
     useEffect(() => {
-       if (!returns || returns.length === 0) {
-         dispatch(getReturns());
-       }
-    }, [dispatch]);
+   dispatch(getReturns());
+}, [dispatch]);
+console.log(returns)
 
     // effect for filtering
     useEffect(() => {
         const filtered = returns.filter((returnItem) => {
             const matchName =
                 searchName === "" ||
-                (returnItem.user?.name && returnItem.user.name.toLowerCase().includes(searchName.toLowerCase()));
+                (returnItem.users?.name && returnItem.users.name.toLowerCase().includes(searchName.toLowerCase()));
 
             const matchState =
                 selectedState === "" ||
@@ -46,7 +53,7 @@ const ReturnsTbl = () => {
 
             const matchGov =
                 selectedGovernorate === "" ||
-                (returnItem.user?.governorate && returnItem.user.governorate.toLowerCase().includes(selectedGovernorate.toLowerCase()));
+                (returnItem.users?.governorate && returnItem.users.governorate.toLowerCase().includes(selectedGovernorate.toLowerCase()));
 
             return matchName && matchState && matchGov;
         });
@@ -315,9 +322,9 @@ const ReturnsTbl = () => {
 
                                     </label>
                                 </td>
-                                <td>{ret.orders?.users?.name || "--"}</td>
-                                <td>{ret.orders?.users?.phone || "--"}</td>
-                                <td>{ret.orders?.users?.governorate || "--"}</td>
+                                <td>{ret.order?.user?.name || "--"}</td>
+                                <td>{ret.order?.user?.phone || "--"}</td>
+                                <td>{ret.order?.user?.governorate || "--"}</td>
                                 <td>{ret.reason || "--"}</td>
                                 <td>{ret.status || "--"}</td>
                                 <td>{formatArabicDate(ret.created_at) || "--"}</td>
@@ -507,15 +514,16 @@ const ReturnsTbl = () => {
                                                 {returns.filter(x => x.id === viewOrderId).map(order => (
                                                     <>
                                                         <div className="mb-2" style={{ fontSize: 16 }}>
-                                                            <span className="fw-bold">اسم العميل:</span> {order.user?.name || "--"}
+                                                            <span className="fw-bold">اسم العميل:</span> {order.orders?.users?.name || "--"}
                                                         </div>
                                                         <div className="mb-2" style={{ fontSize: 16 }}>
-                                                            <span className="fw-bold"> رقم الهاتف:</span> {order.user?.phone || "--"}
+                                                            <span className="fw-bold"> رقم الهاتف:</span> {order.orders?.users?.phone || "--"}
                                                         </div>
                                                         <div className="mb-2" style={{ fontSize: 16 }}>
-                                                            <span className="fw-bold">المدينة:</span> {order.user?.city || "--"}                </div>
+                                                            <span className="fw-bold">المدينة:</span> {order.orders?.users?.city || "--"}
+                                                        </div>
                                                         <div className="mb-2" style={{ fontSize: 16 }}>
-                                                            <span className="fw-bold">العنوان:</span> {order.user?.location || "--"}
+                                                            <span className="fw-bold">العنوان:</span> {order.orders?.users?.location || "--"}
                                                         </div>
                                                         <div className="mb-2" style={{ fontSize: 16 }}>
                                                             <span className="fw-bold">تاريخ الطلب:</span> {formatArabicDate(order.created_at)}

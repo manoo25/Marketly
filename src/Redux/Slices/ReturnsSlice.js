@@ -7,12 +7,16 @@ export const getReturns = createAsyncThunk(
         try {
             // const { data, error } = await supabase.from("returns").select(`*,
             //     user : order_id)(*),
+
             const { data, error } = await supabase.from("returns")
                 .select(`
                     *,
-                    orders (*,
-                        users (
-                            *) )
+    order: order_id (
+      *,
+      user: user_id (
+        *
+      )
+    )
     `);
             if (error) throw error;
             return data;
@@ -40,9 +44,7 @@ export const updateReturn = createAsyncThunk(
         try {
             const { data, error } = await supabase.from("returns").update(updatedData).eq("id", id).select(`
                     *,
-                    orders (*,
-                        users (
-                            *) )
+                      user: user_id (*)
     `);
             if (error) throw error;
             return data[0];
@@ -66,17 +68,17 @@ export const deleteReturn = createAsyncThunk(
 );
 
 export const deleteSelectedReturns = createAsyncThunk(
-  "returns/deleteSelectedReturns",
-  async (selectedReturns, { rejectWithValue }) => {
-    try {
-      const ids = selectedReturns.map(ret => ret.id);
-      const { error } = await supabase.from("returns").delete().in("id", ids);
-      if (error) throw error;
-      return ids; // return the deleted IDs
-    } catch (error) {
-      return rejectWithValue(error.message);
+    "returns/deleteSelectedReturns",
+    async (selectedReturns, { rejectWithValue }) => {
+        try {
+            const ids = selectedReturns.map(ret => ret.id);
+            const { error } = await supabase.from("returns").delete().in("id", ids);
+            if (error) throw error;
+            return ids; // return the deleted IDs
+        } catch (error) {
+            return rejectWithValue(error.message);
+        }
     }
-  }
 );
 
 const returnsSlice = createSlice({
