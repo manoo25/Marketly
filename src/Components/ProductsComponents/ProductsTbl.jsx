@@ -159,7 +159,10 @@ const ProductsTbl = () => {
                   <th>اسم المنتج</th>
                   <th>الصنف</th>
                   <th>سعر المنتج</th>
-                  <th>التاجر</th>
+                
+                        {UserRole === "admin" &&
+                       <th>التاجر</th>
+                    }
                   <th>الشركة المصنعة</th>
                   <th>الوحدة</th>
                   <th>الكمية فى الوحدة</th>
@@ -205,7 +208,10 @@ const ProductsTbl = () => {
                     <td>{product.name}</td>
                     <td>{product.category?.name || "--"}</td>
                     <td>{product.traderprice}</td>
-                    <td>{product.trader?.name || "--"}</td>
+                    {UserRole === "admin" &&
+                      <td>{product.trader?.name || "--"}</td>
+                    }
+                  
                     <td>{product.company?.name || "--"}</td>
                     <td>{product.unit || "--"}</td>
                     <td>{product.quantity_per_unit || "--"}</td>

@@ -31,7 +31,7 @@ function CompaniesFilter({
       </div>
 
       <PrimaryButton
-        label="مسح "
+        label="إلغاء "
         onClick={onResetFilters}
         // className="btn btn-outline-secondary me-2"
       />

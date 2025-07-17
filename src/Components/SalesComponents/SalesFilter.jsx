@@ -1,18 +1,21 @@
 import GovFilter from "./FilterdComponents/GovFilter";
-import StateFilter from "./FilterdComponents/StateFilter";
 import NameSearch from "./FilterdComponents/Namesearch";
 import LightButton from '../globalComonents/LightButton';
 import PrimaryButton from '../globalComonents/PrimaryButton';
+import DateSearch from "../CompaniesComponents/FilteredComponents/DateSearch";
 
 
 
-function ReturnsFilter({
+function SalesFilter({
     searchName,
     setSearchName,
     selectedGovernorate,
     setSelectedGovernorate,
-    selectedState,
-    setSelectedState,
+    startDate,
+    endDate,
+    setStartDate,
+    setEndDate,
+    onSearchClick,
     onResetFilters
 }) {
     return (
@@ -27,12 +30,16 @@ function ReturnsFilter({
                 selectedGovernorate={selectedGovernorate}
                 setSelectedGovernorate={setSelectedGovernorate}
             />
+ <DateSearch
+        startDate={startDate}
+        endDate={endDate}
+        setStartDate={setStartDate}
+        setEndDate={setEndDate}
+      />
 
-            <StateFilter
-                selectedState={selectedState}
-                setSelectedState={setSelectedState}
-            />
-
+ <div style={{ width: "120px" }}>
+        <LightButton label="بحث" onClick={onSearchClick} className="" />
+      </div>
             <PrimaryButton
                 label="إلغاء "
                 onClick={onResetFilters}
@@ -42,4 +49,4 @@ function ReturnsFilter({
     );
 }
 
-export default ReturnsFilter;
+export default SalesFilter;

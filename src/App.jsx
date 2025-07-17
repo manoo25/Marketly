@@ -15,6 +15,7 @@ import MostSellingProducts from "./Pages/Products/MostSellingProducts";
 import DelegatesPage from "./Pages/DelegatesPage";
 import ChooseRole from "./Pages/auth/ChooseRole";
 import CheckDelegates from "./Pages/auth/CheckDelegates";
+import Sales from "./Pages/Sales";
 
 // import { useDispatch } from "react-redux";
 // import { useEffect } from "react";
@@ -46,6 +47,7 @@ function App() {
         { path: 'Orders', element: <Orders /> },
         { path: 'companies', element: <Companies /> },
         { path: 'Returns', element: <Returns /> },
+        { path: 'Sales', element: <Sales /> },
         { path: 'Delegates', element: <DelegatesPage /> },
       ]
     },
