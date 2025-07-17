@@ -42,7 +42,7 @@ export const getDoneOrders = createAsyncThunk(
          trader_id (name),
         delegator(name)
       `)
-      .eq("status", "تم التوصيل"); // فلترة حسب الحالة
+      .eq("status", "تم التوصيل"); 
 
       if (UserRole !== "admin") {
         query = query.eq("trader_id", userId);
