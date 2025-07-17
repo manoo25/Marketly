@@ -30,12 +30,14 @@ function SalesFilter({
                 selectedGovernorate={selectedGovernorate}
                 setSelectedGovernorate={setSelectedGovernorate}
             />
- <DateSearch
+<div style={{ minWidth: "500px" }}>
+     <DateSearch
         startDate={startDate}
         endDate={endDate}
         setStartDate={setStartDate}
         setEndDate={setEndDate}
       />
+</div>
 
  <div style={{ width: "120px" }}>
         <LightButton label="بحث" onClick={onSearchClick} className="" />

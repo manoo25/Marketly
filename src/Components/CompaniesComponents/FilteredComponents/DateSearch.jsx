@@ -7,7 +7,7 @@ import "./DatePickerCustom.css";
 
 function DateSearch({ startDate, endDate, setStartDate, setEndDate }) {
   return (
-    <div className="d-flex gap-2 align-items-center">
+    <div className="d-flex gap-2 align-items-center ">
       <div>
         <label>من</label>
         <DatePicker
