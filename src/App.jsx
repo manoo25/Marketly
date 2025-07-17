@@ -22,6 +22,7 @@ import Sales from "./Pages/Sales";
 // import { GetToken } from "./Redux/Slices/token";
 
 import UploadShopImage from "./Pages/auth/UploadShopImage";
+import Complaints from "./Pages/Complaints";
  
 function App() {
 
@@ -50,6 +51,7 @@ function App() {
         { path: 'Returns', element: <Returns /> },
         { path: 'Sales', element: <Sales /> },
         { path: 'Delegates', element: <DelegatesPage /> },
+        { path: 'Complaints', element: <Complaints /> },
       ]
     },
     { path: 'SignUp', element: <SignUpPage /> },

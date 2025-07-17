@@ -5,10 +5,10 @@ import {
     getDoneOrders,
 } from "../../Redux/Slices/OrdersSlice";
 import OrdersFilter from "./SalesFilter";
-import { supabase } from "../../Supabase/SupabaseClient";
 import { FaEye, FaPrint } from "react-icons/fa";
 import Loading from "../globalComonents/loading";
 import { UserRole } from "../../Redux/Slices/token";
+import { supabase } from "../../Supabase/supabaseClient";
 
 const rowsPerPage = 4;
 
