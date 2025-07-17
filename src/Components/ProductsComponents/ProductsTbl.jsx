@@ -207,7 +207,7 @@ const ProductsTbl = () => {
                     </td>
                     <td>{product.name}</td>
                     <td>{product.category?.name || "--"}</td>
-                    <td>{product.traderprice}</td>
+                    <td>{product.endPrice}</td>
                     {UserRole === "admin" &&
                       <td>{product.trader?.name || "--"}</td>
                     }
