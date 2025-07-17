@@ -37,7 +37,7 @@ function ComplaintsFilter({
         setFilterDate={setFilterDate}
       />
 </div>
-    <div style={{ minWidth: "115px" }}>
+    <div style={{ minWidth: "140px" }}>
         <LightButton
           label="شكاوى معلقة"
           onClick={PendingComplaints}
