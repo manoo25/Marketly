@@ -49,14 +49,15 @@ const SignUp = () => {
   const [submittedRole, setSubmittedRole] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch=useDispatch();
   const roleFromRoute = location.state?.role || "";
-const dispatch=useDispatch();
-  useEffect(() => {
-    if (!roleFromRoute) {
-      alert("يجب اختيار نوع الحساب أولاً");
-      navigate("/choose-role");
-    }
-  }, []);
+ useEffect(() => {
+  if (!roleFromRoute) {
+    alert("يجب اختيار نوع الحساب أولاً");
+    navigate("/choose-role");
+  }
+}, []);
+
 
   const validationSchema = Yup.object({
     name: Yup.string().required("الاسم مطلوب"),
@@ -114,7 +115,10 @@ const dispatch=useDispatch();
           return;
         }
 
-        const imageUrls = await uploadImagesToSupabase(values.userImage, "users");
+ let imageUrls = [];
+if (values.userImage) {
+  imageUrls = await uploadImagesToSupabase(values.userImage, "users");
+}
 
         const newUser = {
           name: values.name,
@@ -125,9 +129,10 @@ const dispatch=useDispatch();
           city: values.city,
           role: roleFromRoute,
           location: values.location,
-          image: imageUrls[0],
+          image: imageUrls && imageUrls.length > 0 ? imageUrls[0] : '',
           isBlocked: false,
         };
+console.log(newUser);
 
         const { data: insertedUsers, error } = await supabase
           .from("users")
@@ -171,52 +176,54 @@ const dispatch=useDispatch();
       navigate("/Landing");
     }
   };
+const getLocationAndSetAddress = () => {
+  navigator.geolocation.getCurrentPosition(
+    async (position) => {
+      const { latitude, longitude } = position.coords;
 
-  const getLocationAndSetAddress = () => {
-    if (!navigator.geolocation) {
-      alert("المتصفح لا يدعم تحديد الموقع الجغرافي");
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const { latitude, longitude } = position.coords;
-
-        try {
-          const response = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=ar`,
-            {
-              headers: {
-                "User-Agent": "wholesale-app/1.0 (wholesale@example.com)",
-              },
-            }
-          );
-
-          const data = await response.json();
-          const address = data.display_name;
-
-          if (address) {
-            alert("✅ تم الحصول على عنوانك بنجاح");
-            formik.setFieldValue("location", address);
-          } else {
-            alert("❌ لم يتم العثور على عنوان دقيق.");
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=ar`,
+          {
+            headers: {
+              "User-Agent": "wholesale-app/1.0 (wholesale@example.com)",
+            },
           }
-        } catch (error) {
-          console.error("❌ خطأ في جلب العنوان:", error);
-          alert("حدث خطأ أثناء جلب العنوان.");
-        }
-      },
-      (error) => {
-        console.error("📛 خطأ في الحصول على الموقع:", error);
-        if (error.code === 1) {
-          alert("رجاءً اسمحي للموقع بالوصول لموقعك من إعدادات المتصفح.");
-        } else {
-          alert("حدث خطأ أثناء تحديد الموقع.");
-        }
-      },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-    );
-  };
+        );
+
+        const data = await response.json();
+
+        const fullAddress = [
+          data.address.house_number,
+          data.address.road,
+          data.address.residential,
+          data.address.neighbourhood,
+          data.address.suburb,
+          data.address.village,
+          data.address.town,
+          data.address.city,
+          data.address.state_district,
+          data.address.state,
+          data.address.postcode,
+          data.address.country,
+        ]
+          .filter(Boolean)
+          .join(", ");
+
+        formik.setFieldValue("location", fullAddress);
+      } catch (error) {
+        alert("فشل في جلب العنوان من الخدمة.");
+        console.error(error);
+      }
+    },
+    (error) => {
+      alert("حدث خطأ أثناء تحديد الموقع.");
+      console.error(error);
+    },
+    { enableHighAccuracy: true, timeout: 10000 }
+  );
+};
+
 
   return (
     <div className={styles.signupPage}>

@@ -21,6 +21,7 @@ import Sales from "./Pages/Sales";
 // import { useEffect } from "react";
 // import { GetToken } from "./Redux/Slices/token";
 
+import UploadShopImage from "./Pages/auth/UploadShopImage";
  
 function App() {
 
@@ -56,6 +57,8 @@ function App() {
     { path: 'SigninPage', element: <SigninPage /> },
     { path: 'choose-role', element: <ChooseRole /> },
     { path: 'check-delegates', element: <CheckDelegates /> },
+   { path:"/upload-shop-image" , element:<UploadShopImage />}
+
    ]);
 
   return (

@@ -7,13 +7,14 @@ import "../../css/global.css";
 
 const ChooseRole = () => {
   const navigate = useNavigate();
-  const handleSelect = (role) => {
-    if (role === "trader") {
-      navigate("/check-delegates", { state: { role } });
-    } else {
-      navigate("/signup", { state: { role } });
-    }
-  };
+const handleSelect = (role) => {
+  if (role === "trader") {
+    navigate("/check-delegates", { state: { role } });
+  } else if (role === "user") {
+    navigate("/upload-shop-image", { state: { role } });
+  }
+};
+
 
   return (
     <div className={styles.signupPage}>
