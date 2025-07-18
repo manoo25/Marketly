@@ -17,7 +17,7 @@ function SidebarLink({ SetPageTitle }) {
     { text: 'الشركات', icon: 'fa-solid fa-chart-line', path: '/Dashboard/companies', role: 'admin' },
     { text: 'الطلبات', icon: 'fa-solid fa-receipt', path: '/Dashboard/Orders' },
     { text: 'المرتجعات', icon: 'fa-solid fa-undo', path: '/Dashboard/Returns' },
-    { text: 'الشكاوى', icon: 'fa-solid fa-undo', path: '/Dashboard/Complaints' }
+    { text: 'الشكاوى', icon: 'fa-solid fa-undo', path: '/Dashboard/Complaints', role: 'admin' }
   ];
 
   const productsSubLinks = [

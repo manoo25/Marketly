@@ -23,10 +23,12 @@ import Sales from "./Pages/Sales";
 
 import UploadShopImage from "./Pages/auth/UploadShopImage";
 import Complaints from "./Pages/Complaints";
+import GoogleUserRoute from "./Pages/auth/GoogleUserRoute";
+
  
 function App() {
 
-
+localStorage.removeItem('sb-auxwhdusfpgyzbwgjize-auth-token')
 
 // const dispatch=useDispatch();
 //  useEffect(() => {
@@ -57,6 +59,7 @@ function App() {
     { path: 'SignUp', element: <SignUpPage /> },
     { path: '/', element: <SigninPage /> },
     { path: 'SigninPage', element: <SigninPage /> },
+   { path: 'google-setup', element: <GoogleUserRoute /> },
     { path: 'choose-role', element: <ChooseRole /> },
     { path: 'check-delegates', element: <CheckDelegates /> },
    { path:"/upload-shop-image" , element:<UploadShopImage />}
