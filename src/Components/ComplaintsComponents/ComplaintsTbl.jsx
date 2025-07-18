@@ -7,7 +7,7 @@ import ModalConfirm from "../UsersComponents/ModalConfirm";
 
 import Loading from "../globalComonents/loading";
 import { UserRole } from "../../Redux/Slices/token";
-import { deleteComplaint, fetchcomplaints } from "../../Redux/Slices/Complaints";
+import { deleteComplaint, fetchcomplaints, updateComplaint } from "../../Redux/Slices/Complaints";
 import ComplaintsFilter from "./ComplaintsFilter";
 
 const rowsPerPage = 10;
@@ -133,7 +133,9 @@ const ComplaintsTable = () => {
       },
     });
   };
-
+function handleUpdateComplaintState(id, newState) {
+  dispatch(updateComplaint({ id, updatedData: { state: newState } }));
+}
   return (
     <>
       {loading ? (
@@ -239,19 +241,32 @@ const ComplaintsTable = () => {
                         </p>
                       </td>
                       <td>
-                        <CustomMenu
-                          id={complaint.id}
-                          options={[
-                            {
-                              label: "حذف",
-                              icon: "fa-solid fa-trash",
-                              color: "red",
-                              onClick: () => {
-                                handleDeleteComplaint(complaint);
-                              },
-                            },
-                          ]}
-                        />
+                     <CustomMenu
+  id={complaint.id}
+  options={[
+    {
+      label: "حذف",
+      icon: "fa-solid fa-trash",
+      color: "red",
+      onClick: () => {
+        handleDeleteComplaint(complaint);
+      },
+    },
+  {
+  label: complaint.state === "done" ? "شكوى معلقة" : "تم التواصل",
+  icon: complaint.state === "done" ? "fa-solid fa-rotate-left" : "fa-solid fa-check",
+  color: complaint.state === "done" ? "orange" : "green",
+  onClick: () => {
+    handleUpdateComplaintState(
+      complaint.id,
+      complaint.state === "done" ? "pending" : "done"
+    );
+  },
+}
+
+  ]}
+/>
+
                       </td>
                     </tr>
                   );

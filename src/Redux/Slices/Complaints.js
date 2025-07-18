@@ -52,6 +52,30 @@ export const deleteComplaint = createAsyncThunk(
   }
 );
 
+
+      // Update Complaint
+export const updateComplaint = createAsyncThunk(
+  "complaints/updateComplaint",
+  async ({ id, updatedData }, { rejectWithValue }) => {
+    try {
+      const { data, error } = await supabase
+        .from("complaints")
+        .update(updatedData)
+        .eq("id", id)
+        .select(`*,
+           user:user_id(*)
+          `);
+      if (error) throw error;
+      return data[0];
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+     
+
+
 // Slice
 const complaintsSlice = createSlice({
   name: "complaints",
@@ -90,6 +114,24 @@ const complaintsSlice = createSlice({
         state.error = action.payload;
       })
 
+       // Update
+      .addCase(updateComplaint.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateComplaint.fulfilled, (state, action) => {
+        state.loading = false;
+        const index = state.complaints.findIndex(
+          (item) => item.id === action.payload.id
+        );
+        if (index !== -1) {
+          state.complaints[index] = action.payload;
+        }
+      })
+      .addCase(updateComplaint.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
     
       // Delete
       .addCase(deleteComplaint.pending, (state) => {
