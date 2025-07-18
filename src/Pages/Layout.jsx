@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+
 import Logo from '../../src/assets/Images/Logo.png';
 import * as bootstrap from 'bootstrap';
 import SidebarLink from '../Components/LayoutComponents/sidebarLink';
@@ -6,15 +7,16 @@ import Nav from '../Components/LayoutComponents/Nav';
 import { Outlet } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { GetToken } from '../Redux/Slices/token';
+import { supabase } from '../Supabase/SupabaseClient';
 
 function Layout() {
   const [margin, setMargin] = useState('0');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [PageTitle, SetPageTitle] = useState('لوحة التحكم');
-
   const offcanvasRef = useRef(null);
 
   const { token, UserRole } = useSelector(state => state.Token);
+
   const dispatch = useDispatch();
 
   useEffect(() => {

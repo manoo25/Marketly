@@ -6,15 +6,18 @@ import styles from "../../css/AuthLayout.module.css";
 import "../../css/global.css";
 import Logo from "../../assets/Images/Logo.png";
 import { Link, useNavigate } from "react-router-dom";
-import {  supabase } from "../../Supabase/SupabaseClient";
+import { supabase } from "../../Supabase/SupabaseClient";
 import { useDispatch } from "react-redux";
 import { GetToken } from "../../Redux/Slices/token";
+import { FaGoogle } from "react-icons/fa";
+import { createClient } from "@supabase/supabase-js";
+
 
 const SigninPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
-const dispatch=useDispatch();
+  const dispatch = useDispatch();
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   const validationSchema = Yup.object({
@@ -35,11 +38,11 @@ const dispatch=useDispatch();
     onSubmit: async (values) => {
       setIsSubmitting(true);
       try {
-         const { data: users, error } = await supabase
+        const { data: users, error } = await supabase
           .from("users")
           .select("*")
           .eq("email", values.email)
-          .eq("password", values.password)  
+          .eq("password", values.password);
 
         if (error) throw error;
 
@@ -54,15 +57,13 @@ const dispatch=useDispatch();
         const user = users[0];
 
         localStorage.setItem("userID", user.id);
-       dispatch(GetToken());
-        
-         if (user.role === "admin" || user.role === "trader") {
+        dispatch(GetToken());
+
+        if (user.role === "admin" || user.role === "trader") {
           navigate("/Dashboard/Charts");
-        } 
-        else {
+        } else {
           navigate("/Landing");
         }
-
       } catch (err) {
         console.error("❌ خطأ أثناء تسجيل الدخول:", err.message);
         alert("حدث خطأ أثناء تسجيل الدخول");
@@ -72,14 +73,106 @@ const dispatch=useDispatch();
     },
   });
 
+// login with google
+
+const supabase = createClient(
+  'https://auxwhdusfpgyzbwgjize.supabase.co',
+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF1eHdoZHVzZnBneXpid2dqaXplIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE2NjM0ODcsImV4cCI6MjA2NzIzOTQ4N30.XQ9uqohMGWcSahakaGuNxCcQ7-abvZ4zLFmeZaf112E'
+)
+const loginWithGoogle = async () => {
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: `${window.location.origin}/google-setup`, 
+    }
+  });
+
+  if (error) {
+    console.error('Login Error:', error.message)
+  }
+}
+
   return (
     <div className={styles.signupPage}>
       <Row className="g-0 justify-content-center align-items-center min-vh-100">
-        <Col
-          md={4}
-          className={`d-none d-md-flex align-items-center justify-content-center rounded-3 ${styles.signupImageSection}`}>
-          <img src={Logo} alt="تسجيل دخول" className={styles.signupSideImg} />
-        </Col>
+<Col
+  md={4}
+  className="d-none d-md-flex align-items-center justify-content-center p-4"
+  style={{
+    background: "linear-gradient(135deg, #5f27cd, #74b9ff)",
+    borderTopLeftRadius: "16px",
+    borderBottomLeftRadius: "16px",
+    color: "#fff",
+    flexDirection: "column",
+    textAlign: "center",
+    position: "relative",
+    overflow: "hidden",
+  }}
+>
+  {/* شكل زخرفي خفيف خلفي */}
+  <div
+    style={{
+      position: "absolute",
+      top: "-60px",
+      right: "-60px",
+      width: "200px",
+      height: "200px",
+      borderRadius: "50%",
+      background: "rgba(255, 255, 255, 0.05)",
+      zIndex: 0,
+    }}
+  />
+
+  <div
+    style={{
+      position: "absolute",
+      bottom: "-40px",
+      left: "-40px",
+      width: "120px",
+      height: "120px",
+      borderRadius: "50%",
+      background: "rgba(0, 0, 0, 0.05)",
+      zIndex: 0,
+    }}
+  />
+
+  {/* اللوجو */}
+  <img
+    src={Logo}
+    alt="Marketly Logo"
+    style={{
+      maxWidth: "120px",
+      marginBottom: "1.2rem",
+      zIndex: 2,
+      filter: "drop-shadow(0 3px 6px rgba(0,0,0,0.25))",
+    }}
+  />
+
+  <h3 style={{ fontWeight: "bold", marginBottom: "0.5rem", zIndex: 2 }}>
+    أهلاً بك في <span style={{ color: "#00ffe0" }}>Marketly</span>
+  </h3>
+
+  <p
+    style={{
+      fontSize: "0.95rem",
+      lineHeight: "1.7",
+      maxWidth: "260px",
+      zIndex: 2,
+      opacity: 0.95,
+    }}
+  >
+    تحكّم في متجرك الذكي بسهولة، وسرعة، واحترافية.
+    كل شيء في مكان واحد — لأننا نعرف قيمة وقتك.
+  </p>
+
+  {/* CTA */}
+<p className="mt-3 text-white-50" style={{ fontSize: "0.85rem" }}>
+جرب Marketly وغيّر طريقة إدارتك لمتجرك.
+</p>
+</Col>
+
+
+
 
         <Col md={7}>
           <div className={styles.signupFormWrapper}>
@@ -103,7 +196,9 @@ const dispatch=useDispatch();
                       className="py-2"
                     />
                     {formik.touched.email && formik.errors.email && (
-                      <div className="text-danger small">{formik.errors.email}</div>
+                      <div className="text-danger small">
+                        {formik.errors.email}
+                      </div>
                     )}
                   </Form.Group>
                 </Col>
@@ -136,7 +231,9 @@ const dispatch=useDispatch();
                       ></i>
                     </div>
                     {formik.touched.password && formik.errors.password && (
-                      <div className="text-danger small">{formik.errors.password}</div>
+                      <div className="text-danger small">
+                        {formik.errors.password}
+                      </div>
                     )}
                   </Form.Group>
                 </Col>
@@ -151,11 +248,50 @@ const dispatch=useDispatch();
                   <Button
                     type="submit"
                     className="w-100 mt-2 fw-bold"
-                    style={{ backgroundColor: "#28a745", borderColor: "#28a745" }}
+                    style={{
+                      backgroundColor: "#28a745",
+                      borderColor: "#28a745",
+                    }}
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? "جاري التحقق..." : "تسجيل الدخول"}
                   </Button>
+                </Col>
+                <Col md={12}>
+               <Button
+               onClick={loginWithGoogle} 
+  variant="light"
+  className="w-100 fw-bold d-flex align-items-center justify-content-center gap-2 border mt-1"
+  style={{
+    borderColor: "#ddd",
+    color: "#555",
+    fontSize: "1rem",
+    padding: "0.4rem 1rem",
+    backgroundColor: "#fff",
+    transition: "all 0.2s ease-in-out",
+  }}
+  onMouseEnter={(e) => {
+    e.currentTarget.style.backgroundColor = "#f5f5f5";
+    e.currentTarget.style.borderColor = "#ccc";
+  }}
+  onMouseLeave={(e) => {
+    e.currentTarget.style.backgroundColor = "#fff";
+    e.currentTarget.style.borderColor = "#ddd";
+  }}
+>
+  <img
+    src="https://developers.google.com/identity/images/g-logo.png"
+    alt="Google"
+    style={{
+      width: "20px",
+      height: "20px",
+      backgroundColor: "#fff",
+      padding: "2px",
+      borderRadius: "50%",
+    }}
+  />
+  الدخول بواسطة جوجل
+</Button>
                 </Col>
               </Row>
             </Form>
@@ -168,7 +304,10 @@ const dispatch=useDispatch();
 
             <div className="text-center">
               <span>ليس لديك حساب؟ </span>
-              <Link to="/SignUp" className="text-decoration-none text-warning fw-bold">
+              <Link
+                to="/SignUp"
+                className="text-decoration-none text-warning fw-bold"
+              >
                 إنشاء حساب
               </Link>
             </div>
