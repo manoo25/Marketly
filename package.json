@@ -20,6 +20,7 @@
     "formik": "^2.4.6",
     "leaflet": "^1.9.4",
     "lodash.debounce": "^4.0.8",
+    "lucide-react": "^0.525.0",
     "react": "^19.1.0",
     "react-bootstrap": "^2.10.10",
     "react-datepicker": "^8.4.0",
