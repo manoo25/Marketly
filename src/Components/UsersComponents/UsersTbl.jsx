@@ -18,7 +18,6 @@ import { getCurrentUserId } from "../../utils/getCurrentUserId";
 const rowsPerPage = 10;
 
 const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, searchEmail, onBlockUser, onUpdateUserRole, onUpdateSelectedUseresRole, onBlockSelectedUsers, onUnblockSelectedUsers, onSendMessage }) => {
- console.log(users);
  
   const filteredUsers = users.filter((user) => {
     const matchGovernorate = selectedGovernorate ? user.governorate === selectedGovernorate : true;

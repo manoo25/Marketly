@@ -8,7 +8,8 @@ import OrdersFilter from "./SalesFilter";
 import { FaEye, FaPrint } from "react-icons/fa";
 import Loading from "../globalComonents/loading";
 import { UserRole } from "../../Redux/Slices/token";
-import { supabase } from "../../Supabase/supabaseClient";
+import { supabase } from "../../Supabase/SupabaseClient";
+
 
 const rowsPerPage = 4;
 

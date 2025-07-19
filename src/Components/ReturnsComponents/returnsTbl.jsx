@@ -6,8 +6,9 @@ import { FaEye, FaPrint } from "react-icons/fa";
 import ReturnsFilter from "./ReturnsFilter";
 import CustomMenu from "../globalComonents/CustomMenu";
 import LabeledMenu from "../globalComonents/LabeledMenu";
-import { supabase } from "../../Supabase/supabaseClient";
+
 import Loading from "../globalComonents/loading";
+import { supabase } from "../../Supabase/SupabaseClient";
 
 
 

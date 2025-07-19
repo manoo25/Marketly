@@ -2,19 +2,22 @@ import React, { useState } from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+
+import { supabase } from "../../Supabase/SupabaseClient";
+import { GetToken } from "../../Redux/Slices/token";
 import styles from "../../css/AuthLayout.module.css";
 import "../../css/global.css";
 import Logo from "../../assets/Images/Logo.png";
-import { Link, useNavigate } from "react-router-dom";
-import { supabase } from "../../Supabase/SupabaseClient";
-import { useDispatch } from "react-redux";
-import { GetToken } from "../../Redux/Slices/token";
 
 const SigninPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   const validationSchema = Yup.object({
@@ -52,16 +55,21 @@ const SigninPage = () => {
         }
 
         const user = users[0];
-
         localStorage.setItem("userID", user.id);
         dispatch(GetToken());
 
+        if (user.isBlocked) {
+          alert("You Are Blocked Please ContactUs !!");
+          navigate("/");
+          return;
+        }
+
+        // تسجيل دخول ناجح
+        localStorage.removeItem("sb-auxwhdusfpgyzbwgjize-auth-token");
+
         if (user.role === "admin" || user.role === "trader") {
- localStorage.removeItem('sb-auxwhdusfpgyzbwgjize-auth-token')
           navigate("/Dashboard/Charts");
-         
         } else {
-          localStorage.removeItem('sb-auxwhdusfpgyzbwgjize-auth-token')
           navigate("/Landing");
         }
       } catch (err) {
@@ -73,7 +81,6 @@ const SigninPage = () => {
     },
   });
 
-  // تسجيل الدخول باستخدام Google
   const loginWithGoogle = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
@@ -91,6 +98,7 @@ const SigninPage = () => {
   return (
     <div className={styles.signupPage}>
       <Row className="g-0 justify-content-center align-items-center min-vh-100">
+        {/* الجانب الأيسر */}
         <Col
           md={4}
           className="d-none d-md-flex align-items-center justify-content-center p-4"
@@ -159,6 +167,7 @@ const SigninPage = () => {
           </p>
         </Col>
 
+        {/* نموذج تسجيل الدخول */}
         <Col md={7}>
           <div className={styles.signupFormWrapper}>
             <h2 className="fw-bold mb-2 text-end">مرحباً بعودتك!</h2>

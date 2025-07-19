@@ -1,19 +1,20 @@
 import { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "../../Supabase/SupabaseClient";
 import GoogleUserSetup from "./GoogleUserSetup";
-
+import Loading from "../../Components/globalComonents/loading";
 
 const GoogleUserRoute = () => {
   const [loading, setLoading] = useState(true);
-  const [shouldRedirect, setShouldRedirect] = useState(null);
+  const [showSetup, setShowSetup] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const checkUserInDB = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
 
-      if (!user) {
-        setShouldRedirect(false); // مش مسجل دخول أصلاً
+      if (authError || !user) {
+        setShowSetup(true); // لم يتم تسجيل الدخول
         setLoading(false);
         return;
       }
@@ -23,23 +24,31 @@ const GoogleUserRoute = () => {
         .select("*")
         .eq("id", user.id);
 
-      if (error) {
-        console.error("Database error:", error.message);
-        setShouldRedirect(false);
-      } else {
-       localStorage.setItem("userID", data.length>0? data[0].id:'');
-        setShouldRedirect(data.length > 0); // لو موجود في جدول users
+      if (error || !data || data.length === 0) {
+        console.error("Database error:", error?.message || "No data");
+        setShowSetup(true);
+        setLoading(false);
+        return;
       }
 
-      setLoading(false);
+      const currentUser = data[0];
+      if (currentUser.isBlocked) {
+        
+        alert("You are blocked. Please contact us.");
+        navigate("/"); // رجوع للصفحة الرئيسية
+        return;
+      }
+
+      // المستخدم مسموح له
+      localStorage.setItem("userID", currentUser.id);
+      navigate("/Dashboard/Charts"); // التوجيه بعد التحقق
     };
 
     checkUserInDB();
-  }, []);
+  }, [navigate]);
 
-  if (loading) return <div>جار التحميل...</div>;
-
-  return shouldRedirect ? <Navigate to="/Dashboard/Charts" /> : <GoogleUserSetup />;
+  if (loading) return <Loading />;
+  return showSetup ? <GoogleUserSetup /> : null;
 };
 
 export default GoogleUserRoute;
