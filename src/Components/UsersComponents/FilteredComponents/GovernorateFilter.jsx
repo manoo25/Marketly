@@ -14,7 +14,11 @@ function GovernorateFilter({ selectedGovernorate, setSelectedGovernorate }) {
         onChange={(val) => setSelectedGovernorate(val)}
       />
     </div>
+    
   )
 }
+
+
+<option value="cairo">القاهرة</option>
 
 export default GovernorateFilter;
