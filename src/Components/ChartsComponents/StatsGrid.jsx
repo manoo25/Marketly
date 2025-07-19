@@ -43,7 +43,7 @@ function StatsGrid() {
             <Row>
                 {stats.map((stat, index) => (
                     <Col md={6} lg={3} key={index} className="mb-4">
-                        <Card className="h-100 shadow-sm border-light rounded-3">
+                        <Card className="h-100 shadow-sm border-light " style={{ borderRadius: '1.5rem' }}>
                             <Card.Body>
                                 <div className="d-flex justify-content-between align-items-start">
                                     <div>
@@ -56,7 +56,7 @@ function StatsGrid() {
                                             <span className="text-muted me-1"> عن أمس </span>
                                         </div>
                                     </div>
-                                    <div className={`p-3 rounded-3 bg-${stat.variant}-subtle`}>
+                                    <div className={`p-3 bg-${stat.variant}-subtle`} style={{ borderRadius: '1.5rem' }}>
                                         <stat.icon className={`text-${stat.variant}`} size={24} />
                                     </div>
                                 </div>
