@@ -50,7 +50,7 @@ function TableSection() {
                                 className='btn btn-link p-0'>عرض الكل</a>
                             </div>
                         </div>
-                        <div className='table-responsive'>
+                        <div className='table-responsive pb-2'>
                             <table className='table table-hover table-borderless mb-0'>
                                 <thead className='table-light'>
                                     <tr>

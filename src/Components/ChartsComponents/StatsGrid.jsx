@@ -1,12 +1,37 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Container, Row, Col, Card, ProgressBar } from "react-bootstrap";
-import { DollarSign, Eye, ShoppingCart, Users } from "lucide-react";
-import { useSelector } from "react-redux";
+import { Car, DollarSign, Eye, Package, ShoppingCart, Users } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUsers } from "../../Redux/Slices/Users";
+import { getOrders } from "../../Redux/Slices/OrdersSlice";
+import { UserRole } from "../../Redux/Slices/token";
+import { fetchDelegates } from "../../Redux/Slices/DelegatesSlice";
+import { fetchProducts } from "../../Redux/Slices/ProductSlice";
+import Loading from "../globalComonents/loading";
 
 function StatsGrid() {
+  const dispatch=useDispatch();
   const { orders } = useSelector((state) => state.Orders);
   const { users } = useSelector((state) => state.Users);
+const { delegates } = useSelector((state) => state.Delegates);
+const { products,loading } = useSelector((state) => state.Products);
+console.log(orders);
 
+  useEffect(() => {
+        if (!users || users.length === 0) {
+             dispatch(fetchUsers());     
+                dispatch(fetchDelegates());
+           }
+    }, [dispatch,UserRole])
+
+      useEffect(() => {   
+               dispatch(getOrders());
+                 dispatch(fetchProducts());
+          
+    }, [dispatch,UserRole])
+
+
+    
   const today = new Date();
   const tenDaysAgo = new Date();
   tenDaysAgo.setDate(today.getDate() - 10);
@@ -24,6 +49,8 @@ function StatsGrid() {
   const totalOrdersCount = orders?.length || 0;
 
   const traderCount = users?.filter(user => user.role === "trader").length || 0;
+  const DelegatesCount = delegates?.length || 0;
+  const productsCount = products?.length || 0;
   const shopOwnerCount = users?.filter(user => user.role === "user").length || 0;
 
   const stats = [
@@ -40,21 +67,22 @@ function StatsGrid() {
       variant: "primary",
     },
     {
-      title: "عدد التجار",
-      value: `${traderCount.toLocaleString()}`,
-      icon: Users,
+      title:UserRole=='admin'? "عدد التجار":'عدد المناديب',
+      value: UserRole=='admin'?`${traderCount.toLocaleString()}`:`${DelegatesCount.toLocaleString()}`,
+      icon:  UserRole=='admin'?Users:Car,
       variant: "warning",
     },
     {
-      title: "عدد أصحاب المتاجر",
-      value: `${shopOwnerCount.toLocaleString()}`,
-      icon: Users,
+      title: UserRole=='admin'?"عدد أصحاب المتاجر":'عدد المنتجات',
+      value: UserRole=='admin'?`${shopOwnerCount.toLocaleString()}`:`${productsCount.toLocaleString()}`,
+      icon:  UserRole=='admin'?Users:Package,
       variant: "danger",
     },
   ];
 
   return (
     <Container fluid>
+       {loading&&<Loading/>}
       <Row>
         {stats.map((stat, index) => (
           <Col md={6} lg={3} key={index} className="mb-4">
@@ -84,6 +112,7 @@ function StatsGrid() {
           </Col>
         ))}
       </Row>
+     
     </Container>
   );
 }

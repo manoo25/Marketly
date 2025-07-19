@@ -9,12 +9,12 @@ import {
 import OrdersFilter from "./OrdersFilter";
 import CustomMenu from "../globalComonents/CustomMenu";
 import LabeledMenu from "../globalComonents/LabeledMenu";
-import { supabase } from "../../Supabase/supabaseClient";
 import { FaEye, FaPrint } from "react-icons/fa";
 import  DelegatorListModal  from "../OrdersComponents/delegatorListModal";
 import Loading from "../globalComonents/loading";
 import { fetchOrderItems } from "../../Redux/Slices/OrderItems";
 import { UserRole } from "../../Redux/Slices/token";
+import { supabase } from "../../Supabase/SupabaseClient";
 
 const rowsPerPage = 4;
 
