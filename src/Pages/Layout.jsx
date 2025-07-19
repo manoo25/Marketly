@@ -7,7 +7,7 @@ import Nav from '../Components/LayoutComponents/Nav';
 import { Outlet } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { GetToken } from '../Redux/Slices/token';
-import { supabase } from '../Supabase/SupabaseClient';
+
 
 function Layout() {
   const [margin, setMargin] = useState('0');
@@ -20,6 +20,7 @@ function Layout() {
   const dispatch = useDispatch();
 
   useEffect(() => {
+     localStorage.removeItem('sb-auxwhdusfpgyzbwgjize-auth-token')
     dispatch(GetToken());
   }, [dispatch]);
 

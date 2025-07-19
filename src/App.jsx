@@ -25,15 +25,11 @@ import UploadShopImage from "./Pages/auth/UploadShopImage";
 import Complaints from "./Pages/Complaints";
 import GoogleUserRoute from "./Pages/auth/GoogleUserRoute";
 
+
  
 function App() {
 
-localStorage.removeItem('sb-auxwhdusfpgyzbwgjize-auth-token')
 
-// const dispatch=useDispatch();
-//  useEffect(() => {
-//       dispatch(GetToken());
-//     }, []);
 
   const routes = createBrowserRouter([
     { path: 'Dashboard', element: <Layout /> },

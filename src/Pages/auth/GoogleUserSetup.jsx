@@ -60,7 +60,8 @@ function GoogleUserSetup() {
     if (error) {
       console.error("Error updating user:", error.message);
     } else {
-      navigate("/dashboard");
+       localStorage.setItem("userID", googleUser.id);
+      navigate("/Dashboard/Charts");
     }
   };
 

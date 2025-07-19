@@ -27,6 +27,7 @@ const GoogleUserRoute = () => {
         console.error("Database error:", error.message);
         setShouldRedirect(false);
       } else {
+       localStorage.setItem("userID", data.length>0? data[0].id:'');
         setShouldRedirect(data.length > 0); // لو موجود في جدول users
       }
 
@@ -37,8 +38,8 @@ const GoogleUserRoute = () => {
   }, []);
 
   if (loading) return <div>جار التحميل...</div>;
-localStorage.removeItem('sb-auxwhdusfpgyzbwgjize-auth-token');
-  return shouldRedirect ? <Navigate to="/dashboard" /> : <GoogleUserSetup />;
+
+  return shouldRedirect ? <Navigate to="/Dashboard/Charts" /> : <GoogleUserSetup />;
 };
 
 export default GoogleUserRoute;
