@@ -9,11 +9,11 @@ function Charts() {
         <div className="pt-3 d-flex flex-column gap-4">
             <StatsGrid />
             <ChartSection />
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-                <div className="xl:col-span-2">
+            <div className="row g-4">
+                <div className="col-xl-8">
                     <TableSection/>
                 </div>
-                <div>
+                <div className='col-xl-4'>
                     <ActivityFeed/>
                 </div>
             </div>

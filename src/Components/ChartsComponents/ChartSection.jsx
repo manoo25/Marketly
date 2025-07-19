@@ -4,11 +4,11 @@ import SalesChart from './SalesChart'
 
 function ChartSection() {
   return (
-    <div className='grid grid-cols-1 xl:grid-cols-3 gap-6'>
-        <div className='xl:col-span-2'>
+    <div className='row g-4'>
+        <div className='col-xl-8'>
             <RevnueChart/>
         </div>
-        <div className='space-y-6'>
+        <div className='col-xl-4'>
             <SalesChart/>
         </div>
     </div>
