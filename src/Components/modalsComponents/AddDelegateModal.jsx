@@ -8,6 +8,7 @@ import debounce from 'lodash.debounce';
 import PrimaryButton from '../globalComonents/PrimaryButton';
 import { uploadImagesToSupabase } from '../../Redux/uploadingImage';
 import { createDelegate, fetchDelegates } from '../../Redux/Slices/DelegatesSlice';
+import { UserRole } from '../../Redux/Slices/token';
 
 /* ───────── ثوابت ───────── */
 const daysOfWeek = ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'];
@@ -34,11 +35,14 @@ const AddDelegateModal = () => {
     const { users } = useSelector(s => s.Users);
     const { delegates } = useSelector(s => s.Delegates);
 
-    /* ⚙️ auth (مؤقت) */
-    const isAdmin = true;
-    const currentTraderId = 'fake-trader-id';
+
 
     useEffect(() => { dispatch(fetchDelegates()); }, [dispatch]);
+      useEffect(() => {
+         if (UserRole!='admin') {
+         setSelectedTraderId(localStorage.getItem("userID"))
+         }
+        }, [UserRole]);
 
     /* ───────── helpers ───────── */
     const checkPhoneUnique = debounce(val => {
@@ -87,7 +91,7 @@ const AddDelegateModal = () => {
 
     /* ───────── handlers ───────── */
     async function handleAdd(vals, { resetForm }) {
-        if (isAdmin && !selectedTraderId) {
+        if (UserRole=='admin' && !selectedTraderId) {
             alert('اختيار التاجر مطلوب'); return;
         }
 
@@ -96,7 +100,7 @@ const AddDelegateModal = () => {
             ? await uploadImagesToSupabase(vals.delegateImage, 'delegates')
             : [];
 
-        const finalTraderId = isAdmin ? selectedTraderId : currentTraderId;
+        const finalTraderId = selectedTraderId ;
 
         /* تحضير الـ routes الصالحة */
         const validRoutes = routes
@@ -201,7 +205,7 @@ const AddDelegateModal = () => {
                             </Col>
 
                             {/* اختيار التاجر (عند الأدمن) */}
-                            {isAdmin && (
+                            {UserRole=='admin' && (
                                 <Col md={12} className="mb-3">
                                     <Form.Label>اختر التاجر</Form.Label>
                                     <Form.Select value={selectedTraderId} onChange={e => setSelectedTraderId(e.target.value)} required>
