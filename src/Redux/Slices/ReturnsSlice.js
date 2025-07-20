@@ -1,5 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { supabase } from "../../Supabase/supabaseClient";
+import { UserRole } from "./token";
+import { supabase } from "../../Supabase/SupabaseClient";
+
 
 export const getReturns = createAsyncThunk(
     "returns/getReturns",
@@ -25,6 +27,40 @@ export const getReturns = createAsyncThunk(
         }
     }
 );
+
+
+
+export const getNotDoneOrders = createAsyncThunk(
+    "orders/getNotDoneOrders",
+    async (_, { rejectWithValue }) => {
+        try {
+            const userId = localStorage.getItem("userID");
+
+            let query = supabase.from("orders").select(`
+        *,
+        user: user_id (*),
+         trader_id (name),
+        delegator(name)
+      `)
+                .eq("status", "ملغي");
+
+            if (UserRole !== "admin") {
+                query = query.eq("trader_id", userId);
+            }
+
+            const { data, error } = await query;
+
+            if (error) throw error;
+
+            return data;
+        } catch (error) {
+            return rejectWithValue(error.message);
+        }
+    }
+);
+
+
+
 export const addReturn = createAsyncThunk(
     "returns/addReturn",
     async (returnData, { rejectWithValue }) => {
@@ -99,6 +135,19 @@ const returnsSlice = createSlice({
                 state.returns = action.payload;
             })
             .addCase(getReturns.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+
+            .addCase(getNotDoneOrders.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(getNotDoneOrders.fulfilled, (state, action) => {
+                state.loading = false;
+                state.returns = action.payload;
+            })
+            .addCase(getNotDoneOrders.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             })
