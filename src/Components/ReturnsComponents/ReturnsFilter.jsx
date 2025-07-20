@@ -1,7 +1,6 @@
 import GovFilter from "./FilterdComponents/GovFilter";
 import StateFilter from "./FilterdComponents/StateFilter";
 import NameSearch from "./FilterdComponents/Namesearch";
-import LightButton from '../globalComonents/LightButton';
 import PrimaryButton from '../globalComonents/PrimaryButton';
 
 

@@ -15,7 +15,7 @@ function TableSection() {
 
     const getStatusBadge = (status) => {
         switch (status?.toLowerCase()) {
-            case "تم التوصيل":
+            case "done":
             case "مكتمل":
                 return "badge bg-success-subtle text-success-emphasis";
             case "pending":

@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "../../css/Table.css";
 import { useDispatch, useSelector } from "react-redux";
-import { getReturns , updateReturn , deleteReturn } from "../../Redux/Slices/ReturnsSlice";
 import { FaEye, FaPrint } from "react-icons/fa";
 import ReturnsFilter from "./ReturnsFilter";
 import CustomMenu from "../globalComonents/CustomMenu";
 import LabeledMenu from "../globalComonents/LabeledMenu";
-
 import Loading from "../globalComonents/loading";
 import { supabase } from "../../Supabase/SupabaseClient";
+import { deleteOrder, getReturnOrders, updateOrder } from "../../Redux/Slices/OrdersSlice";
 
 
 
@@ -17,7 +16,8 @@ const rowsPerPage = 4;
 
 const ReturnsTbl = () => {
     const dispatch = useDispatch();
-    const { returns,loading } = useSelector((state) => state.Returns);
+    const { loading } = useSelector((state) => state.Orders);
+    const returns = useSelector((state) => state.Orders.orders);
 
     const [currentReturns, setcurrentReturns] = useState([]);
     const [filteredReturns, setFilteredReturns] = useState([]);
@@ -30,14 +30,8 @@ const ReturnsTbl = () => {
     const [currentPage, setCurrentPage] = useState(1);
 
 
-    // useEffect(() => {
-    //    if (!returns || returns.length === 0) {
-    //      dispatch(getReturns());
-    //    }
-    // }, [dispatch, returns]);
-
     useEffect(() => {
-   dispatch(getReturns());
+   dispatch(getReturnOrders());
 }, [dispatch]);
 console.log(returns)
 
@@ -82,18 +76,18 @@ console.log(returns)
 
     // Returns Status
     const returnStatuses = [
-        "قيد التنفيذ",
-        "تم التوصيل",
-        "ملغي"
+        "inprogress",
+        "done",
+        "pending",
     ];
 
     const getStatusBgColor = (status) => {
         switch (status) {
-            case "قيد التنفيذ":
+            case "pending":
                 return "gold";
-            case "تم التوصيل":
+            case "done":
                 return "#065f12ff";
-            case "ملغي":
+            case "returns":
                 return "#ca1c1cff";
             default:
                 return "#000000ff";
@@ -113,9 +107,10 @@ console.log(returns)
 
     const handleUpdateReturnStatus = async () => {
         if (!returnToEdit || !newStatus) return;
-        await dispatch(updateReturn({ id: returnToEdit.id, updatedData: { status: newStatus } }));
+        await dispatch(updateOrder({ id: returnToEdit.id, updatedData: { status: newStatus } }));
         setStateModalOpen(false);
         setReturnToEdit(null);
+        dispatch(getReturnOrders());
     };
 
     // مودال تعديل حالة مجموعة طلبات
@@ -125,11 +120,12 @@ console.log(returns)
     const handleBulkUpdateReturnStatus = async () => {
         if (!bulkNewStatus || SelectedReturns.length === 0) return;
         for (const id of SelectedReturns) {
-            await dispatch(updateReturn({ id, updatedData: { status: bulkNewStatus } }));
+            await dispatch(updateOrder({ id, updatedData: { status: bulkNewStatus } }));
         }
         setBulkStateModalOpen(false);
         setBulkNewStatus("");
         SetSelectedReturns([]);
+        dispatch(getReturnOrders());
     };
 
     // حذف مجموعة طلبات مع حذف order_items المرتبطة
@@ -140,19 +136,19 @@ console.log(returns)
             // حذف order_items المرتبطة أولاً
             await supabase.from("order_items").delete().eq("order_id", id);
             // ثم حذف الطلب نفسه
-            await dispatch(deleteReturn(id));
+            await dispatch(deleteOrder(id));
         }
         SetSelectedReturns([]);
-        dispatch(getReturns());
+        dispatch(getReturnOrders());
     };
 
     // حذف طلب فردي مع حذف order_items المرتبطة
     const handleDeleteReturn = async (orderId) => {
         if (window.confirm("هل أنت متأكد أنك تريد حذف هذا الطلب؟")) {
             await supabase.from("order_items").delete().eq("order_id", orderId);
-            await dispatch(deleteReturn(orderId));
+            await dispatch(deleteOrder(orderId));
             SetSelectedReturns(prev => prev.filter(id => id !== orderId));
-            dispatch(getReturns());
+             dispatch(getReturnOrders());
         }
     };
 
@@ -271,8 +267,10 @@ console.log(returns)
                             </th>
                             <th>رقم العميل</th>
                             <th>المحافظة</th>
-                            <th>سبب الاسترجاع</th>
-                            <th>الحاله</th>
+                            <th>الحالة</th>
+                            <th>اجمالى</th>
+                           
+                            
                             <th>تاريخ الاسترجاع</th>
                             <th>عرض </th>
                             <th style={{ position: "relative", zIndex: 1 }}>
@@ -323,11 +321,17 @@ console.log(returns)
 
                                     </label>
                                 </td>
-                                <td>{ret.order?.user?.name || "--"}</td>
-                                <td>{ret.order?.user?.phone || "--"}</td>
-                                <td>{ret.order?.user?.governorate || "--"}</td>
-                                <td>{ret.reason || "--"}</td>
-                                <td>{ret.status || "--"}</td>
+                                <td>{ret.user?.name || "--"}</td>
+                                <td>{ret.user?.phone || "--"}</td>
+                                <td>{ret.user?.governorate || "--"}</td>
+                                 <td style={{ color: getStatusBgColor(ret.status), fontWeight: 'bold' }}>
+                                    {
+                                    ret.status=='returns'&&'مرتجع'
+                                    }
+                                </td>
+                                <td>{ret.total || "--"} ج.م</td>
+                               
+                              
                                 <td>{formatArabicDate(ret.created_at) || "--"}</td>
                                 <td>
                                     <button className="btn btn-link p-0" title="عرض الطلب" onClick={() => handleViewOrder(ret.id)}>
@@ -412,7 +416,12 @@ console.log(returns)
                                 >
                                     <option value="">اختر الحالة</option>
                                     {returnStatuses.map(status => (
-                                        <option key={status} value={status}>{status}</option>
+                                        <option key={status} value={status}>
+                                           {status=='done'&&'تم الاستلام'||
+                                    status=='pending'&&'معلق'||
+                                    status=='inprogress'&&'قيد التنفيذ'
+                                    }
+                                            </option>
                                     ))}
                                 </select>
                             </div>
@@ -461,7 +470,12 @@ console.log(returns)
                                 >
                                     <option value="">اختر الحالة</option>
                                     {returnStatuses.map(status => (
-                                        <option key={status} value={status}>{status}</option>
+                                        <option key={status} value={status}>
+                                            {status=='done'&&'تم الاستلام'||
+                                    status=='pending'&&'معلق'||
+                                    status=='inprogress'&&'قيد التنفيذ'
+                                    }
+                                            </option>
                                     ))}
                                 </select>
                             </div>
@@ -527,6 +541,9 @@ console.log(returns)
                                                             <span className="fw-bold">العنوان:</span> {order.orders?.users?.location || "--"}
                                                         </div>
                                                         <div className="mb-2" style={{ fontSize: 16 }}>
+                                                            <span className="fw-bold">سبب الارتجاع:</span> {order.reason || "--"}
+                                                        </div>
+                                                        <div className="mb-2" style={{ fontSize: 16 }}>
                                                             <span className="fw-bold">تاريخ الطلب:</span> {formatArabicDate(order.created_at)}
                                                         </div>
                                                     </>
@@ -580,7 +597,9 @@ console.log(returns)
                                                             </div>
                                                             <div className="d-flex justify-content-between mb-2">
                                                                 <span>حالة الطلب:</span>
-                                                                <span style={{ color: getStatusBgColor(order.status), fontWeight: 'bold' }}>{order.status}</span>
+                                                                <span style={{ color: getStatusBgColor(order.status), fontWeight: 'bold' }}> {
+                                    order.status=='returns'&&'مرتجع'
+                                    }</span>
                                                             </div>
                                                         </div>
                                                     </div>

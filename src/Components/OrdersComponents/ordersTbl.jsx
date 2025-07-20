@@ -38,11 +38,8 @@ const OrdersTbl = () => {
     
 
     // fetch all Orders once
-    useEffect(() => {
-          if (!orders || orders.length === 0) {
+    useEffect(() => {       
               dispatch(getOrders());
-            }
-    
     }, [dispatch,UserRole]);
 
 
@@ -91,25 +88,29 @@ const OrdersTbl = () => {
 
 
 
-    // Order Status
+    // Returns Status
     const orderStatuses = [
-        "قيد التنفيذ",
-        "تم التوصيل",
-        "ملغي"
+        "returns",
+        "done",
+        "inprogress",
+        "pending"
     ];
 
     const getStatusBgColor = (status) => {
         switch (status) {
-            case "قيد التنفيذ":
+            case "pending":
                 return "gold";
-            case "تم التوصيل":
+            case "done":
                 return "#065f12ff";
-            case "ملغي":
+            case "inprogress":
+                return "#007bff";
+            case "returns":
                 return "#ca1c1cff";
             default:
                 return "#000000ff";
         }
     };
+
 
     // Order Status Modal
     const [stateModalOpen, setStateModalOpen] = useState(false);
@@ -340,7 +341,11 @@ const OrdersTbl = () => {
                                 <td>{order.user?.governorate || "--"}</td>
                                 <td>{order.user?.city || "--"}</td>
                                 <td style={{ color: getStatusBgColor(order.status), fontWeight: 'bold' }}>
-                                    {order.status}
+                                    {order.status=='done'&&'تم الاستلام'||
+                                    order.status=='pending'&&'معلق'||
+                                    order.status=='returns'&&'مرتجع'||
+                                    order.status=='inprogress'&&'قيد التنفيذ'
+                                    }
                                 </td>
                                 <td>{order.delegator?.name || "--"}</td>
                                 <td>{order.total} <span className="px-1">ج.م</span></td>
@@ -431,7 +436,14 @@ const OrdersTbl = () => {
                                 >
                                     <option value="">اختر الحالة</option>
                                     {orderStatuses.map(status => (
-                                        <option key={status} value={status}>{status}</option>
+                                        <option key={status} value={status}>
+                                            {status=='done'&&'تم الاستلام'||
+                                    status=='pending'&&'معلق'||
+                                    status=='returns'&&'مرتجع'||
+                                    status=='inprogress'&&'قيد التنفيذ'
+                                    }
+                                            
+                                            </option>
                                     ))}
                                 </select>
                             </div>

@@ -40,9 +40,9 @@ const ProductsTbl = () => {
   });
 
   useEffect(() => {
-    if (!products || products.length === 0) {
+    
       dispatch(fetchProducts());
-    }
+
   }, [dispatch,UserRole]);
 
   useEffect(() => {

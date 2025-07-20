@@ -43,14 +43,9 @@ export default function DelegatesPage() {
   const [toastVariant, setToastVariant] = useState("success");
 
   // ✅ تحميل البيانات فقط عند الحاجة
-  useEffect(() => {
-    if (!delegates || delegates.length === 0) {
-      dispatch(fetchDelegates());
-    }
-
-    if (!users || users.length === 0) {
+  useEffect(() => { 
       dispatch(fetchUsers());
-    }
+       dispatch(fetchDelegates());
   }, [dispatch,UserRole]);
 
   // ✅ فلترة المناديب بعد تأخير 500ms

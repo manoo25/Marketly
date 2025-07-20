@@ -43,7 +43,7 @@ console.log(orders);
   }) || [];
 
   const totalSales = recentOrders
-    .filter(order => order.status === "تم التوصيل")
+    .filter(order => order.status === "done")
     .reduce((sum, order) => sum + (Number(order.total) || 0), 0);
 
   const totalOrdersCount = orders?.length || 0;
