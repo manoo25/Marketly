@@ -529,16 +529,16 @@ console.log(returns)
                                                 {returns.filter(x => x.id === viewOrderId).map(order => (
                                                     <>
                                                         <div className="mb-2" style={{ fontSize: 16 }}>
-                                                            <span className="fw-bold">اسم العميل:</span> {order.orders?.users?.name || "--"}
+                                                            <span className="fw-bold">اسم العميل:</span> {order.user?.name || "--"}
                                                         </div>
                                                         <div className="mb-2" style={{ fontSize: 16 }}>
-                                                            <span className="fw-bold"> رقم الهاتف:</span> {order.orders?.users?.phone || "--"}
+                                                            <span className="fw-bold"> رقم الهاتف:</span> {order.user?.phone || "--"}
                                                         </div>
                                                         <div className="mb-2" style={{ fontSize: 16 }}>
-                                                            <span className="fw-bold">المدينة:</span> {order.orders?.users?.city || "--"}
+                                                            <span className="fw-bold">المدينة:</span> {order.user?.city || "--"}
                                                         </div>
                                                         <div className="mb-2" style={{ fontSize: 16 }}>
-                                                            <span className="fw-bold">العنوان:</span> {order.orders?.users?.location || "--"}
+                                                            <span className="fw-bold">العنوان:</span> {order.user?.location || "--"}
                                                         </div>
                                                         <div className="mb-2" style={{ fontSize: 16 }}>
                                                             <span className="fw-bold">سبب الارتجاع:</span> {order.reason || "--"}
