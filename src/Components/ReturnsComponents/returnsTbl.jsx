@@ -24,8 +24,7 @@ const ReturnsTbl = () => {
     const [SelectedReturns, SetSelectedReturns] = useState([]);
     const [searchName, setSearchName] = useState("");
     const [selectedGovernorate, setSelectedGovernorate] = useState("");
-    const [startDate, setStartDate] = useState(null);
-    const [endDate, setEndDate] = useState(null);
+    const [selectedState, setSelectedState] = useState("");
 
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -38,22 +37,24 @@ console.log(returns)
 
     // effect for filtering
     useEffect(() => {
-        const filtered = returns.filter((ret) => {
+        const filtered = returns.filter((returnItem) => {
             const matchName =
                 searchName === "" ||
-                (ret.user?.name && ret.user.name.toLowerCase().includes(searchName.toLowerCase()));
+                (returnItem.users?.name && returnItem.users.name.toLowerCase().includes(searchName.toLowerCase()));
 
-
+            const matchState =
+                selectedState === "" ||
+                (returnItem.status && returnItem.status.toLowerCase().includes(selectedState.toLowerCase()));
 
             const matchGov =
                 selectedGovernorate === "" ||
-                (ret.user?.governorate && ret.user.governorate.toLowerCase().includes(selectedGovernorate.toLowerCase()));
+                (returnItem.users?.governorate && returnItem.users.governorate.toLowerCase().includes(selectedGovernorate.toLowerCase()));
 
-            return matchName && matchGov;
+            return matchName && matchState && matchGov;
         });
         setFilteredReturns(filtered);
         setCurrentPage(1);
-    }, [searchName, selectedGovernorate, returns]);
+    }, [searchName, selectedGovernorate, selectedState, returns]);
 
 
     // update current Returns based on pagination or filtered list change
@@ -68,8 +69,7 @@ console.log(returns)
 
     function onResetFilters() {
         setSearchName("");
-        setStartDate(null);
-        setEndDate(null);
+        setSelectedState("");
         setSelectedGovernorate("");
         setCurrentPage(1);
     }
@@ -175,7 +175,7 @@ console.log(returns)
         else setOrderItems([]);
     };
 
-    // دالة طباعة الفاتورة
+        // دالة طباعة الفاتورة
     const handlePrintInvoice = () => {
         const printContents = document.getElementById("order-invoice-print").innerHTML;
         const win = window.open('', '', 'height=700,width=900');
@@ -220,35 +220,6 @@ console.log(returns)
         const month = toArabicDigits(date.getMonth() + 1);
         const year = toArabicDigits(date.getFullYear());
         return `${day}-${month}-${year}`;
-    };
-
-    // حساب إجمالي المرتجعات
-    const totalSales = currentReturns.reduce((sum, order) => sum + (order.total || 0), 0);
-    // حساب عدد الطلبات الغير المكتملة
-    const notCompletedOrdersCount = currentReturns.length;
-
-
-
-    const onSearchClick = () => {
-        // فلترة حسب الاسم والمحافظة والتاريخ
-        const filtered = returns.filter((ret) => {
-            const matchName =
-                searchName === "" ||
-                (ret.user?.name && ret.user.name.toLowerCase().includes(searchName.toLowerCase()));
-
-            const matchGov =
-                selectedGovernorate === "" ||
-                (ret.user?.governorate && ret.user.governorate.toLowerCase().includes(selectedGovernorate.toLowerCase()));
-
-            // فلترة حسب التاريخ
-            const orderDate = new Date(ret.created_at);
-            const matchStartDate = !startDate || orderDate >= new Date(startDate);
-            const matchEndDate = !endDate || orderDate <= new Date(endDate);
-
-            return matchName && matchGov && matchStartDate && matchEndDate;
-        });
-        setFilteredReturns(filtered);
-        setCurrentPage(1);
     };
 
 
@@ -380,26 +351,27 @@ console.log(returns)
                                     />
                                 </td>
                             </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div className="pagination">
-                    <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
-                        &laquo;
-                    </button>
-                    <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}>
-                        &lt;
-                    </button>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+            <div className="pagination">
+                <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
+                    &laquo;
+                </button>
+                <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}>
+                    &lt;
+                </button>
 
-                    {[...Array(totalPages)].map((_, index) => (
-                        <button
-                            key={index + 1}
-                            onClick={() => setCurrentPage(index + 1)}
-                            className={currentPage === index + 1 ? "active" : ""}
-                        >
-                            {index + 1}
-                        </button>
-                    ))}
+                {[...Array(totalPages)].map((_, index) => (
+                    <button
+                        key={index + 1}
+                        onClick={() => setCurrentPage(index + 1)}
+                        className={currentPage === index + 1 ? "active" : ""}
+                    >
+                        {index + 1}
+                    </button>
+                ))}
 
                 <button
                     onClick={() =>
@@ -527,29 +499,29 @@ console.log(returns)
                 </div>
             )}
 
-                {viewModalOpen && (
-                    <div className="modal show fade d-block modal-lg" tabIndex="-1" role="dialog" style={{ backgroundColor: "rgba(0,0,0,0.4)" }}>
-                        <div className="modal-dialog modal-dialog-centered" role="document">
-                            <div className="modal-content text-end">
-                                <div className="modal-header">
-                                    <h5 className="modal-title w-100 text-center fw-bold">
-                                        فاتورة الطلب رقم {viewOrderId}
-                                    </h5>
-                                    <button
-                                        type="button"
-                                        className="btn-close"
-                                        onClick={() => setViewModalOpen(false)}
-                                    ></button>
-                                </div>
-                                <div className="modal-body" id="order-invoice-print">
-                                    <div style={{ border: '0.1rem solid #00000073', borderRadius: 12, padding: 24, background: '#fff', maxWidth: 700, margin: '0 auto' }}>
-                                        {/* رأس الفاتورة */}
-                                        <div className="d-flex justify-content-between align-items-center mb-4">
-                                            <div>
-                                                <h2 className="fw-bold mb-1" >فاتورة بيع</h2>
-                                                <div style={{ fontSize: 15 }}>رقم الطلب: <span className="fw-bold">{viewOrderId}</span></div>
-                                            </div>
-                                            {/* <div>
+            {viewModalOpen && (
+                            <div className="modal show fade d-block modal-lg" tabIndex="-1" role="dialog" style={{ backgroundColor: "rgba(0,0,0,0.4)" }}>
+                                <div className="modal-dialog modal-dialog-centered" role="document">
+                                    <div className="modal-content text-end">
+                                        <div className="modal-header">
+                                            <h5 className="modal-title w-100 text-center fw-bold">
+                                                فاتورة الطلب رقم {viewOrderId}
+                                            </h5>
+                                            <button
+                                                type="button"
+                                                className="btn-close"
+                                                onClick={() => setViewModalOpen(false)}
+                                            ></button>
+                                        </div>
+                                        <div className="modal-body" id="order-invoice-print">
+                                            <div style={{ border: '0.1rem solid #00000073', borderRadius: 12, padding: 24, background: '#fff', maxWidth: 700, margin: '0 auto' }}>
+                                                {/* رأس الفاتورة */}
+                                                <div className="d-flex justify-content-between align-items-center mb-4">
+                                                    <div>
+                                                        <h2 className="fw-bold mb-1" >فاتورة بيع</h2>
+                                                        <div style={{ fontSize: 15 }}>رقم الطلب: <span className="fw-bold">{viewOrderId}</span></div>
+                                                    </div>
+                                                    {/* <div>
                             <img src="/logo192.png" alt="شعار" style={{height:60}} />
                           </div> */}
                                                 </div>
