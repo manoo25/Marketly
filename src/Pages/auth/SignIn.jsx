@@ -4,7 +4,6 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-
 import { supabase } from "../../Supabase/SupabaseClient";
 import { GetToken } from "../../Redux/Slices/token";
 import styles from "../../css/AuthLayout.module.css";
