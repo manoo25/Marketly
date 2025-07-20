@@ -58,6 +58,34 @@ export const getDoneOrders = createAsyncThunk(
     }
   }
 );
+export const getReturnOrders = createAsyncThunk(
+  "orders/getDoneOrders",
+  async (_, { rejectWithValue }) => {
+    try {
+      const userId = localStorage.getItem("userID");
+
+      let query = supabase.from("orders").select(`
+        *,
+        user: user_id (*),
+         trader_id (name),
+        delegator(name)
+      `)
+      .eq("status", "returns"); 
+
+      if (UserRole !== "admin") {
+        query = query.eq("trader_id", userId);
+      }
+
+      const { data, error } = await query;
+
+      if (error) throw error;
+
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
 
 // ✅ Create a new Order
 export const addOrder = createAsyncThunk(

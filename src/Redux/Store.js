@@ -4,7 +4,6 @@ import categoriesSlice from "./Slices/Categories";
 import productSlice from "./Slices/ProductSlice";
 import ordersSlice from "./Slices/OrdersSlice";
 import orderItemsSlice from "./Slices/OrderItems";
-import returnsSlice from "./Slices/ReturnsSlice";
 import UnitsSlice from "./Slices/units";
 import CompaniesSlice from "./Slices/CompaniesSlice";
 import messagesSlice from "./Slices/MessagesSlice";
@@ -20,7 +19,6 @@ export const Store = configureStore({
     Products: productSlice.reducer,
     Orders: ordersSlice.reducer,
     OrderItems: orderItemsSlice.reducer,
-    Returns: returnsSlice.reducer,
     Companies: CompaniesSlice.reducer,
     messages: messagesSlice.reducer,
     Delegates: delegatesSlice.reducer,
