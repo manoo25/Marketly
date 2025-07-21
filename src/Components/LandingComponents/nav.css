@@ -1,0 +1,11 @@
+.btn-cta {
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.btn-cta:hover {
+  background-color: #7b51e4;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(145, 94, 246, 0.3);
+}
