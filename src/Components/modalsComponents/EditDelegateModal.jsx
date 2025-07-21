@@ -8,6 +8,7 @@ import * as Yup from 'yup';
 import debounce from 'lodash.debounce';
 import { uploadImagesToSupabase } from '../../Redux/uploadingImage';
 import { updateDelegate } from '../../Redux/Slices/DelegatesSlice';
+import { UserRole } from '../../Redux/Slices/token';
 
 /* 🗺️ المحافظات الثابتة */
 const governorates = [
@@ -81,6 +82,11 @@ const EditDelegateModal = ({ show, onClose, delegate, users, onUpdateSuccess, on
   });
 
   useEffect(() => { if (formik.values.phone) checkUnique(formik.values.phone); }, [formik.values.phone]);
+  useEffect(() => {
+     if (UserRole!='admin') {
+     setTid(localStorage.getItem("userID"))
+     }
+    }, [UserRole]);
 
   async function handleSave(values) {
     try {
@@ -176,6 +182,7 @@ const EditDelegateModal = ({ show, onClose, delegate, users, onUpdateSuccess, on
               {phoneExists && <div className="text-danger">رقم الهاتف مسجل مسبقًا</div>}
             </Col>
 
+            {UserRole=='admin'&&
             <Col md={12} className="mb-3">
               <Form.Label>اختر التاجر</Form.Label>
               <Form.Select value={selectedTraderId} onChange={e => setTid(e.target.value)} required>
@@ -185,6 +192,7 @@ const EditDelegateModal = ({ show, onClose, delegate, users, onUpdateSuccess, on
                 ))}
               </Form.Select>
             </Col>
+            }
 
             <Col md={12}>
               <Form.Label>خط السير</Form.Label>

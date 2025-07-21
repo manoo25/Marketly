@@ -12,13 +12,18 @@ import LabeledMenu from "../globalComonents/LabeledMenu";
 import { supabase } from "../../Supabase/supabaseClient";
 import { FaEye, FaPrint } from "react-icons/fa";
 import  DelegatorListModal  from "../OrdersComponents/delegatorListModal";
+import Loading from "../globalComonents/loading";
+import { fetchOrderItems } from "../../Redux/Slices/OrderItems";
+import { UserRole } from "../../Redux/Slices/token";
 
 const rowsPerPage = 4;
 
+
 const OrdersTbl = () => {
     const dispatch = useDispatch();
-    const { orders } = useSelector((state) => state.Orders);
-    console.log(orders);
+    const { orders,loading } = useSelector((state) => state.Orders);
+ 
+   
 
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -34,8 +39,14 @@ const OrdersTbl = () => {
 
     // fetch all Orders once
     useEffect(() => {
-        dispatch(getOrders());
-    }, [dispatch]);
+          if (!orders || orders.length === 0) {
+              dispatch(getOrders());
+            }
+    
+    }, [dispatch,UserRole]);
+
+
+
 
     // effect for filtering
     useEffect(() => {
@@ -116,6 +127,7 @@ const OrdersTbl = () => {
         await dispatch(updateOrder({ id: orderToEdit.id, updatedData: { status: newStatus } }));
         setStateModalOpen(false);
         setOrderToEdit(null);
+         dispatch(fetchOrderItems());
     };
 
     // مودال تعديل حالة مجموعة طلبات
@@ -224,10 +236,10 @@ const OrdersTbl = () => {
 
     return (
         <>
-
-       
-
-            <OrdersFilter
+{loading?
+<Loading/>:
+<div>
+  <OrdersFilter
                 searchName={searchName}
                 setSearchName={setSearchName}
                 selectedState={selectedState}
@@ -264,12 +276,11 @@ const OrdersTbl = () => {
                                 </label>
                             </th>
                             <th>
-
                                 <label htmlFor="select-all">اسم العميل</label>
                             </th>
                             <th>رقم العميل</th>
                             <th>المحافظة</th>
-                            <th>العنوان</th>
+                            <th>المدينة</th>
                             <th>الحاله</th>
                             <th>المندوب</th>
                             <th>المجموع</th>
@@ -327,7 +338,7 @@ const OrdersTbl = () => {
                                 <td>{order.user?.name || "--"}</td>
                                 <td>{order.user?.phone || "--"}</td>
                                 <td>{order.user?.governorate || "--"}</td>
-                                <td>{order.user?.location || "--"}</td>
+                                <td>{order.user?.city || "--"}</td>
                                 <td style={{ color: getStatusBgColor(order.status), fontWeight: 'bold' }}>
                                     {order.status}
                                 </td>
@@ -609,6 +620,11 @@ const OrdersTbl = () => {
                 </div>
             )}
 <DelegatorListModal show={showDelegateModal} Setshow={setshowDelegateModal} location={OrderLocaction} />
+</div>
+}
+       
+
+          
         </>
     );
 };

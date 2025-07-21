@@ -45,10 +45,27 @@ html, body {
   -ms-overflow-style: none;
   /* IE 10+ */
 }
+.SidebarScroller {
+  height: 100%;
+  overflow: auto;
+  scrollbar-width: thin; 
+  scrollbar-color: var(--primary-color) transparent; 
+  -ms-overflow-style: none;
+}
+
+.SidebarScroller::-webkit-scrollbar {
+  width: 2px;
+}
+.SidebarScroller::-webkit-scrollbar-thumb {
+  background-color:var(--primary-color);
+  border-radius: 8px;
+}
+.SidebarScroller::-webkit-scrollbar-track {
+  background-color: transparent;
+}
 
 body::-webkit-scrollbar {
   display: none;
-  /* Chrome, Safari */
 }
 
 p {
@@ -87,6 +104,7 @@ p {
 
 .offcanvas.offcanvas-end {
   width: 228px !important;
+  
 }
 
 .sidebarLink {
@@ -234,4 +252,11 @@ select.form-select {
   /* عدّل الحجم حسب رغبتك */
   width: 90% !important;
   /* يجعلها مرنة على الشاشات الصغيرة */
+}
+a{
+    cursor: pointer;   
+
+}
+.loadingBg{
+  background-color: #130729d0;
 }

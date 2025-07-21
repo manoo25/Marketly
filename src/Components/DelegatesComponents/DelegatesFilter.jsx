@@ -74,7 +74,7 @@ function DelegatesFilter({
             </div>
 
             <PrimaryButton
-                label="مسح"
+                label="إلغاء"
                 onClick={onResetFilters}
             />
 

@@ -10,6 +10,7 @@ import { uploadImagesToSupabase } from '../../Redux/uploadingImage';
 import { GetCategories } from '../../Redux/Slices/Categories';
 import { GetUnits } from '../../Redux/Slices/units';
 import { fetchCompanies } from '../../Redux/Slices/CompaniesSlice';
+import { UserRole } from '../../Redux/Slices/token';
 
 const AddProductModal = () => {
   const [images, setImages] = useState([]);
@@ -18,6 +19,7 @@ const AddProductModal = () => {
   const { categories } = useSelector((state) => state.Categories);
   const { Units } = useSelector((state) => state.Units);
   const { companies } = useSelector((state) => state.Companies);
+  const { token } = useSelector(state => state.Token);
 
   const dispatch = useDispatch();
 
@@ -45,41 +47,49 @@ const AddProductModal = () => {
   };
 
   const handleAddPro = async () => {
-    // try {
-      const imageUrls = await uploadImagesToSupabase(formik.values.image, 'products');
+    const imageUrls = await uploadImagesToSupabase(formik.values.image, 'products');
 
-      const values = {
-        ...formik.values,
-        image: imageUrls[0],
-        traderprice: Number(formik.values.traderprice),
-       
-        quantity_per_unit: Number(formik.values.quantity_per_unit),
-      };
+    const values = {
+      ...formik.values,
+      image: imageUrls[0],
+      traderprice: Number(formik.values.traderprice),
+      quantity_per_unit: Number(formik.values.quantity_per_unit),
+      sale: formik.values.onSale ? Number(formik.values.sale) : 0,
+      endPrice: formik.values.onSale ? Number(formik.values.endPrice) : Number(formik.values.traderprice)
+    };
 
-      if (Object.values(values).some(val => typeof val === 'number' && isNaN(val))) {
-        console.error("❌ تأكد من ملء جميع الحقول الرقمية");
-        return;
-      }
+    if (Object.values(values).some(val => typeof val === 'number' && isNaN(val))) {
+      console.error("❌ تأكد من ملء جميع الحقول الرقمية");
+      return;
+    }
 
-      await dispatch(createProduct(values)).unwrap();
-      formik.resetForm();
-      setImages([]);
-      setShow(false);
-    // } catch (error) {
-    //   console.error("❌ فشل في إضافة المنتج:", error);
-    // }
+    await dispatch(createProduct(values)).unwrap();
+    formik.resetForm();
+    setImages([]);
+    setShow(false);
   };
 
   const validationSchema = Yup.object({
     name: Yup.string().required('اسم المنتج مطلوب'),
     description: Yup.string().required('الوصف مطلوب'),
     traderprice: Yup.number().required('السعر مطلوب').min(1),
+    endPrice: Yup.number()
+      .min(1, 'السعر بعد الخصم يجب أن يكون أكبر من 0')
+      .when('onSale', {
+        is: true,
+        then: (schema) => schema.required('السعر بعد الخصم مطلوب'),
+        otherwise: (schema) => schema.notRequired(),
+      }),
     quantity_per_unit: Yup.number().required('الكمية لكل وحدة مطلوبة').min(1),
     category_id: Yup.string().required('التصنيف مطلوب'),
     unit: Yup.string().required('الوحدة مطلوبة'),
     company_id: Yup.string().required('الشركة مطلوبة'),
     trader_id: Yup.string().required('التاجر مطلوب'),
-    image: Yup.mixed().test('required', 'الصورة مطلوبة', value => value && value.length > 0),
+    image: Yup.mixed().test(
+      'required',
+      'الصورة مطلوبة',
+      (value) => value && value.length > 0
+    ),
   });
 
   const formik = useFormik({
@@ -87,9 +97,11 @@ const AddProductModal = () => {
       name: "",
       description: '',
       traderprice: 0,
-    
+      endPrice: 0,
+      onSale: false,
+      sale: 0,
       category_id: "",
-      trader_id: "0b803d5d-dfe2-43dc-9b12-a67fec01a1da",
+      trader_id: token,
       company_id: "",
       unit: "",
       quantity_per_unit: 12,
@@ -101,13 +113,38 @@ const AddProductModal = () => {
     onSubmit: handleAddPro
   });
 
+  const handleSale = (endPrice) => {
+    const traderPrice = Number(formik.values.traderprice);
+    endPrice = Number(endPrice);
+
+    if (traderPrice > 0 && endPrice >= 0 && endPrice <= traderPrice) {
+      const salePercentage = ((traderPrice - endPrice) / traderPrice) * 100;
+      const rounded = Math.round(salePercentage);
+      formik.setFieldValue('sale', rounded);
+    } else {
+      formik.setFieldValue('sale', 0);
+    }
+  };
+
+  const toggleSale = (checked) => {
+    formik.setFieldValue('onSale', checked);
+    if (!checked) {
+      formik.setFieldValue('endPrice', formik.values.traderprice);
+      formik.setFieldValue('sale', 0);
+    } else {
+      formik.setFieldValue('endPrice', '');
+    }
+  };
+
   return (
     <>
-      <PrimaryButton
-        label="إضافة منتج"
-        icon='fa-solid fa-square-plus'
-        onClick={() => setShow(true)}
-      />
+      {UserRole == 'trader' &&
+        <PrimaryButton
+          label="إضافة منتج"
+          icon='fa-solid fa-square-plus'
+          onClick={() => setShow(true)}
+        />
+      }
       <Modal show={show} onHide={() => setShow(false)} centered dialogClassName='AddProductModal'>
         <Modal.Header>
           <div className="border-0 pb-0 d-flex align-items-center justify-content-between w-100">
@@ -119,9 +156,9 @@ const AddProductModal = () => {
         <Modal.Body className="p-4">
           <Form noValidate onSubmit={formik.handleSubmit}>
             <Row>
-              <Col md={6} className="mb-3">
+             <Col md={6} className="mb-3">
                 <Form.Group>
-                  <Form.Label>اسم المنتج</Form.Label>
+                  <Form.Label className='pe-2'> اسم المنتج</Form.Label>
                   <Form.Control
                     name='name'
                     value={formik.values.name}
@@ -138,7 +175,7 @@ const AddProductModal = () => {
 
               <Col md={3} className="mb-3">
                 <Form.Group>
-                  <Form.Label>التصنيف</Form.Label>
+                  <Form.Label className='pe-2'> التصنيف</Form.Label>
                   <Form.Select
                     name="category_id"
                     value={formik.values.category_id}
@@ -158,7 +195,7 @@ const AddProductModal = () => {
 
               <Col md={3} className="mb-3">
                 <Form.Group>
-                  <Form.Label>الوحدة</Form.Label>
+                  <Form.Label className='pe-2'>الوحدة</Form.Label>
                   <Form.Select
                     name="unit"
                     value={formik.values.unit}
@@ -178,7 +215,7 @@ const AddProductModal = () => {
 
               <Col md={6} className="mb-3">
                 <Form.Group>
-                  <Form.Label>الشركة المصنعة</Form.Label>
+                  <Form.Label className='pe-2'>الشركة المصنعة</Form.Label>
                   <Form.Select
                     name="company_id"
                     value={formik.values.company_id}
@@ -198,7 +235,7 @@ const AddProductModal = () => {
 
               <Col md={6} className="mb-3">
                 <Form.Group>
-                  <Form.Label>حالة المنتج</Form.Label>
+                  <Form.Label className='pe-2'>حالة المنتج</Form.Label>
                   <Form.Select
                     className={formik.values.state ? 'text-success' : 'text-danger'}
                     name="state"
@@ -214,7 +251,7 @@ const AddProductModal = () => {
 
               <Col md={3} className="mb-3">
                 <Form.Group>
-                  <Form.Label>الكمية للوحدة</Form.Label>
+                  <Form.Label className='pe-2'>الكمية للوحدة</Form.Label>
                   <Form.Control
                     type="number"
                     name='quantity_per_unit'
@@ -231,10 +268,10 @@ const AddProductModal = () => {
                   )}
                 </Form.Group>
               </Col>
-
+              
               <Col md={3} className="mb-3">
                 <Form.Group>
-                  <Form.Label>السعر</Form.Label>
+                  <Form.Label className='pe-2'>السعر</Form.Label>
                   <Form.Control
                     type="number"
                     name='traderprice'
@@ -242,6 +279,9 @@ const AddProductModal = () => {
                     onChange={(e) => {
                       formik.handleChange(e);
                       getPriceOfPiece(e.target.value);
+                      if (!formik.values.onSale) {
+                        formik.setFieldValue('endPrice', e.target.value);
+                      }
                     }}
                     onBlur={formik.handleBlur}
                     value={formik.values.traderprice}
@@ -254,14 +294,49 @@ const AddProductModal = () => {
 
               <Col md={3} className="mb-3">
                 <Form.Group>
-                  <Form.Label>سعر القطعة</Form.Label>
+                  <Form.Label className='pe-2'>سعر القطعة</Form.Label>
                   <Form.Control type="number" value={PiecePrice} readOnly />
                 </Form.Group>
               </Col>
-
-              <Col md={12} className="mb-3">
+              
+              <Col md={8} className="mb-3">
+                <div className='d-flex align-items-center mt-2'>
+                  <label className="checkbox-wrapper ms-3">
+                    <input
+                      type="checkbox"
+                      checked={formik.values.onSale}
+                      onChange={(e) => toggleSale(e.target.checked)}
+                    />
+                    <Form.Label className='mt-2' style={{ fontSize: '18px' }}>تفعيل الخصم</Form.Label>
+                  </label>
+                  {formik.values.onSale &&
+                    <Form.Group className="ms-3">
+                      <Form.Control
+                        placeholder='السعر بعد الخصم'
+                        type="number"
+                        name='endPrice'
+                        onChange={(e) => {
+                          formik.handleChange(e);
+                          handleSale(e.target.value);
+                        }}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.endPrice}
+                        min={0}
+                        max={formik.values.traderprice}
+                      />
+                      {formik.touched.endPrice && formik.errors.endPrice && (
+                        <div className="text-danger">{formik.errors.endPrice}</div>
+                      )}
+                      {formik.values.sale > 0 && (
+                        <div className="text-success mt-1">نسبة الخصم: {formik.values.sale}%</div>
+                      )}
+                    </Form.Group>
+                  }
+                </div>
+              </Col>
+  <Col md={12} className="mb-3">
                 <Form.Group>
-                  <Form.Label>الوصف</Form.Label>
+                  <Form.Label className='pe-2'>الوصف</Form.Label>
                   <Form.Control
                     as="textarea"
                     rows={2}
@@ -279,7 +354,7 @@ const AddProductModal = () => {
 
               <Col md={12} className="mb-3">
                 <Form.Group>
-                  <Form.Label>صور المنتج</Form.Label>
+                  <Form.Label className='pe-2'>صور المنتج</Form.Label>
                   <Form.Control
                     type="file"
                     name="image"

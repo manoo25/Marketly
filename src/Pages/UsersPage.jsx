@@ -7,7 +7,9 @@ import { updateUser, updateSelectedUsers, deleteUser } from "../Redux/Slices/Use
 import UsersPageHeader from "../Components/UsersComponents/usersPageHeader";
 import Toast from 'react-bootstrap/Toast';
 import ToastContainer from 'react-bootstrap/ToastContainer';
-import { sendMessage } from "../Redux/Slices/MessagesSlice";
+// import { sendMessage } from "../Redux/Slices/MessagesSlice";
+import Loading from "../Components/globalComonents/loading";
+import { UserRole } from "../Redux/Slices/token";
 
 
 export default function UsersPage() {
@@ -25,8 +27,10 @@ export default function UsersPage() {
     // getting user from store and subabase
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(fetchUsers());
-    }, [dispatch])
+        if (!users || users.length === 0) {
+             dispatch(fetchUsers());
+           }
+    }, [dispatch,UserRole])
 
     const { users, loading } = useSelector((state) => state.Users);
 
@@ -163,30 +167,30 @@ export default function UsersPage() {
     // test();
 
     // Send Msg to Users
-    const handleSendMessage = (receiverIds, messageText) => {
-        if (receiverIds.length === 0) {
-            setToastMessage("⚠️ من فضلك اختر مستخدمين لإرسال الرسالة");
-            setToastVariant("warning");
-            setShowToast(true);
-            return;
-        }
+    // const handleSendMessage = (receiverIds, messageText) => {
+    //     if (receiverIds.length === 0) {
+    //         setToastMessage("⚠️ من فضلك اختر مستخدمين لإرسال الرسالة");
+    //         setToastVariant("warning");
+    //         setShowToast(true);
+    //         return;
+    //     }
 
-        dispatch(sendMessage({
-            receiverIds,
-            content: messageText
-        }))
-            .unwrap()
-            .then(() => {
-                setToastMessage(`📩 تم إرسال الرسالة إلى ${receiverIds.length} مستخدم`);
-                setToastVariant("success");
-                setShowToast(true);
-            })
-            .catch((error) => {
-                setToastMessage(`❌ فشل في إرسال الرسالة: ${error}`);
-                setToastVariant("danger");
-                setShowToast(true);
-            });
-    };
+    //     // dispatch(sendMessage({
+    //     //     receiverIds,
+    //     //     content: messageText
+    //     // }))
+    //     //     .unwrap()
+    //     //     .then(() => {
+    //     //         setToastMessage(`📩 تم إرسال الرسالة إلى ${receiverIds.length} مستخدم`);
+    //     //         setToastVariant("success");
+    //     //         setShowToast(true);
+    //     //     })
+    //     //     .catch((error) => {
+    //     //         setToastMessage(`❌ فشل في إرسال الرسالة: ${error}`);
+    //     //         setToastVariant("danger");
+    //     //         setShowToast(true);
+    //     //     });
+    // };
 
 
 
@@ -222,11 +226,7 @@ export default function UsersPage() {
 
 
             {loading ? (
-                <div className="text-center py-5">
-                    <div className="spinner-border text-primary" role="status">
-                        <span className="visually-hidden">Loading...</span>
-                    </div>
-                </div>
+               <Loading/>
             ) : (
                 <UsersTbl
                     users={users}
@@ -243,7 +243,7 @@ export default function UsersPage() {
                     onBlockSelectedUsers={handleBlockSelectedUsers}
                     onUnblockSelectedUsers={handleUnblockSelectedUsers}
 
-                    onSendMessage={handleSendMessage}
+                    // onSendMessage={handleSendMessage}
                 />
             )}
             <ToastContainer position="top-center" className="p-3" style={{ zIndex: 999999 }}>

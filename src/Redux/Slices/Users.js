@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { supabase } from "../../Supabase/supabaseClient";
+import { supabase } from "../../Supabase/SupabaseClient";
 
 
 export const fetchUsers = createAsyncThunk("users/fetchUsers", async (_ , { rejectWithValue }) => {

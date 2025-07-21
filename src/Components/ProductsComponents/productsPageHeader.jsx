@@ -1,3 +1,4 @@
+
 import AddProductModal from "../modalsComponents/AddProductModal";
 
 function ProductsPageHeader() {

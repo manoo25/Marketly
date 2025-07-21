@@ -24,12 +24,15 @@ const EditProductModal = ({ product, show, setShow }) => {
     dispatch(fetchCompanies());
   }, [dispatch]);
 
+  // دالة محسنة لحساب سعر القطعة مع ضبط التقريب
   const getPriceOfPiece = (price) => {
-    const total = Number(price);
-    const quantity = Number(formik.values.quantity_per_unit);
+    const total = parseFloat(price);
+    const quantity = parseInt(formik.values.quantity_per_unit);
     const finalTotal = isNaN(total) ? 0 : total;
     const finalQty = isNaN(quantity) ? 1 : quantity;
-    const piece = finalTotal / finalQty;
+    
+    // حل مشكلة التقريب باستخدام طريقة أكثر دقة
+    const piece = Math.round((finalTotal / finalQty) * 100) / 100;
     SetPiecePrice(piece.toFixed(2));
   };
 
@@ -40,6 +43,7 @@ const EditProductModal = ({ product, show, setShow }) => {
     setImages(previews);
   };
 
+  // دالة محسنة لحفظ المنتج مع ضبط التقريب
   const handleEditPro = async () => {
     try {
       let imageUrl = product.image;
@@ -49,25 +53,50 @@ const EditProductModal = ({ product, show, setShow }) => {
         imageUrl = imageUrls[0];
       }
 
+      // تأكد من القيم العشرية بدقة
+      const traderprice = Math.round(parseFloat(formik.values.traderprice) * 100) / 100;
+      const endPrice = formik.values.onSale ? 
+        Math.round(parseFloat(formik.values.endPrice) * 100) / 100 : 
+        traderprice;
+
       const updatedData = {
         ...formik.values,
         image: imageUrl,
-        traderprice: Number(formik.values.traderprice),
-        quantity_per_unit: Number(formik.values.quantity_per_unit),
+        traderprice: traderprice,
+        quantity_per_unit: parseInt(formik.values.quantity_per_unit),
+        sale: formik.values.onSale ? parseFloat(formik.values.sale) : 0,
+        endPrice: endPrice
       };
+
+      console.log('بيانات المنتج قبل الحفظ:', updatedData);
 
       await dispatch(updateProduct({ id: product.id, updatedData })).unwrap();
       setShow(false);
     } catch (error) {
-      console.error("❌ Failed to update product:", error.message);
+      console.error("❌ فشل في تحديث المنتج:", error.message);
     }
   };
 
   const validationSchema = Yup.object({
     name: Yup.string().required('اسم المنتج مطلوب'),
     description: Yup.string().required('الوصف مطلوب'),
-    traderprice: Yup.number().required('السعر مطلوب').min(1),
-    quantity_per_unit: Yup.number().required('الكمية لكل وحدة مطلوبة').min(1),
+    traderprice: Yup.number()
+      .required('السعر مطلوب')
+      .min(0.01, 'يجب أن يكون السعر أكبر من 0'),
+    endPrice: Yup.number()
+      .min(0, 'السعر بعد الخصم يجب أن يكون موجب')
+      .max(
+        Yup.ref('traderprice'), 
+        'السعر بعد الخصم يجب أن يكون أقل من السعر الأصلي'
+      )
+      .when('onSale', {
+        is: true,
+        then: (schema) => schema.required('السعر بعد الخصم مطلوب'),
+        otherwise: (schema) => schema.notRequired(),
+      }),
+    quantity_per_unit: Yup.number()
+      .required('الكمية لكل وحدة مطلوبة')
+      .min(1, 'يجب أن تكون الكمية على الأقل 1'),
     category_id: Yup.string().required('التصنيف مطلوب'),
     unit: Yup.string().required('الوحدة مطلوبة'),
     company_id: Yup.string().required('الشركة مطلوبة'),
@@ -75,11 +104,38 @@ const EditProductModal = ({ product, show, setShow }) => {
     image: Yup.mixed(),
   });
 
+  // دالة محسنة لحساب الخصم
+  const handleSale = (endPrice) => {
+    const traderPrice = parseFloat(formik.values.traderprice);
+    endPrice = parseFloat(endPrice);
+
+    if (traderPrice > 0 && endPrice >= 0 && endPrice <= traderPrice) {
+      const salePercentage = ((traderPrice - endPrice) / traderPrice) * 100;
+      formik.setFieldValue('sale', parseFloat(salePercentage.toFixed(2)));
+      formik.setFieldValue('endPrice', Math.round(endPrice * 100) / 100);
+    } else {
+      formik.setFieldValue('sale', 0);
+    }
+  };
+
+  const toggleSale = (checked) => {
+    formik.setFieldValue('onSale', checked);
+    if (!checked) {
+      formik.setFieldValue('endPrice', Math.round(parseFloat(formik.values.traderprice) * 100) / 100);
+      formik.setFieldValue('sale', 0);
+    } else {
+      formik.setFieldValue('endPrice', product?.endPrice || '');
+    }
+  };
+
   const formik = useFormik({
     initialValues: {
       name: product?.name || '',
       description: product?.description || '',
       traderprice: product?.traderprice || 0,
+      endPrice: product?.endPrice || product?.traderprice || 0,
+      onSale: product?.onSale || false,
+      sale: product?.sale || 0,
       category_id: product?.category_id || '',
       trader_id: product?.trader_id || '',
       company_id: product?.company_id || '',
@@ -96,8 +152,10 @@ const EditProductModal = ({ product, show, setShow }) => {
   useEffect(() => {
     if (product) {
       getPriceOfPiece(product.traderprice);
+      if (product.onSale && product.endPrice) {
+        handleSale(product.endPrice);
+      }
     }
-    // eslint-disable-next-line
   }, [product]);
 
   return (
@@ -111,7 +169,7 @@ const EditProductModal = ({ product, show, setShow }) => {
         <Modal.Body className="p-4">
           <Form noValidate onSubmit={formik.handleSubmit}>
             <Row>
-              <Col md={6} className="mb-3">
+             <Col md={6} className="mb-3">
                 <Form.Group>
                   <Form.Label>اسم المنتج</Form.Label>
                   <Form.Control
@@ -223,7 +281,6 @@ const EditProductModal = ({ product, show, setShow }) => {
                   )}
                 </Form.Group>
               </Col>
-
               <Col md={3} className="mb-3">
                 <Form.Group>
                   <Form.Label>السعر</Form.Label>
@@ -232,11 +289,17 @@ const EditProductModal = ({ product, show, setShow }) => {
                     name='traderprice'
                     placeholder="جنيه مصري"
                     onChange={(e) => {
-                      formik.handleChange(e);
-                      getPriceOfPiece(e.target.value);
+                      const value = parseFloat(e.target.value) || 0;
+                      formik.setFieldValue('traderprice', value);
+                      getPriceOfPiece(value);
+                      if (!formik.values.onSale) {
+                        formik.setFieldValue('endPrice', value);
+                      }
                     }}
                     onBlur={formik.handleBlur}
                     value={formik.values.traderprice}
+                    step="0.01"
+                    min="0"
                   />
                   {formik.touched.traderprice && formik.errors.traderprice && (
                     <div className="text-danger">{formik.errors.traderprice}</div>
@@ -244,11 +307,44 @@ const EditProductModal = ({ product, show, setShow }) => {
                 </Form.Group>
               </Col>
 
-              <Col md={3} className="mb-3">
-                <Form.Group>
-                  <Form.Label>سعر القطعة</Form.Label>
-                  <Form.Control type="number" value={PiecePrice} readOnly />
-                </Form.Group>
+              <Col md={8} className="mb-3">
+                <div className='d-flex align-items-center mt-2'>
+                  <label className="checkbox-wrapper ms-3">
+                    <input
+                      type="checkbox"
+                      checked={formik.values.onSale}
+                      onChange={(e) => toggleSale(e.target.checked)}
+                    />
+                    <Form.Label className='mt-2' style={{ fontSize: '18px' }}>تفعيل الخصم</Form.Label>
+                  </label>
+                  {formik.values.onSale &&
+                    <Form.Group className="ms-3">
+                      <Form.Control
+                        placeholder='السعر بعد الخصم'
+                        type="number"
+                        name='endPrice'
+                        onChange={(e) => {
+                          const value = parseFloat(e.target.value) || 0;
+                          formik.setFieldValue('endPrice', value);
+                          handleSale(value);
+                        }}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.endPrice}
+                        step="0.01"
+                        min="0"
+                        max={formik.values.traderprice}
+                      />
+                      {formik.touched.endPrice && formik.errors.endPrice && (
+                        <div className="text-danger">{formik.errors.endPrice}</div>
+                      )}
+                      {formik.values.sale > 0 && (
+                        <div className="text-success mt-1">
+                          نسبة الخصم: {parseFloat(formik.values.sale).toFixed(2)}%
+                        </div>
+                      )}
+                    </Form.Group>
+                  }
+                </div>
               </Col>
 
               <Col md={12} className="mb-3">

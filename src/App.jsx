@@ -13,16 +13,35 @@ import Landing from "./Pages/landingPage";
 import MostSellingTbl from "./Components/ProductsComponents/MostSellingTbl";
 import MostSellingProducts from "./Pages/Products/MostSellingProducts";
 import DelegatesPage from "./Pages/DelegatesPage";
+import ChooseRole from "./Pages/auth/ChooseRole";
+import CheckDelegates from "./Pages/auth/CheckDelegates";
+import Sales from "./Pages/Sales";
 
+
+// import { useDispatch } from "react-redux";
+// import { useEffect } from "react";
+// import { GetToken } from "./Redux/Slices/token";
+
+import UploadShopImage from "./Pages/auth/UploadShopImage";
+import Complaints from "./Pages/Complaints";
+import GoogleUserRoute from "./Pages/auth/GoogleUserRoute";
+import Chats from "./Pages/Chats";
+
+
+ 
 function App() {
+
+
+
   const routes = createBrowserRouter([
-    { path: '/', element: <Layout /> },
+    { path: 'Dashboard', element: <Layout /> },
     { path: 'Landing', element: <Landing /> },
     {
       path: 'Dashboard',
       element: <Layout />,
       children: [
         { path: 'Charts', element: <Charts /> },
+        { path: 'Chats', element: <Chats /> },
         { path: 'Products', element: <Products /> },
         { path: 'Products/MostSelling', element: <MostSellingTbl /> },
         { path: 'Products/MostSellingProducts', element: <MostSellingProducts /> },
@@ -31,12 +50,20 @@ function App() {
         { path: 'Orders', element: <Orders /> },
         { path: 'companies', element: <Companies /> },
         { path: 'Returns', element: <Returns /> },
+        { path: 'Sales', element: <Sales /> },
         { path: 'Delegates', element: <DelegatesPage /> },
+        { path: 'Complaints', element: <Complaints /> },
       ]
     },
     { path: 'SignUp', element: <SignUpPage /> },
+    { path: '/', element: <SigninPage /> },
     { path: 'SigninPage', element: <SigninPage /> },
-  ]);
+   { path: 'google-setup', element: <GoogleUserRoute /> },
+    { path: 'choose-role', element: <ChooseRole /> },
+    { path: 'check-delegates', element: <CheckDelegates /> },
+   { path:"/upload-shop-image" , element:<UploadShopImage />}
+
+   ]);
 
   return (
     <RouterProvider router={routes} />

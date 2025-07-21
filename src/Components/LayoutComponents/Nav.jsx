@@ -1,7 +1,8 @@
+
 import AvatarDropdown from "./Avatar";
 
 function Nav({handleToggleSidebar,isSidebarOpen,PageTitle}) {
-  
+    
     return ( 
         <nav style={{
             backgroundColor:"var(--white-color)",

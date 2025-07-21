@@ -8,6 +8,8 @@ import avatar from "../../assets/Images/user.png"
 function DelegatorListModal({ show, Setshow, location }) {
   const dispatch = useDispatch();
   const { delegates, loading } = useSelector((state) => state.Delegates);
+  console.log(delegates);
+  
 
   useEffect(() => {
     if (show) dispatch(fetchDelegates());
@@ -43,7 +45,7 @@ function DelegatorListModal({ show, Setshow, location }) {
               .filter(d =>
                 Array.isArray(d.routes) &&
                 d.routes.some(r =>
-                  normalize(r.route)?.includes(normalize(location.governorate)) ||
+                  normalize(r.governorate)==(normalize(location.governorate)) &&
                   normalize(r.route)?.includes(normalize(location.city))
                 )
               )
@@ -67,7 +69,7 @@ function DelegatorListModal({ show, Setshow, location }) {
     {[...new Set(
       delegate.routes
         .filter(r =>
-          (normalize(r.route)?.includes(normalize(location.governorate)) ||
+          (normalize(r.governorate)?.includes(normalize(location.governorate)) ||
            normalize(r.route)?.includes(normalize(location.city)))
         )
         .map(r => r.route)

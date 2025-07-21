@@ -1,49 +1,40 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { supabase } from "../../Supabase/supabaseClient";
+import { supabase } from "../../Supabase/SupabaseClient";
+import { UserRole } from "./token";
 
-
-export const getOrderItems = createAsyncThunk(
-  "orderItems/getOrderItems",
-  async (order_id, { rejectWithValue }) => {
-    try {
-      const { data, error } = await supabase
-        .from("order_items")
-        .eq("order_id", order_id)
-        .select("*");
-      if (error) throw error;
-      return data;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
-  }
-);
-
-
-export const getAllOrderItems = createAsyncThunk(
-  "orderItems/getAllOrderItems",
+// دالة واحدة لجلب عناصر الطلبات حسب الصلاحية
+export const fetchOrderItems = createAsyncThunk(
+  "orderItems/fetchOrderItems",
   async (_, { rejectWithValue }) => {
+     const token = localStorage.getItem('userID');
     try {
-     // ...existing code...
-const { data, error } = await supabase
-  .from("order_items")
-  .select(`
-    *,
-    product_id (
-      name,
-      image,
-      traderprice,
-      company_id (
-        name
-      ),
-      category_id (
-        name
-      )
-    ),
-    order_id (
-      status
-    )
-  `);
-// ...existing code...
+      let query = supabase
+        .from("order_items")
+        .select(`
+          *,
+          product_id (
+            name,
+            image,
+            traderprice,
+            company_id (
+              name
+            ),
+            category_id (
+              name
+            )
+          ),
+          order_id (
+            status,
+            trader_id
+          )
+        `);
+
+      if (UserRole !== "admin") {
+        // إذا كان تاجر، هات فقط العناصر المرتبطة بـ trader_id
+        query = query.eq("order_id.trader_id", token);
+      }
+
+      const { data, error } = await query;
       if (error) throw error;
       return data;
     } catch (error) {
@@ -51,7 +42,6 @@ const { data, error } = await supabase
     }
   }
 );
-
 
 const orderItemsSlice = createSlice({
   name: "orderItems",
@@ -62,35 +52,19 @@ const orderItemsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-     
-      .addCase(getOrderItems.pending, (state) => {
+      .addCase(fetchOrderItems.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(getOrderItems.fulfilled, (state, action) => {
+      .addCase(fetchOrderItems.fulfilled, (state, action) => {
         state.loading = false;
         state.items = action.payload;
       })
-      .addCase(getOrderItems.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-
-  
-      .addCase(getAllOrderItems.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(getAllOrderItems.fulfilled, (state, action) => {
-        state.loading = false;
-        state.items = action.payload;
-      })
-      .addCase(getAllOrderItems.rejected, (state, action) => {
+      .addCase(fetchOrderItems.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
   },
 });
-
 
 export default orderItemsSlice;

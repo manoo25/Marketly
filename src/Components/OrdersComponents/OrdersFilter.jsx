@@ -34,7 +34,7 @@ function OrdersFilter({
             />
 
             <PrimaryButton
-                label="مسح "
+                label="إلغاء "
                 onClick={onResetFilters}
             />
 
