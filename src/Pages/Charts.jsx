@@ -1,25 +1,44 @@
+import { useEffect } from "react";
 import ActivityFeed from "../Components/ChartsComponents/ActivityFeed";
 import ChartSection from "../Components/ChartsComponents/ChartSection";
 import StatsGrid from "../Components/ChartsComponents/StatsGrid";
 import TableSection from "../Components/ChartsComponents/TableSection";
-import Loading from "../Components/globalComonents/loading";
+import { useDispatch, useSelector } from "react-redux";
+import { getOrders } from "../Redux/Slices/OrdersSlice";
+import { fetchProducts } from "../Redux/Slices/ProductSlice";
+import { fetchUsers } from "../Redux/Slices/Users";
+import { fetchDelegates } from "../Redux/Slices/DelegatesSlice";
 
 function Charts() {
-    return ( 
-        <div className="pt-3 d-flex flex-column gap-4">
-            <StatsGrid />
-            <ChartSection />
-            <div className="row g-4">
-                <div className="col-xl-8">
-                    <TableSection/>
-                </div>
-                <div className='col-xl-4'>
-                    <ActivityFeed/>
-                </div>
-            </div>
+  const dispatch = useDispatch();
+  const UserRole = useSelector((state) => state.Token.UserRole);
+
+  useEffect(() => {
+    dispatch(fetchUsers());
+    dispatch(fetchDelegates());
+    dispatch(fetchProducts());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (UserRole) {
+      dispatch(getOrders());
+    }
+  }, [dispatch, UserRole]);
+
+  return (
+    <div className="pt-3 d-flex flex-column gap-4">
+      <StatsGrid />
+      <ChartSection />
+      <div className="row g-4">
+        <div className="col-xl-8">
+          <TableSection />
         </div>
-      
-     );
+        <div className="col-xl-4">
+          <ActivityFeed />
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default Charts;

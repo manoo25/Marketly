@@ -7,6 +7,7 @@ import Nav from '../Components/LayoutComponents/Nav';
 import { Outlet } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { GetToken } from '../Redux/Slices/token';
+import SupportChat from '../Components/SupportChat/SupportChat';
 
 
 function Layout() {
@@ -90,6 +91,7 @@ function Layout() {
         {/* Routing Pages */}
         <div className='bg-light' style={{ padding: '3rem'}}>
           <Outlet context={{ token, UserRole }} />
+          {UserRole !== 'admin' && <SupportChat />}
         </div>
       </div>
     </>

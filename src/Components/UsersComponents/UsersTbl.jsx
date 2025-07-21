@@ -11,13 +11,13 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import LabeledMenuButton from "../globalComonents/LabeledMenu";
 import LabeledMenu from "../globalComonents/LabeledMenu";
 import UpdateRolesModal from "../modalsComponents/UpdateRolesModal";
-import ChatModal from "../UsersComponents/ChatModal";
-import { generateConversationId } from "../../utils/generateConversationId";
-import { getCurrentUserId } from "../../utils/getCurrentUserId";
+// import ChatModal from "../UsersComponents/ChatModal";
+// import { generateConversationId } from "../../utils/generateConversationId";
+// import { getCurrentUserId } from "../../utils/getCurrentUserId";
 
 const rowsPerPage = 10;
 
-const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, searchEmail, onBlockUser, onUpdateUserRole, onUpdateSelectedUseresRole, onBlockSelectedUsers, onUnblockSelectedUsers, onSendMessage }) => {
+const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, searchEmail, onBlockUser, onUpdateUserRole, onUpdateSelectedUseresRole, onBlockSelectedUsers, onUnblockSelectedUsers }) => {
  
   const filteredUsers = users.filter((user) => {
     const matchGovernorate = selectedGovernorate ? user.governorate === selectedGovernorate : true;
@@ -36,34 +36,34 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
   const [confirmModal, setConfirmModal] = useState({ open: false, message: "", confirmText: "تأكيد", confirmClass: "btn-primary", onConfirm: () => { } });
   const [selectedUserIds, setSelectedUserIds] = useState([]);
   const [bulkRoleModalOpen, setBulkRoleModalOpen] = useState(false);
-  const [chatModalOpen, setChatModalOpen] = useState(false);
-  const [conversationId, setConversationId] = useState(null);
-  const [targetUser, setTargetUser] = useState(null);
+  // const [chatModalOpen, setChatModalOpen] = useState(false);
+  // const [conversationId, setConversationId] = useState(null);
+  // const [targetUser, setTargetUser] = useState(null);
 
 
-  const [currentAdminId, setCurrentAdminId] = useState(null);
-  useEffect(() => { getCurrentUserId().then(setCurrentAdminId); }, []);
+  // const [currentAdminId, setCurrentAdminId] = useState(null);
+  // useEffect(() => { getCurrentUserId().then(setCurrentAdminId); }, []);
 
-  const openChatModal = (user) => {
-    const convId = generateConversationId(currentAdminId, user.id);
-    setConversationId(convId);
-    setTargetUser(user);
-    setChatModalOpen(true);
-  };
+  // const openChatModal = (user) => {
+  //   const convId = generateConversationId(currentAdminId, user.id);
+  //   setConversationId(convId);
+  //   setTargetUser(user);
+  //   setChatModalOpen(true);
+  // };
 
-  const openMessageModal = (userIds) => {
-    if (!userIds || userIds.length === 0) {
-      alert("من فضلك اختر مستخدمين لإرسال الرسالة");
-      return;
-    }
-    if (userIds.length === 1) {
-      const target = users.find((u) => u.id === userIds[0]);
-      openChatModal(target);
-    } else {
-      setMessageTargetIds(userIds);
-      setShowMessageModal(true);
-    }
-  };
+  // const openMessageModal = (userIds) => {
+  //   if (!userIds || userIds.length === 0) {
+  //     alert("من فضلك اختر مستخدمين لإرسال الرسالة");
+  //     return;
+  //   }
+  //   if (userIds.length === 1) {
+  //     const target = users.find((u) => u.id === userIds[0]);
+  //     openChatModal(target);
+  //   } else {
+  //     setMessageTargetIds(userIds);
+  //     setShowMessageModal(true);
+  //   }
+  // };
   
   // Modals for  Block And Delete Confirm  
   const handleBlockUser = (user) => {
@@ -201,9 +201,9 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
 
 
   // Send Msg to User or Users
-  const [showMessageModal, setShowMessageModal] = useState(false);
-  const [messageText, setMessageText] = useState("");
-  const [messageTargetIds, setMessageTargetIds] = useState([]);
+  // const [showMessageModal, setShowMessageModal] = useState(false);
+  // const [messageText, setMessageText] = useState("");
+  // const [messageTargetIds, setMessageTargetIds] = useState([]);
 
   // Send Msg to User or Users
 
@@ -253,9 +253,9 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
                   id="bulkActions"
                   label="إجراءات جماعية"
                   options={[
-                    {
-                      label: "إرسال رسالة", icon: "fa-solid fa-paper-plane", color: "green", onClick: () => openMessageModal(selectedUserIds)
-                    },
+                    // {
+                    //   label: "إرسال رسالة", icon: "fa-solid fa-paper-plane", color: "green", onClick: () => openMessageModal(selectedUserIds)
+                    // },
                     {
                       label: "تعديل الصلاحية", icon: "fa-solid fa-user-pen", color: "blue", onClick: () => {
                         if (selectedUserIds.length === 0) {
@@ -349,9 +349,9 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
                   <CustomMenu
                   id={user.id}
                   options={[
-                    {
-                      label: "إرسال رسالة", icon: "fa-solid fa-paper-plane", color: "green", onClick: () => openMessageModal([user.id])
-                    },
+                    // {
+                    //   label: "إرسال رسالة", icon: "fa-solid fa-paper-plane", color: "green", onClick: () => openMessageModal([user.id])
+                    // },
                     { label: user.isBlocked ? "إالغاء الحظر" : "حظر" , icon: "fa-solid fa-ban", color: "red",
                       onClick:()=>{handleBlockUser(user)}}
                   ]}
@@ -399,18 +399,18 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
         confirmClass={confirmModal.confirmClass}
       />
       
-      {chatModalOpen && (
+      {/* {chatModalOpen && (
         <ChatModal
           receiver={targetUser}
           conversationId={conversationId}
           onClose={() => setChatModalOpen(false)}
           currentUserId={currentAdminId}
         />
-      )}
+      )} */}
 
 
       {/* Send msg Modal */}
-      {showMessageModal && (
+      {/* {showMessageModal && (
         <div className="modal show fade d-block" tabIndex="-1" role="dialog" style={{ backgroundColor: "rgba(0,0,0,0.4)" }}>
           <div className="modal-dialog modal-dialog-centered" role="document">
             <div className="modal-content text-end">
@@ -462,7 +462,7 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
 
       {/* Send msg Modal */}

@@ -6,10 +6,10 @@ import ordersSlice from "./Slices/OrdersSlice";
 import orderItemsSlice from "./Slices/OrderItems";
 import UnitsSlice from "./Slices/units";
 import CompaniesSlice from "./Slices/CompaniesSlice";
-import messagesSlice from "./Slices/MessagesSlice";
 import delegatesSlice from "./Slices/DelegatesSlice";
 import TokenSlice from "./Slices/token";
 import complaintsSlice from "./Slices/Complaints";
+import messagesSlice from "./slices/messagesSlice";
 
 export const Store = configureStore({
   reducer: {
@@ -23,7 +23,6 @@ export const Store = configureStore({
     messages: messagesSlice.reducer,
     Delegates: delegatesSlice.reducer,
     Token: TokenSlice.reducer,
-  Complaints: complaintsSlice.reducer,
- 
+    Complaints: complaintsSlice.reducer,
   },
 });

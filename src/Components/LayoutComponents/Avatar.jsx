@@ -8,7 +8,6 @@ import { useSelector } from 'react-redux';
 function AvatarDropdown() {
   
      const { userData } = useSelector(state => state.Token);
-     console.log(userData);
      
      const UserImage = userData?.image;
    

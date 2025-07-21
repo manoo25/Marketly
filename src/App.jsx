@@ -17,6 +17,7 @@ import ChooseRole from "./Pages/auth/ChooseRole";
 import CheckDelegates from "./Pages/auth/CheckDelegates";
 import Sales from "./Pages/Sales";
 
+
 // import { useDispatch } from "react-redux";
 // import { useEffect } from "react";
 // import { GetToken } from "./Redux/Slices/token";
@@ -24,6 +25,7 @@ import Sales from "./Pages/Sales";
 import UploadShopImage from "./Pages/auth/UploadShopImage";
 import Complaints from "./Pages/Complaints";
 import GoogleUserRoute from "./Pages/auth/GoogleUserRoute";
+import Chats from "./Pages/Chats";
 
 
  
@@ -39,6 +41,7 @@ function App() {
       element: <Layout />,
       children: [
         { path: 'Charts', element: <Charts /> },
+        { path: 'Chats', element: <Chats /> },
         { path: 'Products', element: <Products /> },
         { path: 'Products/MostSelling', element: <MostSellingTbl /> },
         { path: 'Products/MostSellingProducts', element: <MostSellingProducts /> },

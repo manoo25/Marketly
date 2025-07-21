@@ -1,34 +1,20 @@
-import React, { useEffect } from "react";
 import { Container, Row, Col, Card, ProgressBar } from "react-bootstrap";
 import { Car, DollarSign, Eye, Package, ShoppingCart, Users } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchUsers } from "../../Redux/Slices/Users";
-import { getOrders } from "../../Redux/Slices/OrdersSlice";
+import {  useSelector } from "react-redux";
+
 import { UserRole } from "../../Redux/Slices/token";
-import { fetchDelegates } from "../../Redux/Slices/DelegatesSlice";
-import { fetchProducts } from "../../Redux/Slices/ProductSlice";
+
 import Loading from "../globalComonents/loading";
 
 function StatsGrid() {
-  const dispatch=useDispatch();
+
   const { orders } = useSelector((state) => state.Orders);
   const { users } = useSelector((state) => state.Users);
 const { delegates } = useSelector((state) => state.Delegates);
 const { products,loading } = useSelector((state) => state.Products);
+
+
 console.log(orders);
-
-  useEffect(() => {
-        if (!users || users.length === 0) {
-             dispatch(fetchUsers());     
-                dispatch(fetchDelegates());
-           }
-    }, [dispatch,UserRole])
-
-      useEffect(() => {   
-               dispatch(getOrders());
-                 dispatch(fetchProducts());
-          
-    }, [dispatch,UserRole])
 
 
     

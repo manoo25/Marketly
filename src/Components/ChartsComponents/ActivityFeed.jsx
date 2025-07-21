@@ -1,21 +1,15 @@
 import { Clock, ShoppingCart, User } from "lucide-react";
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+
 import moment from "moment";
-import { fetchUsers } from "../../Redux/Slices/Users";
-import { getOrders } from "../../Redux/Slices/OrdersSlice";
+
 import { UserRole } from "../../Redux/Slices/token";
+import { useSelector } from "react-redux";
 
 function ActivityFeed() {
-    const dispatch=useDispatch();
+
   const { orders } = useSelector((state) => state.Orders);
   const { users } = useSelector((state) => state.Users);
-  useEffect(() => {
-        if (!users || users.length === 0) {
-             dispatch(fetchUsers());
-               dispatch(getOrders());
-           }
-    }, [dispatch,UserRole])
+
 
     // تأكد من وجود created_at قبل الاستخدام
     let userActivities = users
