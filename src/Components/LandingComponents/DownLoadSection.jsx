@@ -58,7 +58,8 @@ const DownloadSection = () => {
                 maxWidth: 500,
               }}
             >
-              احصل على سلسلة في تصفح الموردين، طلب المنتجات وتتبع التوصيل — كل ذلك من تطبيق ماركتلي، لأجهزة Android و iOS
+              احصل على سلسلة في تصفح الموردين، طلب المنتجات وتتبع التوصيل — كل
+              ذلك من تطبيق ماركتلي، لأجهزة Android و iOS
             </p>
 
             <div className="d-flex gap-3 justify-content-center justify-content-md-start flex-wrap">

@@ -4,6 +4,7 @@ import HeroSection from "../Components/LandingComponents/Hero";
 import LandingNav from "../Components/LandingComponents/LandingNav";
 import Footer from "../Components/LandingComponents/Footer";
 import DownloadSection from "../Components/LandingComponents/DownLoadSection";
+import ScrollToTopButton from "../Components/LandingComponents/ScrollToTopButton";
 
 function Landing() {
   return (
@@ -15,6 +16,7 @@ function Landing() {
         <DownloadSection />
         <FAQComponent />
       </div>
+      <ScrollToTopButton />
       <Footer />
     </>
   );

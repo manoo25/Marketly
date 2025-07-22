@@ -1,35 +1,57 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Layout from "./Pages/Layout";
-import Products from "./Pages/ProductsPage";
-import Users from "./Pages/UsersPage";
-import Orders from "./Pages/Orders";
-import Charts from "./Pages/Charts";
-import Categories from "./Pages/CategoriesPage";
-import Companies from "./Pages/Companies";
-import Returns from "./Pages/Returns";
+import React, { lazy, Suspense } from "react";
+
 import SigninPage from "./Pages/auth/SignIn";
-import SignUpPage from "./Pages/auth/SignUp";
+
 import Landing from "./Pages/landingPage";
-import MostSellingTbl from "./Components/ProductsComponents/MostSellingTbl";
-import MostSellingProducts from "./Pages/Products/MostSellingProducts";
-import DelegatesPage from "./Pages/DelegatesPage";
-import ChooseRole from "./Pages/auth/ChooseRole";
-import CheckDelegates from "./Pages/auth/CheckDelegates";
-import Sales from "./Pages/Sales";
 
-// import { useDispatch } from "react-redux";
-// import { useEffect } from "react";
-// import { GetToken } from "./Redux/Slices/token";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { GetToken } from "./Redux/Slices/token";
+import ProtectedDashboardRoute from "./Components/Authcomponent/protecteddashboardroute";
+import ProtectedAuthRoute from "./Components/Authcomponent/protectedauthroute";
+import Loading from "./Components/globalComonents/loading";
+import NotFound from "./Components/Notfound/NotFound";
 
-import UploadShopImage from "./Pages/auth/UploadShopImage";
-import Complaints from "./Pages/Complaints";
-import GoogleUserRoute from "./Pages/auth/GoogleUserRoute";
+// ✅ Lazy Loaded Pages & Components
+const Layout = lazy(() => import("./Pages/Layout"));
+const Products = lazy(() => import("./Pages/ProductsPage"));
+const Users = lazy(() => import("./Pages/UsersPage"));
+const Orders = lazy(() => import("./Pages/Orders"));
+const Charts = lazy(() => import("./Pages/Charts"));
+const Categories = lazy(() => import("./Pages/CategoriesPage"));
+const Companies = lazy(() => import("./Pages/Companies"));
+const Returns = lazy(() => import("./Pages/Returns"));
+const SignUpPage = lazy(() => import("./Pages/auth/SignUp"));
+const MostSellingTbl = lazy(() =>
+  import("./Components/ProductsComponents/MostSellingTbl")
+);
+const MostSellingProducts = lazy(() =>
+  import("./Pages/Products/MostSellingProducts")
+);
+const DelegatesPage = lazy(() => import("./Pages/DelegatesPage"));
+const ChooseRole = lazy(() => import("./Pages/auth/ChooseRole"));
+const CheckDelegates = lazy(() => import("./Pages/auth/CheckDelegates"));
+const Sales = lazy(() => import("./Pages/Sales"));
+const UploadShopImage = lazy(() => import("./Pages/auth/UploadShopImage"));
+const Complaints = lazy(() => import("./Pages/Complaints"));
+const GoogleUserRoute = lazy(() => import("./Pages/auth/GoogleUserRoute"));
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(GetToken());
+  }, []);
+
   const routes = createBrowserRouter([
     {
       path: "Dashboard",
-      element: <Layout />,
+      element: (
+        <ProtectedDashboardRoute>
+          <Layout />
+        </ProtectedDashboardRoute>
+      ),
       children: [
         { path: "Charts", element: <Charts /> },
         { path: "Products", element: <Products /> },
@@ -48,18 +70,46 @@ function App() {
         { path: "Complaints", element: <Complaints /> },
       ],
     },
-    { path: "SignUp", element: <SignUpPage /> },
-    // { path: '/', element: <SigninPage /> },
+    {
+      path: "SignUp",
+      element: (
+        <ProtectedAuthRoute>
+          <SignUpPage />
+        </ProtectedAuthRoute>
+      ),
+    },
     { path: "/", element: <Landing /> },
     { path: "Landing", element: <Landing /> },
-    { path: "SigninPage", element: <SigninPage /> },
+    {
+      path: "SigninPage",
+      element: (
+        <ProtectedAuthRoute>
+          <SigninPage />
+        </ProtectedAuthRoute>
+      ),
+    },
     { path: "google-setup", element: <GoogleUserRoute /> },
-    { path: "choose-role", element: <ChooseRole /> },
+    {
+      path: "choose-role",
+      element: (
+        <ProtectedAuthRoute>
+          <ChooseRole />
+        </ProtectedAuthRoute>
+      ),
+    },
     { path: "check-delegates", element: <CheckDelegates /> },
     { path: "/upload-shop-image", element: <UploadShopImage /> },
+    {
+      path: "*",
+      element: <NotFound />,
+    },
   ]);
 
-  return <RouterProvider router={routes} />;
+  return (
+    <Suspense fallback={<Loading />}>
+      <RouterProvider router={routes} />
+    </Suspense>
+  );
 }
 
 export default App;

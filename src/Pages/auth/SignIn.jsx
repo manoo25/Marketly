@@ -55,7 +55,9 @@ const SigninPage = () => {
 
         const user = users[0];
         localStorage.setItem("userID", user.id);
-        dispatch(GetToken());
+
+        // 🟡 نجيب بيانات المستخدم من Supabase وندخلها في Redux
+        const result = await dispatch(GetToken());
 
         if (user.isBlocked) {
           alert("You Are Blocked Please ContactUs !!");
@@ -63,9 +65,9 @@ const SigninPage = () => {
           return;
         }
 
-        // تسجيل دخول ناجح
         localStorage.removeItem("sb-auxwhdusfpgyzbwgjize-auth-token");
 
+        // ✅ توجيه احترافي حسب الدور
         if (user.role === "admin" || user.role === "trader") {
           navigate("/Dashboard/Charts");
         } else {
@@ -158,8 +160,8 @@ const SigninPage = () => {
               opacity: 0.95,
             }}
           >
-            تحكّم في متجرك الذكي بسهولة، وسرعة، واحترافية.
-            كل شيء في مكان واحد — لأننا نعرف قيمة وقتك.
+            تحكّم في متجرك الذكي بسهولة، وسرعة، واحترافية. كل شيء في مكان واحد —
+            لأننا نعرف قيمة وقتك.
           </p>
           <p className="mt-3 text-white-50" style={{ fontSize: "0.85rem" }}>
             جرب Marketly وغيّر طريقة إدارتك لمتجرك.
