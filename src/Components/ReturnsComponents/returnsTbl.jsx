@@ -2,16 +2,22 @@ import React, { useEffect, useState } from "react";
 import "../../css/Table.css";
 import { useDispatch, useSelector } from "react-redux";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { getNotDoneOrders } from "../../Redux/Slices/ReturnsSlice";
 import { FaEye, FaPrint } from "react-icons/fa";
 import ReturnsFilter from "./ReturnsFilter";
 import { UserRole } from "../../Redux/Slices/token";
 =======
+=======
+>>>>>>> cf94418c3f5b2801b5f1afe595796a9a68ee8f06
 import { FaEye, FaPrint } from "react-icons/fa";
 import ReturnsFilter from "./ReturnsFilter";
 import CustomMenu from "../globalComonents/CustomMenu";
 import LabeledMenu from "../globalComonents/LabeledMenu";
+<<<<<<< HEAD
 >>>>>>> ee1de45c0244daeff2b49ef0f70c252f460d0fe5
+=======
+>>>>>>> cf94418c3f5b2801b5f1afe595796a9a68ee8f06
 import Loading from "../globalComonents/loading";
 import { supabase } from "../../Supabase/SupabaseClient";
 import { deleteOrder, getReturnOrders, updateOrder } from "../../Redux/Slices/OrdersSlice";
@@ -24,6 +30,7 @@ const rowsPerPage = 4;
 const ReturnsTbl = () => {
     const dispatch = useDispatch();
 <<<<<<< HEAD
+<<<<<<< HEAD
     const { returns, loading } = useSelector((state) => state.Returns);
     console.log(returns);
 
@@ -33,19 +40,24 @@ const ReturnsTbl = () => {
     const { loading } = useSelector((state) => state.Orders);
     const returns = useSelector((state) => state.Orders.orders);
 >>>>>>> ee1de45c0244daeff2b49ef0f70c252f460d0fe5
+=======
+    const { loading } = useSelector((state) => state.Orders);
+    const returns = useSelector((state) => state.Orders.orders);
+>>>>>>> cf94418c3f5b2801b5f1afe595796a9a68ee8f06
 
     const [currentReturns, setcurrentReturns] = useState([]);
     const [filteredReturns, setFilteredReturns] = useState([]);
     const [SelectedReturns, SetSelectedReturns] = useState([]);
     const [searchName, setSearchName] = useState("");
     const [selectedGovernorate, setSelectedGovernorate] = useState("");
-    const [startDate, setStartDate] = useState(null);
-    const [endDate, setEndDate] = useState(null);
+    const [selectedState, setSelectedState] = useState("");
 
 
+    const [currentPage, setCurrentPage] = useState(1);
 
 
     useEffect(() => {
+<<<<<<< HEAD
 <<<<<<< HEAD
         if (!returns || returns.length === 0) {
             dispatch(getNotDoneOrders());
@@ -57,25 +69,32 @@ const ReturnsTbl = () => {
 }, [dispatch]);
 console.log(returns)
 >>>>>>> ee1de45c0244daeff2b49ef0f70c252f460d0fe5
+=======
+   dispatch(getReturnOrders());
+}, [dispatch]);
+console.log(returns)
+>>>>>>> cf94418c3f5b2801b5f1afe595796a9a68ee8f06
 
     // effect for filtering
     useEffect(() => {
-        const filtered = returns.filter((ret) => {
+        const filtered = returns.filter((returnItem) => {
             const matchName =
                 searchName === "" ||
-                (ret.user?.name && ret.user.name.toLowerCase().includes(searchName.toLowerCase()));
+                (returnItem.users?.name && returnItem.users.name.toLowerCase().includes(searchName.toLowerCase()));
 
-
+            const matchState =
+                selectedState === "" ||
+                (returnItem.status && returnItem.status.toLowerCase().includes(selectedState.toLowerCase()));
 
             const matchGov =
                 selectedGovernorate === "" ||
-                (ret.user?.governorate && ret.user.governorate.toLowerCase().includes(selectedGovernorate.toLowerCase()));
+                (returnItem.users?.governorate && returnItem.users.governorate.toLowerCase().includes(selectedGovernorate.toLowerCase()));
 
-            return matchName && matchGov;
+            return matchName && matchState && matchGov;
         });
         setFilteredReturns(filtered);
         setCurrentPage(1);
-    }, [searchName, selectedGovernorate, returns]);
+    }, [searchName, selectedGovernorate, selectedState, returns]);
 
 
     // update current Returns based on pagination or filtered list change
@@ -90,22 +109,26 @@ console.log(returns)
 
     function onResetFilters() {
         setSearchName("");
-        setStartDate(null);
-        setEndDate(null);
+        setSelectedState("");
         setSelectedGovernorate("");
         setCurrentPage(1);
-        setcurrentReturns(returns);
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> cf94418c3f5b2801b5f1afe595796a9a68ee8f06
     // Returns Status
     const returnStatuses = [
         "inprogress",
         "done",
         "pending",
     ];
+<<<<<<< HEAD
 >>>>>>> ee1de45c0244daeff2b49ef0f70c252f460d0fe5
+=======
+>>>>>>> cf94418c3f5b2801b5f1afe595796a9a68ee8f06
 
     const getStatusBgColor = (status) => {
         switch (status) {
@@ -120,9 +143,16 @@ console.log(returns)
         }
     };
 
+    // Returns Status Modal
+    const [stateModalOpen, setStateModalOpen] = useState(false);
+    const [returnToEdit, setReturnToEdit] = useState(null);
+    const [newStatus, setNewStatus] = useState("");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> cf94418c3f5b2801b5f1afe595796a9a68ee8f06
     const handleOpenStateModal = (returnItem) => {
         setReturnToEdit(returnItem);
         setNewStatus(returnItem.status || "");
@@ -175,7 +205,10 @@ console.log(returns)
              dispatch(getReturnOrders());
         }
     };
+<<<<<<< HEAD
 >>>>>>> ee1de45c0244daeff2b49ef0f70c252f460d0fe5
+=======
+>>>>>>> cf94418c3f5b2801b5f1afe595796a9a68ee8f06
 
     // State لمودال عرض تفاصيل الطلب
     const [viewModalOpen, setViewModalOpen] = useState(false);
@@ -200,7 +233,7 @@ console.log(returns)
         else setOrderItems([]);
     };
 
-    // دالة طباعة الفاتورة
+        // دالة طباعة الفاتورة
     const handlePrintInvoice = () => {
         const printContents = document.getElementById("order-invoice-print").innerHTML;
         const win = window.open('', '', 'height=700,width=900');
@@ -247,37 +280,9 @@ console.log(returns)
         return `${day}-${month}-${year}`;
     };
 
-    // حساب إجمالي المرتجعات
-    const totalSales = currentReturns.reduce((sum, order) => sum + (order.total || 0), 0);
-    // حساب عدد الطلبات الغير المكتملة
-    const notCompletedOrdersCount = currentReturns.length;
-
-
-
-    const onSearchClick = () => {
-        // فلترة حسب الاسم والمحافظة والتاريخ
-        const filtered = returns.filter((ret) => {
-            const matchName =
-                searchName === "" ||
-                (ret.user?.name && ret.user.name.toLowerCase().includes(searchName.toLowerCase()));
-
-            const matchGov =
-                selectedGovernorate === "" ||
-                (ret.user?.governorate && ret.user.governorate.toLowerCase().includes(selectedGovernorate.toLowerCase()));
-
-            // فلترة حسب التاريخ
-            const orderDate = new Date(ret.created_at);
-            const matchStartDate = !startDate || orderDate >= new Date(startDate);
-            const matchEndDate = !endDate || orderDate <= new Date(endDate);
-
-            return matchName && matchGov && matchStartDate && matchEndDate;
-        });
-        setFilteredReturns(filtered);
-        setCurrentPage(1);
-    };
-
 
     return (
+<<<<<<< HEAD
 <<<<<<< HEAD
         <>{loading ? <Loading /> :
             <div>
@@ -307,6 +312,8 @@ console.log(returns)
                                 <th>عرض الطلب</th>
                                 <th>إجمالى الطلب</th>
 =======
+=======
+>>>>>>> cf94418c3f5b2801b5f1afe595796a9a68ee8f06
         <>{loading?<Loading/>:
           <div>
               <ReturnsFilter
@@ -433,31 +440,24 @@ console.log(returns)
                                         ]}
                                     />
                                 </td>
+<<<<<<< HEAD
 >>>>>>> ee1de45c0244daeff2b49ef0f70c252f460d0fe5
+=======
+>>>>>>> cf94418c3f5b2801b5f1afe595796a9a68ee8f06
                             </tr>
-                        </thead>
-                        <tbody>
-                            {currentReturns.map((ret) => (
-                                <tr key={ret.id}>
-                                    <td>{ret.user?.name || "--"}</td>
-                                    <td>{ret.user?.phone || "--"}</td>
-                                    <td>{ret.user?.governorate || "--"}</td>
-                                    {UserRole == "admin" && <td >{ret.trader_id?.name || "--"}</td>}
-                                    <td>{formatArabicDate(ret.created_at)}</td>
-                                    <td>
-                                        <button className="btn btn-link p-0" title="عرض الطلب" onClick={() => handleViewOrder(ret.id)}>
-                                            <FaEye size={20} color="#000000" />
-                                        </button>
-                                    </td>
-                                    <td>{ret.total} <span className="px-1">ج.م</span></td>
-                                </tr>
-                            ))}
-                            <tr className="bg-light fw-bold">
-                                <td>عدد الطلبات</td>
-                                <td>{notCompletedOrdersCount}</td>
-                                <td></td>
-                                {UserRole == "admin" && <td></td>}
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+            <div className="pagination">
+                <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
+                    &laquo;
+                </button>
+                <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}>
+                    &lt;
+                </button>
 
+<<<<<<< HEAD
                                 <td></td>
                                 <td>إجمالى المرتجعات</td>
                                 <td >{totalSales} ج.م </td>
@@ -484,13 +484,17 @@ console.log(returns)
                     ))}
 
 <<<<<<< HEAD
+=======
+                {[...Array(totalPages)].map((_, index) => (
+>>>>>>> cf94418c3f5b2801b5f1afe595796a9a68ee8f06
                     <button
-                        onClick={() =>
-                            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                        }
+                        key={index + 1}
+                        onClick={() => setCurrentPage(index + 1)}
+                        className={currentPage === index + 1 ? "active" : ""}
                     >
-                        &gt;
+                        {index + 1}
                     </button>
+<<<<<<< HEAD
                     <button
                         onClick={() => setCurrentPage(totalPages)}
                         disabled={currentPage === totalPages}
@@ -498,6 +502,28 @@ console.log(returns)
                         &raquo;
                     </button>
 =======
+=======
+                ))}
+
+                <button
+                    onClick={() =>
+                        setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                    }
+                >
+                    &gt;
+                </button>
+                <button
+                    onClick={() => setCurrentPage(totalPages)}
+                    disabled={currentPage === totalPages}
+                >
+                    &raquo;
+                </button>
+            </div>
+          </div>
+        }
+        
+
+>>>>>>> cf94418c3f5b2801b5f1afe595796a9a68ee8f06
 
             {/* مودال تعديل حالة الطلب */}
             {stateModalOpen && returnToEdit && (
@@ -549,12 +575,19 @@ console.log(returns)
                             </div>
                         </div>
                     </div>
+<<<<<<< HEAD
 >>>>>>> ee1de45c0244daeff2b49ef0f70c252f460d0fe5
+=======
+>>>>>>> cf94418c3f5b2801b5f1afe595796a9a68ee8f06
                 </div>
+            )}
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> cf94418c3f5b2801b5f1afe595796a9a68ee8f06
             {/* مودال تعديل حالة  الطلبات */}
             {bulkStateModalOpen && (
                 <div className="modal show fade d-block" tabIndex="-1" role="dialog" style={{ backgroundColor: "rgba(0,0,0,0.4)" }}>
@@ -607,41 +640,38 @@ console.log(returns)
                     </div>
                 </div>
             )}
+<<<<<<< HEAD
 >>>>>>> ee1de45c0244daeff2b49ef0f70c252f460d0fe5
+=======
+>>>>>>> cf94418c3f5b2801b5f1afe595796a9a68ee8f06
 
-
-                {viewModalOpen && (
-                    <div className="modal show fade d-block modal-lg" tabIndex="-1" role="dialog" style={{ backgroundColor: "rgba(0,0,0,0.4)" }}>
-                        <div className="modal-dialog modal-dialog-centered" role="document">
-                            <div className="modal-content text-end">
-                                <div className="modal-header">
-                                    <h5 className="modal-title w-100 text-center fw-bold">
-                                        فاتورة الطلب رقم {viewOrderId}
-                                    </h5>
-                                    <button
-                                        type="button"
-                                        className="btn-close"
-                                        onClick={() => setViewModalOpen(false)}
-                                    ></button>
-                                </div>
-                                <div className="modal-body" id="order-invoice-print">
-                                    <div style={{ border: '0.1rem solid #00000073', borderRadius: 12, padding: 24, background: '#fff', maxWidth: 700, margin: '0 auto' }}>
-                                        {/* رأس الفاتورة */}
-                                        <div className="d-flex justify-content-between align-items-center mb-4">
-                                            <div>
-                                                <h2 className="fw-bold mb-1" >فاتورة بيع</h2>
-                                                <div style={{ fontSize: 15 }}>رقم الطلب: <span className="fw-bold">{viewOrderId}</span></div>
-                                            </div>
-                                            {/* <div>
+            {viewModalOpen && (
+                            <div className="modal show fade d-block modal-lg" tabIndex="-1" role="dialog" style={{ backgroundColor: "rgba(0,0,0,0.4)" }}>
+                                <div className="modal-dialog modal-dialog-centered" role="document">
+                                    <div className="modal-content text-end">
+                                        <div className="modal-header">
+                                            <h5 className="modal-title w-100 text-center fw-bold">
+                                                فاتورة الطلب رقم {viewOrderId}
+                                            </h5>
+                                            <button
+                                                type="button"
+                                                className="btn-close"
+                                                onClick={() => setViewModalOpen(false)}
+                                            ></button>
+                                        </div>
+                                        <div className="modal-body" id="order-invoice-print">
+                                            <div style={{ border: '0.1rem solid #00000073', borderRadius: 12, padding: 24, background: '#fff', maxWidth: 700, margin: '0 auto' }}>
+                                                {/* رأس الفاتورة */}
+                                                <div className="d-flex justify-content-between align-items-center mb-4">
+                                                    <div>
+                                                        <h2 className="fw-bold mb-1" >فاتورة بيع</h2>
+                                                        <div style={{ fontSize: 15 }}>رقم الطلب: <span className="fw-bold">{viewOrderId}</span></div>
+                                                    </div>
+                                                    {/* <div>
                             <img src="/logo192.png" alt="شعار" style={{height:60}} />
                           </div> */}
-                                        </div>
-                                        {/* بيانات العميل */}
-                                        {returns.filter(x => x.id === viewOrderId).map(ret => (
-                                            <>
-                                                <div className="mb-2" style={{ fontSize: 16 }}>
-                                                    <span className="fw-bold">اسم العميل:</span> {ret.user?.name || "--"}
                                                 </div>
+<<<<<<< HEAD
 <<<<<<< HEAD
                                                 <div className="mb-2" style={{ fontSize: 16 }}>
                                                     <span className="fw-bold"> رقم الهاتف:</span> {ret.user?.phone || "--"}
@@ -700,20 +730,22 @@ console.log(returns)
                                                         <span>المجموع الكلي:</span>
                                                         <span className="fw-bold">{ret.total} ج.م</span>
 =======
+=======
+>>>>>>> cf94418c3f5b2801b5f1afe595796a9a68ee8f06
                                                 {/* بيانات العميل */}
                                                 {returns.filter(x => x.id === viewOrderId).map(order => (
                                                     <>
                                                         <div className="mb-2" style={{ fontSize: 16 }}>
-                                                            <span className="fw-bold">اسم العميل:</span> {order.orders?.users?.name || "--"}
+                                                            <span className="fw-bold">اسم العميل:</span> {order.user?.name || "--"}
                                                         </div>
                                                         <div className="mb-2" style={{ fontSize: 16 }}>
-                                                            <span className="fw-bold"> رقم الهاتف:</span> {order.orders?.users?.phone || "--"}
+                                                            <span className="fw-bold"> رقم الهاتف:</span> {order.user?.phone || "--"}
                                                         </div>
                                                         <div className="mb-2" style={{ fontSize: 16 }}>
-                                                            <span className="fw-bold">المدينة:</span> {order.orders?.users?.city || "--"}
+                                                            <span className="fw-bold">المدينة:</span> {order.user?.city || "--"}
                                                         </div>
                                                         <div className="mb-2" style={{ fontSize: 16 }}>
-                                                            <span className="fw-bold">العنوان:</span> {order.orders?.users?.location || "--"}
+                                                            <span className="fw-bold">العنوان:</span> {order.user?.location || "--"}
                                                         </div>
                                                         <div className="mb-2" style={{ fontSize: 16 }}>
                                                             <span className="fw-bold">سبب الارتجاع:</span> {order.reason || "--"}
@@ -777,37 +809,28 @@ console.log(returns)
                                     }</span>
                                                             </div>
                                                         </div>
+<<<<<<< HEAD
 >>>>>>> ee1de45c0244daeff2b49ef0f70c252f460d0fe5
+=======
+>>>>>>> cf94418c3f5b2801b5f1afe595796a9a68ee8f06
                                                     </div>
-                                                    <div className="d-flex justify-content-between mb-2">
-                                                        <span>طريقة الدفع:</span>
-                                                        <span>{ret.payment_method}</span>
-                                                    </div>
-                                                    <div className="d-flex justify-content-between mb-2">
-                                                        <span>حالة الطلب:</span>
-                                                        <span style={{ color: getStatusBgColor(ret.status), fontWeight: 'bold' }}>{ret.status}</span>
-                                                    </div>
-                                                </div>
+                                                ))}
+                                                <div className="text-center mt-4" style={{ fontSize: 15, color: '#888' }}>شكرًا لتعاملكم معنا</div>
                                             </div>
-                                        ))}
-                                        <div className="text-center mt-4" style={{ fontSize: 15, color: '#888' }}>شكرًا لتعاملكم معنا</div>
+                                        </div>
+                                        <div className="modal-footer justify-content-end">
+                                            <button className="btn btn-primary d-flex align-items-center gap-2" onClick={handlePrintInvoice}>
+                                                <FaPrint size={18} />
+                                                <span>طباعة</span>
+                                            </button>
+                                            <button className="btn btn-secondary" onClick={() => setViewModalOpen(false)}>
+                                                إغلاق
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="modal-footer justify-content-end">
-                                    <button className="btn btn-primary d-flex align-items-center gap-2" onClick={handlePrintInvoice}>
-                                        <FaPrint size={18} />
-                                        <span>طباعة</span>
-                                    </button>
-                                    <button className="btn btn-secondary" onClick={() => setViewModalOpen(false)}>
-                                        إغلاق
-                                    </button>
-                                </div>
                             </div>
-                        </div>
-                    </div>
-                )}
-            </div>
-        }
+                        )}
 
         </>
     );
