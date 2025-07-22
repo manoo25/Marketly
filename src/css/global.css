@@ -260,3 +260,9 @@ a{
 .loadingBg{
   background-color: #130729d0;
 }
+
+.primary-Text{
+  color: var(--primary-color) !important;
+  font-weight: bolder !important;
+  font-size: 30px !important;
+}

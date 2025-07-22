@@ -33,11 +33,8 @@ const SalesTbl = () => {
     
 
     // fetch all Orders once
-    useEffect(() => {
-          if (!orders || orders.length === 0) {
+    useEffect(() => {   
               dispatch(getDoneOrders());
-            }
-    
     }, [dispatch,UserRole]);
 
 

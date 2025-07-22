@@ -16,7 +16,7 @@ function SalesChart() {
 
     // تحويل إلى مصفوفة لاستخدامها في الرسم
     const data = [
-        { name: 'مكتمل', value: statusCounts['تم التوصيل'] || 0, color: '#10b981' },
+        { name: 'مكتمل', value: statusCounts['done'] || 0, color: '#10b981' },
         { name: 'معلق', value: statusCounts['pending'] || 0, color: '#f59e0b' },
         { name: 'جاري التنفيذ', value: statusCounts['inprogress'] || 0, color: '#3b82f6' },
         { name: 'مرتجع', value: statusCounts['returns'] || 0, color: '#ef4444' },

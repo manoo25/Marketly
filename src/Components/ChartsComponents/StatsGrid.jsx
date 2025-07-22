@@ -1,12 +1,18 @@
-import React from "react";
 import { Container, Row, Col, Card, ProgressBar } from "react-bootstrap";
-import { DollarSign, Eye, ShoppingCart, Users } from "lucide-react";
-import { useSelector } from "react-redux";
+import { Car, DollarSign, Eye, Package, ShoppingCart, Users } from "lucide-react";
+import {  useSelector } from "react-redux";
+
+import { UserRole } from "../../Redux/Slices/token";
+
+import Loading from "../globalComonents/loading";
 
 function StatsGrid() {
+
   const { orders } = useSelector((state) => state.Orders);
   const { users } = useSelector((state) => state.Users);
-
+const { delegates } = useSelector((state) => state.Delegates);
+const { products,loading } = useSelector((state) => state.Products);
+ 
   const today = new Date();
   const tenDaysAgo = new Date();
   tenDaysAgo.setDate(today.getDate() - 10);
@@ -18,12 +24,14 @@ function StatsGrid() {
   }) || [];
 
   const totalSales = recentOrders
-    .filter(order => order.status === "تم التوصيل")
+    .filter(order => order.status === "done")
     .reduce((sum, order) => sum + (Number(order.total) || 0), 0);
 
   const totalOrdersCount = orders?.length || 0;
 
   const traderCount = users?.filter(user => user.role === "trader").length || 0;
+  const DelegatesCount = delegates?.length || 0;
+  const productsCount = products?.length || 0;
   const shopOwnerCount = users?.filter(user => user.role === "user").length || 0;
 
   const stats = [
@@ -40,21 +48,22 @@ function StatsGrid() {
       variant: "primary",
     },
     {
-      title: "عدد التجار",
-      value: `${traderCount.toLocaleString()}`,
-      icon: Users,
+      title:UserRole=='admin'? "عدد التجار":'عدد المناديب',
+      value: UserRole=='admin'?`${traderCount.toLocaleString()}`:`${DelegatesCount.toLocaleString()}`,
+      icon:  UserRole=='admin'?Users:Car,
       variant: "warning",
     },
     {
-      title: "عدد أصحاب المتاجر",
-      value: `${shopOwnerCount.toLocaleString()}`,
-      icon: Users,
+      title: UserRole=='admin'?"عدد أصحاب المتاجر":'عدد المنتجات',
+      value: UserRole=='admin'?`${shopOwnerCount.toLocaleString()}`:`${productsCount.toLocaleString()}`,
+      icon:  UserRole=='admin'?Users:Package,
       variant: "danger",
     },
   ];
 
   return (
     <Container fluid>
+       {loading&&<Loading/>}
       <Row>
         {stats.map((stat, index) => (
           <Col md={6} lg={3} key={index} className="mb-4">
@@ -84,6 +93,7 @@ function StatsGrid() {
           </Col>
         ))}
       </Row>
+     
     </Container>
   );
 }

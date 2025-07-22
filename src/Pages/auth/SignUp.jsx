@@ -53,7 +53,7 @@ const SignUp = () => {
   const roleFromRoute = location.state?.role || "";
  useEffect(() => {
   if (!roleFromRoute) {
-    alert("يجب اختيار نوع الحساب أولاً");
+   
     navigate("/choose-role");
   }
 }, []);

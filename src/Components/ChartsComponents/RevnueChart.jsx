@@ -31,7 +31,7 @@ function RevnueChart() {
             monthlyData[month]["إجمالي الطلبات"] += Number(order.total || 0);
 
             // إضافة للمبيعات إذا كانت الحالة "تم التوصيل"
-            if (order.status === "تم التوصيل") {
+            if (order.status === "done") {
                 monthlyData[month]["المبيعات"] += Number(order.total || 0);
             }
         });

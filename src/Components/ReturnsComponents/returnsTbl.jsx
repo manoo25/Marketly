@@ -1,12 +1,20 @@
 import React, { useEffect, useState } from "react";
 import "../../css/Table.css";
 import { useDispatch, useSelector } from "react-redux";
+<<<<<<< HEAD
 import { getNotDoneOrders } from "../../Redux/Slices/ReturnsSlice";
 import { FaEye, FaPrint } from "react-icons/fa";
 import ReturnsFilter from "./ReturnsFilter";
 import { UserRole } from "../../Redux/Slices/token";
+=======
+import { FaEye, FaPrint } from "react-icons/fa";
+import ReturnsFilter from "./ReturnsFilter";
+import CustomMenu from "../globalComonents/CustomMenu";
+import LabeledMenu from "../globalComonents/LabeledMenu";
+>>>>>>> ee1de45c0244daeff2b49ef0f70c252f460d0fe5
 import Loading from "../globalComonents/loading";
 import { supabase } from "../../Supabase/SupabaseClient";
+import { deleteOrder, getReturnOrders, updateOrder } from "../../Redux/Slices/OrdersSlice";
 
 
 
@@ -15,11 +23,16 @@ const rowsPerPage = 4;
 
 const ReturnsTbl = () => {
     const dispatch = useDispatch();
+<<<<<<< HEAD
     const { returns, loading } = useSelector((state) => state.Returns);
     console.log(returns);
 
     const [currentPage, setCurrentPage] = useState(1);
 
+=======
+    const { loading } = useSelector((state) => state.Orders);
+    const returns = useSelector((state) => state.Orders.orders);
+>>>>>>> ee1de45c0244daeff2b49ef0f70c252f460d0fe5
 
     const [currentReturns, setcurrentReturns] = useState([]);
     const [filteredReturns, setFilteredReturns] = useState([]);
@@ -32,18 +45,18 @@ const ReturnsTbl = () => {
 
 
 
-    // useEffect(() => {
-    //    if (!returns || returns.length === 0) {
-    //      dispatch(getReturns());
-    //    }
-    // }, [dispatch, returns]);
-
     useEffect(() => {
+<<<<<<< HEAD
         if (!returns || returns.length === 0) {
             dispatch(getNotDoneOrders());
         }
 
     }, [dispatch, UserRole]);
+=======
+   dispatch(getReturnOrders());
+}, [dispatch]);
+console.log(returns)
+>>>>>>> ee1de45c0244daeff2b49ef0f70c252f460d0fe5
 
     // effect for filtering
     useEffect(() => {
@@ -84,14 +97,23 @@ const ReturnsTbl = () => {
         setcurrentReturns(returns);
     }
 
+<<<<<<< HEAD
+=======
+    // Returns Status
+    const returnStatuses = [
+        "inprogress",
+        "done",
+        "pending",
+    ];
+>>>>>>> ee1de45c0244daeff2b49ef0f70c252f460d0fe5
 
     const getStatusBgColor = (status) => {
         switch (status) {
-            case "قيد التنفيذ":
+            case "pending":
                 return "gold";
-            case "تم التوصيل":
+            case "done":
                 return "#065f12ff";
-            case "ملغي":
+            case "returns":
                 return "#ca1c1cff";
             default:
                 return "#000000ff";
@@ -99,6 +121,61 @@ const ReturnsTbl = () => {
     };
 
 
+<<<<<<< HEAD
+=======
+    const handleOpenStateModal = (returnItem) => {
+        setReturnToEdit(returnItem);
+        setNewStatus(returnItem.status || "");
+        setStateModalOpen(true);
+    };
+
+    const handleUpdateReturnStatus = async () => {
+        if (!returnToEdit || !newStatus) return;
+        await dispatch(updateOrder({ id: returnToEdit.id, updatedData: { status: newStatus } }));
+        setStateModalOpen(false);
+        setReturnToEdit(null);
+        dispatch(getReturnOrders());
+    };
+
+    // مودال تعديل حالة مجموعة طلبات
+    const [bulkStateModalOpen, setBulkStateModalOpen] = useState(false);
+    const [bulkNewStatus, setBulkNewStatus] = useState("");
+
+    const handleBulkUpdateReturnStatus = async () => {
+        if (!bulkNewStatus || SelectedReturns.length === 0) return;
+        for (const id of SelectedReturns) {
+            await dispatch(updateOrder({ id, updatedData: { status: bulkNewStatus } }));
+        }
+        setBulkStateModalOpen(false);
+        setBulkNewStatus("");
+        SetSelectedReturns([]);
+        dispatch(getReturnOrders());
+    };
+
+    // حذف مجموعة طلبات مع حذف order_items المرتبطة
+    const handleBulkDeleteReturns = async () => {
+        if (SelectedReturns.length === 0) return;
+        if (!window.confirm(`هل أنت متأكد أنك تريد حذف ${SelectedReturns.length} طلب؟`)) return;
+        for (const id of SelectedReturns) {
+            // حذف order_items المرتبطة أولاً
+            await supabase.from("order_items").delete().eq("order_id", id);
+            // ثم حذف الطلب نفسه
+            await dispatch(deleteOrder(id));
+        }
+        SetSelectedReturns([]);
+        dispatch(getReturnOrders());
+    };
+
+    // حذف طلب فردي مع حذف order_items المرتبطة
+    const handleDeleteReturn = async (orderId) => {
+        if (window.confirm("هل أنت متأكد أنك تريد حذف هذا الطلب؟")) {
+            await supabase.from("order_items").delete().eq("order_id", orderId);
+            await dispatch(deleteOrder(orderId));
+            SetSelectedReturns(prev => prev.filter(id => id !== orderId));
+             dispatch(getReturnOrders());
+        }
+    };
+>>>>>>> ee1de45c0244daeff2b49ef0f70c252f460d0fe5
 
     // State لمودال عرض تفاصيل الطلب
     const [viewModalOpen, setViewModalOpen] = useState(false);
@@ -201,6 +278,7 @@ const ReturnsTbl = () => {
 
 
     return (
+<<<<<<< HEAD
         <>{loading ? <Loading /> :
             <div>
                 <ReturnsFilter
@@ -228,6 +306,134 @@ const ReturnsTbl = () => {
                                 <th>تاريخ الطلب</th>
                                 <th>عرض الطلب</th>
                                 <th>إجمالى الطلب</th>
+=======
+        <>{loading?<Loading/>:
+          <div>
+              <ReturnsFilter
+                searchName={searchName}
+                setSearchName={setSearchName}
+                selectedState={selectedState}
+                setSelectedState={setSelectedState}
+                selectedGovernorate={selectedGovernorate}
+                setSelectedGovernorate={setSelectedGovernorate}
+                onResetFilters={onResetFilters}
+            />
+            <div className="user-table">
+                <table border="1" width="100%" dir="rtl" className="table">
+                    <thead>
+                        <tr>
+                            <th >
+                                <label className="checkbox-wrapper">
+                                    <input
+                                        type="checkbox"
+                                        checked={
+                                            currentReturns.length > 0 &&
+                                            currentReturns.every((ret) => SelectedReturns.includes(ret.id))
+                                        }
+                                        onChange={e => {
+                                            if (e.target.checked) {
+                                                SetSelectedReturns(prev => [
+                                                    ...prev,
+                                                    ...currentReturns
+                                                        .map(o => o.id)
+                                                        .filter(id => !prev.includes(id))
+                                                ]);
+                                            } else {
+                                                SetSelectedReturns(prev => prev.filter(id => !currentReturns.map(o => o.id).includes(id)));
+                                            }
+                                        }}
+                                    />
+                                </label>
+                            </th>
+                            <th>
+                                <label htmlFor="select-all">اسم العميل</label>
+                            </th>
+                            <th>رقم العميل</th>
+                            <th>المحافظة</th>
+                            <th>الحالة</th>
+                            <th>اجمالى</th>
+                           
+                            
+                            <th>تاريخ الاسترجاع</th>
+                            <th>عرض </th>
+                            <th style={{ position: "relative", zIndex: 1 }}>
+
+                                <LabeledMenu
+                                    id="bulkActions"
+                                    label="إجراءات جماعية"
+                                    options={[
+                                        {
+                                            label: "تعديل الحالة", icon: "fa-solid fa-user-pen", color: "blue", onClick: () => {
+                                                if (SelectedReturns.length === 0) {
+                                                    alert("من فضلك اختر طلبات أولاً");
+                                                    return;
+                                                }
+                                                setBulkStateModalOpen(true);
+                                            }
+                                        },
+                                        {
+                                            label: "مسح المحدد", icon: "fa-solid fa-trash", color: "red", onClick: () => {
+                                                if (SelectedReturns.length === 0) {
+                                                    alert("من فضلك اختر طلبات أولاً");
+                                                    return;
+                                                }
+                                                handleBulkDeleteReturns()
+                                            }
+                                        }
+                                    ]}
+                                />
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {currentReturns.map((ret) => (
+                            <tr key={ret.id}>
+                                <td >
+                                    <label className="checkbox-wrapper">
+                                        <input
+                                            type="checkbox"
+                                            checked={SelectedReturns.includes(ret.id)}
+                                            onChange={(e) => {
+                                                if (e.target.checked) {
+                                                    SetSelectedReturns((prev) => [...prev, ret.id]);
+                                                } else {
+                                                    SetSelectedReturns((prev) => prev.filter((id) => id !== ret.id));
+                                                }
+                                            }}
+                                        />
+
+                                    </label>
+                                </td>
+                                <td>{ret.user?.name || "--"}</td>
+                                <td>{ret.user?.phone || "--"}</td>
+                                <td>{ret.user?.governorate || "--"}</td>
+                                 <td style={{ color: getStatusBgColor(ret.status), fontWeight: 'bold' }}>
+                                    {
+                                    ret.status=='returns'&&'مرتجع'
+                                    }
+                                </td>
+                                <td>{ret.total || "--"} ج.م</td>
+                               
+                              
+                                <td>{formatArabicDate(ret.created_at) || "--"}</td>
+                                <td>
+                                    <button className="btn btn-link p-0" title="عرض الطلب" onClick={() => handleViewOrder(ret.id)}>
+                                        <FaEye size={20} color="#000000" />
+                                    </button>
+                                </td>
+                               <td style={{}}>
+
+                                    <CustomMenu
+                                        id={ret.id}
+                                        options={[
+                                            {
+                                                label: "تعديل الحالة", icon: "fa-solid fa-user-pen", color: "blue", onClick: () => handleOpenStateModal(ret)
+                                            },
+                                            { label: "مسح الطلب", icon: "fa-solid fa-trash", color: "red", onClick: () => handleDeleteReturn(ret.id) }
+                                        ]}
+                                    />
+                                </td>
+>>>>>>> ee1de45c0244daeff2b49ef0f70c252f460d0fe5
                             </tr>
                         </thead>
                         <tbody>
@@ -277,6 +483,7 @@ const ReturnsTbl = () => {
                         </button>
                     ))}
 
+<<<<<<< HEAD
                     <button
                         onClick={() =>
                             setCurrentPage((prev) => Math.min(prev + 1, totalPages))
@@ -290,9 +497,117 @@ const ReturnsTbl = () => {
                     >
                         &raquo;
                     </button>
+=======
+
+            {/* مودال تعديل حالة الطلب */}
+            {stateModalOpen && returnToEdit && (
+                <div className="modal show fade d-block " tabIndex="-1" role="dialog" style={{ backgroundColor: "rgba(0,0,0,0.4)" }}>
+                    <div className="modal-dialog modal-dialog-centered" role="document">
+                        <div className="modal-content text-end">
+                            <div className="modal-header">
+                                <h5 className="modal-title w-100 text-center fw-bold">
+                                    تعديل حالة الطلب
+                                </h5>
+                                <button
+                                    type="button"
+                                    className="btn-close"
+                                    onClick={() => setStateModalOpen(false)}
+                                ></button>
+                            </div>
+                            <div className="modal-body">
+                                <label className="form-label fw-bold">اختر الحالة الجديدة:</label>
+                                <select
+                                    className="form-control text-end"
+                                    value={newStatus}
+                                    onChange={e => setNewStatus(e.target.value)}
+                                >
+                                    <option value="">اختر الحالة</option>
+                                    {returnStatuses.map(status => (
+                                        <option key={status} value={status}>
+                                           {status=='done'&&'تم الاستلام'||
+                                    status=='pending'&&'معلق'||
+                                    status=='inprogress'&&'قيد التنفيذ'
+                                    }
+                                            </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="modal-footer justify-content-end">
+                                <button
+                                    className="btn btn-secondary"
+                                    onClick={() => setStateModalOpen(false)}
+                                >
+                                    إلغاء
+                                </button>
+                                <button
+                                    className="btn btn-primary"
+                                    disabled={!newStatus || newStatus === returnToEdit.status}
+                                    onClick={handleUpdateReturnStatus}
+                                >
+                                    تأكيد
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+>>>>>>> ee1de45c0244daeff2b49ef0f70c252f460d0fe5
                 </div>
 
 
+<<<<<<< HEAD
+=======
+            {/* مودال تعديل حالة  الطلبات */}
+            {bulkStateModalOpen && (
+                <div className="modal show fade d-block" tabIndex="-1" role="dialog" style={{ backgroundColor: "rgba(0,0,0,0.4)" }}>
+                    <div className="modal-dialog modal-dialog-centered" role="document">
+                        <div className="modal-content text-end">
+                            <div className="modal-header">
+                                <h5 className="modal-title w-100 text-center fw-bold">
+                                    تعديل حالة {SelectedReturns.length} طلب
+                                </h5>
+                                <button
+                                    type="button"
+                                    className="btn-close"
+                                    onClick={() => setBulkStateModalOpen(false)}
+                                ></button>
+                            </div>
+                            <div className="modal-body">
+                                <label className="form-label fw-bold">اختر الحالة الجديدة:</label>
+                                <select
+                                    className="form-control text-end"
+                                    value={bulkNewStatus}
+                                    onChange={e => setBulkNewStatus(e.target.value)}
+                                >
+                                    <option value="">اختر الحالة</option>
+                                    {returnStatuses.map(status => (
+                                        <option key={status} value={status}>
+                                            {status=='done'&&'تم الاستلام'||
+                                    status=='pending'&&'معلق'||
+                                    status=='inprogress'&&'قيد التنفيذ'
+                                    }
+                                            </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="modal-footer justify-content-end">
+                                <button
+                                    className="btn btn-secondary"
+                                    onClick={() => setBulkStateModalOpen(false)}
+                                >
+                                    إلغاء
+                                </button>
+                                <button
+                                    className="btn btn-primary"
+                                    disabled={!bulkNewStatus}
+                                    onClick={handleBulkUpdateReturnStatus}
+                                >
+                                    تأكيد
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+>>>>>>> ee1de45c0244daeff2b49ef0f70c252f460d0fe5
 
 
                 {viewModalOpen && (
@@ -327,6 +642,7 @@ const ReturnsTbl = () => {
                                                 <div className="mb-2" style={{ fontSize: 16 }}>
                                                     <span className="fw-bold">اسم العميل:</span> {ret.user?.name || "--"}
                                                 </div>
+<<<<<<< HEAD
                                                 <div className="mb-2" style={{ fontSize: 16 }}>
                                                     <span className="fw-bold"> رقم الهاتف:</span> {ret.user?.phone || "--"}
                                                 </div>
@@ -383,6 +699,85 @@ const ReturnsTbl = () => {
                                                     <div className="d-flex justify-content-between mb-2">
                                                         <span>المجموع الكلي:</span>
                                                         <span className="fw-bold">{ret.total} ج.م</span>
+=======
+                                                {/* بيانات العميل */}
+                                                {returns.filter(x => x.id === viewOrderId).map(order => (
+                                                    <>
+                                                        <div className="mb-2" style={{ fontSize: 16 }}>
+                                                            <span className="fw-bold">اسم العميل:</span> {order.orders?.users?.name || "--"}
+                                                        </div>
+                                                        <div className="mb-2" style={{ fontSize: 16 }}>
+                                                            <span className="fw-bold"> رقم الهاتف:</span> {order.orders?.users?.phone || "--"}
+                                                        </div>
+                                                        <div className="mb-2" style={{ fontSize: 16 }}>
+                                                            <span className="fw-bold">المدينة:</span> {order.orders?.users?.city || "--"}
+                                                        </div>
+                                                        <div className="mb-2" style={{ fontSize: 16 }}>
+                                                            <span className="fw-bold">العنوان:</span> {order.orders?.users?.location || "--"}
+                                                        </div>
+                                                        <div className="mb-2" style={{ fontSize: 16 }}>
+                                                            <span className="fw-bold">سبب الارتجاع:</span> {order.reason || "--"}
+                                                        </div>
+                                                        <div className="mb-2" style={{ fontSize: 16 }}>
+                                                            <span className="fw-bold">تاريخ الطلب:</span> {formatArabicDate(order.created_at)}
+                                                        </div>
+                                                    </>
+                                                ))}
+                                                {/* جدول المنتجات */}
+                                                <table className="table table-bordered text-center mb-4 mt-4" style={{ fontSize: 16 }}>
+                                                    <thead className="table-light">
+                                                        <tr>
+                                                            <th>م</th>
+                                                            <th>اسم المنتج</th>
+                                                            <th>صورة المنتج</th>
+                                                            <th>الكمية</th>
+                                                            <th>السعر</th>
+                                                            <th>الإجمالي</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {orderItems.map((item, idx) => (
+                                                            <tr key={item.id}>
+                                                                <td>{idx + 1}</td>
+                                                                <td>{item.product_id?.name || item.name || '--'}</td>
+                                                                <td>
+                                                                    {item.product_id?.image || item.image ? (
+                                                                        <img
+                                                                            src={item.product_id?.image || item.image}
+                                                                            alt={item.product_id?.name || item.name || '--'}
+                                                                            style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '6px' }}
+                                                                        />
+                                                                    ) : (
+                                                                        <span>--</span>
+                                                                    )}
+                                                                </td>
+                                                                <td>{item.quantity}</td>
+                                                                <td>{item.price}</td>
+                                                                <td>{item.price * item.quantity}</td>
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                                {/* ملخص */}
+                                                {returns.filter(x => x.id === viewOrderId).map(order => (
+                                                    <div key={order.id} className="d-flex justify-content-start align-items-center mt-3" style={{ fontSize: 18 }}>
+                                                        <div className="border p-3 rounded bg-light" style={{ minWidth: 250 }}>
+                                                            <div className="d-flex justify-content-between mb-2">
+                                                                <span>المجموع الكلي:</span>
+                                                                <span className="fw-bold">{order.total} ج.م</span>
+                                                            </div>
+                                                            <div className="d-flex justify-content-between mb-2">
+                                                                <span>طريقة الدفع:</span>
+                                                                <span>{order.payment_method}</span>
+                                                            </div>
+                                                            <div className="d-flex justify-content-between mb-2">
+                                                                <span>حالة الطلب:</span>
+                                                                <span style={{ color: getStatusBgColor(order.status), fontWeight: 'bold' }}> {
+                                    order.status=='returns'&&'مرتجع'
+                                    }</span>
+                                                            </div>
+                                                        </div>
+>>>>>>> ee1de45c0244daeff2b49ef0f70c252f460d0fe5
                                                     </div>
                                                     <div className="d-flex justify-content-between mb-2">
                                                         <span>طريقة الدفع:</span>
