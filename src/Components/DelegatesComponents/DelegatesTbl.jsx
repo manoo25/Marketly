@@ -305,6 +305,37 @@ export default function DelegatesTbl({
       />
 
       {/* Pagination ... كما كان */}
+      <div className="pagination" style={{ marginTop: "80px" }}>
+        <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
+          &laquo;
+        </button>
+        <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}>
+          &lt;
+        </button>
+
+        {[...Array(totalPages)].map((_, index) => (
+          <button
+            key={index + 1}
+            onClick={() => setCurrentPage(index + 1)}
+            className={currentPage === index + 1 ? "active" : ""}
+          >
+            {index + 1}
+          </button>
+        ))}
+
+        <button
+          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+        >
+          &gt;
+        </button>
+        <button
+          onClick={() => setCurrentPage(totalPages)}
+          disabled={currentPage === totalPages}
+        >
+          &raquo;
+        </button>
+      </div>
+
       {/* ... */}
       <ModalConfirm
         isOpen={confirmModal.open}

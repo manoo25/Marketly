@@ -30,7 +30,7 @@ function Chats() {
 
     return (
         <>
-            <ChatsPageHeader />
+            {/* <ChatsPageHeader /> */}
             {loading ? (
                 <Loading />
             ) : (
