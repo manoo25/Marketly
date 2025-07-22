@@ -10,6 +10,36 @@ import { createUser } from '../../Redux/Slices/Users';
 import { uploadImagesToSupabase } from '../../Redux/uploadingImage'; // نفس الدالة
 
 
+const citiesByGovernorate = [
+  "الإسكندرية",
+  "الإسماعيلية",
+  "الأقصر",
+  "البحر الأحمر",
+  "البحيرة",
+  "الجيزة",
+  "الدقهلية",
+  "السويس",
+  "الشرقية",
+  "الغربية",
+  "الفيوم",
+  "القاهرة",
+  "القليوبية",
+  "المنوفية",
+  "المنيا",
+  "الوادي الجديد",
+  "بني سويف",
+  "بورسعيد",
+  "جنوب سيناء",
+  "دمياط",
+  "سوهاج",
+  "شمال سيناء",
+  "قنا",
+  "كفر الشيخ",
+  "مطروح",
+  "أسوان",
+  "أسيوط"
+];
+
 const AddUserModal = () => {
   const [images, setImages] = useState([]);
   const [show, setShow] = useState(false);
@@ -26,35 +56,34 @@ const AddUserModal = () => {
   };
   
   const handleAddUser = async () => {
-
-    // Check email and phone if they are already signed up
     const emailExists = users.some(user => user.email === formik.values.email);
     const phoneExists = users.some(user => user.phone === formik.values.phone);
+
     if (emailExists) {
       formik.setFieldError('email', 'البريد مسجل مسبقًا');
     }
     if (phoneExists) {
       formik.setFieldError('phone', 'رقم الهاتف مستخدم من قبل');
     }
-    if (emailExists || phoneExists) return; 
-    // Check email and phone if they are already signed up
-
+    if (emailExists || phoneExists) return;
 
     try {
-      console.log(formik.values.userImage); 
+      let imageUrl = "";
+      if (formik.values.userImage && formik.values.userImage.length > 0) {
+        const uploadedUrls = await uploadImagesToSupabase(formik.values.userImage, 'users');
+        imageUrl = uploadedUrls[0];
+      }
 
-      const imageUrls = await uploadImagesToSupabase(formik.values.userImage, 'users');
       const { userImage, ...cleanValues } = formik.values;
-      console.log(userImage);
-      
+      userImage;
       const values = {
         ...cleanValues,
-        isBlocked: false, 
-        image: imageUrls[0],
+        isBlocked: false,
+        image: imageUrl,
         phone: formik.values.phone,
         password: formik.values.password,
       };
-      console.log("🔍 Payload to be sent:", values);
+
       await dispatch(createUser(values)).unwrap();
 
       formik.resetForm();
@@ -64,6 +93,7 @@ const AddUserModal = () => {
       console.error("❌ Failed to add user:", error.message);
     }
   };
+
   
 
   const validationSchema = Yup.object({
@@ -75,7 +105,7 @@ const AddUserModal = () => {
     city: Yup.string().required('المدينة مطلوبة'),
     role: Yup.string().required('الصلاحية مطلوبة'),
     location: Yup.string().required('العنوان مطلوب'),
-    userImage: Yup.mixed().test('required', 'الصورة مطلوبة', value => value && value.length > 0)
+    // userImage: Yup.mixed().test('required', 'الصورة مطلوبة', value => value && value.length > 0)
 
   });
 
@@ -242,10 +272,11 @@ const AddUserModal = () => {
                     onBlur={formik.handleBlur}
                   >
                     <option value="">اختر المحافظة</option>
-                    <option value="cairo">القاهرة</option>
-                    <option value="giza">الجيزة</option>
-                    <option value="alex">الإسكندرية</option>
-                    <option value="mansoura">المنصورة</option>
+                    {citiesByGovernorate.map((gov) => (
+                      <option key={gov} value={gov}>
+                        {gov}
+                      </option>
+                    ))}
                   </Form.Select>
                   {formik.touched.governorate && formik.errors.governorate && (
                     <div className="text-danger">{formik.errors.governorate}</div>
@@ -255,6 +286,21 @@ const AddUserModal = () => {
 
               <Col md={6} className="mb-3">
                 <Form.Group controlId="city">
+                  <Form.Label className="fw-semibold">المدينة</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="city"
+                    value={formik.values.city}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    className="py-2"
+                    placeholder="ادخل اسم المدينة"
+                  />
+                  {formik.touched.city && formik.errors.city && (
+                    <div className="text-danger small">{formik.errors.city}</div>
+                  )}
+                </Form.Group>
+                {/* <Form.Group controlId="city">
                   <Form.Label>المدينة</Form.Label>
                   <Form.Select
                     name='city'
@@ -270,7 +316,7 @@ const AddUserModal = () => {
                   {formik.touched.city && formik.errors.city && (
                     <div className="text-danger">{formik.errors.city}</div>
                   )}
-                </Form.Group>
+                </Form.Group> */}
               </Col>
 
               <Col md={12} className="mb-3">
