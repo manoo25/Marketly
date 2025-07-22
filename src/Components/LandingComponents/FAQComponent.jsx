@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import './FAQCSS.css';  
+import './FAQCSS.css';
+
 const FAQComponent = () => {
   const [activeIndex, setActiveIndex] = useState(null);
 
@@ -8,7 +9,6 @@ const FAQComponent = () => {
       question: "ما هي مارکتلي وكيف تعمل؟",
       answer: "مارکتلي هي منصة B2B تربط أصحاب متاجر البقالة بالموردين المعتمدين. نوفر طريقة سهلة لطلب المنتجات وإدارة المخزون واستلام التوصيلات في الوقت المحدد."
     },
-    
     {
       question: "كم مدة التوصيل؟",
       answer: "نضمن التوصيل في خلال 24-48 ساعة من تأكيد الطلب. للطلبات العاجلة، يمكن التوصيل في نفس اليوم حسب المنطقة ونوع المنتجات."
@@ -25,7 +25,6 @@ const FAQComponent = () => {
       question: "كيف يمكنني التسجيل في المنصة؟",
       answer: "التسجيل بسيط جداً! اضغط على 'ابدأ الآن' واملأ البيانات الأساسية لمتجرك. سيتواصل معك فريقنا خلال 24 ساعة لتفعيل حسابك."
     },
-    
     {
       question: "كيف يتم الدفع؟",
       answer: "نوفر عدة طرق دفع مرنة: الدفع عند الاستلام، التحويل البنكي، والدفع الإلكتروني. كما نوفر نظام آجل للعملاء المعتمدين."
@@ -41,12 +40,12 @@ const FAQComponent = () => {
       <div className="container">
         <h2 className="section-title">الأسئلة الشائعة</h2>
         <p className="section-subtitle">إجابات على الأسئلة التي قد تخطر ببالك</p>
-        
+
         <div className="row justify-content-center">
           <div className="col-lg-8">
             {faqData.map((faq, index) => (
               <div key={index} className="faq-item">
-                <button 
+                <button
                   className={`faq-header ${activeIndex === index ? 'active' : ''}`}
                   onClick={() => toggleFAQ(index)}
                 >
@@ -54,9 +53,9 @@ const FAQComponent = () => {
                     <div className="faq-number">{index + 1}</div>
                     <span>{faq.question}</span>
                   </div>
-                  <span className={`faq-icon ${activeIndex === index ? 'active' : ''}`}>
-                    +
-                  </span>
+              <span className={`faq-icon ${activeIndex === index ? 'active' : ''}`}>
+  {activeIndex === index ? '−' : '+'}
+</span>
                 </button>
                 <div className={`faq-content ${activeIndex === index ? 'active' : ''}`}>
                   <p className="faq-text">{faq.answer}</p>

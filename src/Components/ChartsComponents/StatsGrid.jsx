@@ -12,12 +12,7 @@ function StatsGrid() {
   const { users } = useSelector((state) => state.Users);
 const { delegates } = useSelector((state) => state.Delegates);
 const { products,loading } = useSelector((state) => state.Products);
-
-
-console.log(orders);
-
-
-    
+ 
   const today = new Date();
   const tenDaysAgo = new Date();
   tenDaysAgo.setDate(today.getDate() - 10);
