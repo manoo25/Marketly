@@ -13,7 +13,7 @@ import { deleteImageFromStore } from "../../Redux/uploadingImage";
 import Loading from "../globalComonents/loading";
 import { UserRole } from "../../Redux/Slices/token";
 
-const rowsPerPage = 10;
+const rowsPerPage = 5;
 
 const CompaniesTbl = () => {
   const dispatch = useDispatch();

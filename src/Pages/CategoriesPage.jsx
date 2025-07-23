@@ -13,10 +13,12 @@ import { DeleteCategory } from "../Redux/Slices/Categories";
 import CategoriesPageHeader from "../Components/CategoriesComponents/CategoriesPageHeader";
 import { UserRole } from "../Redux/Slices/token";
 
+const rowsPerPage = 5;
+
 function Categories() {
   const dispatch = useDispatch();
   const [flag, setFlag] = useState("categories");
-  const { categories,loading } = useSelector((state) => state.Categories);
+  const { categories, loading } = useSelector((state) => state.Categories);
   const { Units } = useSelector((state) => state.Units);
 
   // Search & selection state
@@ -27,15 +29,18 @@ function Categories() {
     message: "",
     confirmText: "تأكيد",
     confirmClass: "btn-primary",
-    onConfirm: () => {},
+    onConfirm: () => { },
   });
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+
   useEffect(() => {
-   if(!categories||categories.length===0){
-     dispatch(GetCategories());
-    dispatch(GetUnits());
-   }
-  }, [dispatch,UserRole]);
+    if (!categories || categories.length === 0) {
+      dispatch(GetCategories());
+      dispatch(GetUnits());
+    }
+  }, [dispatch, UserRole]);
 
   // Filtered data
   const data = flag === "categories" ? categories : Units;
@@ -45,6 +50,7 @@ function Categories() {
   useEffect(() => {
     setFilteredData(data);
     setSelectedRows([]);
+    setCurrentPage(1);
   }, [data, flag]);
 
   const handleSearchClick = () => {
@@ -59,16 +65,29 @@ function Categories() {
       );
     }
     setSelectedRows([]);
+    setCurrentPage(1);
   };
 
+  // Paginated data
+  const paginatedData = filteredData.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage
+  );
+  const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+
   // Selectors
-  const handleSelectAll = () => {
-    if (selectedRows.length === filteredData.length) {
-      setSelectedRows([]);
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setSelectedRows((prev) => [
+        ...new Set([...prev, ...paginatedData.map((c) => c.id)]),
+      ]);
     } else {
-      setSelectedRows(filteredData.map((c) => c.id));
+      setSelectedRows((prev) =>
+        prev.filter((id) => !paginatedData.some((c) => c.id === id))
+      );
     }
   };
+
   const handleSelectRow = (id) => {
     setSelectedRows((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
@@ -129,8 +148,8 @@ function Categories() {
           <input
             type="checkbox"
             checked={
-              selectedRows.length === filteredData.length &&
-              filteredData.length > 0
+              paginatedData.length > 0 &&
+              paginatedData.every((c) => selectedRows.includes(c.id))
             }
             onChange={handleSelectAll}
           />
@@ -149,18 +168,18 @@ function Categories() {
     },
     ...(flag === "categories"
       ? [
-          {
-            header: "صورة",
-            accessor: "img",
-            render: (val) => (
-              <img
-                src={val}
-                alt="img"
-                style={{ width: "50px", borderRadius: "5px" }}
-              />
-            ),
-          },
-        ]
+        {
+          header: "صورة",
+          accessor: "img",
+          render: (val) => (
+            <img
+              src={val}
+              alt="img"
+              style={{ width: "50px", borderRadius: "5px" }}
+            />
+          ),
+        },
+      ]
       : []),
     { header: "الاسم", accessor: "name" },
     { header: "المعرف", accessor: "id" },
@@ -198,52 +217,90 @@ function Categories() {
 
   return (
     <>
-     {loading?<Loading/>:
-      <div>
-         <CategoriesPageHeader
-        title={flag === "categories" ? "الأصناف" : "الوحدات"}
-        flag={flag}
-        onAdd={handleAdd}
-      />
-     <div className="d-flex justify-content-between gap-4 align-items-center">
-       <div className="mt-2 px-2" style={{ Width:500 }}>
-        <PrimarySelector
-        className="w-100 px-3"
-          value={flag}
-          onChange={setFlag}
-          options={[
-            { value: "categories", label: "الأصناف" },
-            { value: "units", label: "الوحدات" },
-          ]}
-          label="اختر الجدول"
-        />
-      </div>
-     {flag === "categories"&&
-      <div >
-       <CategoriesFilter
-        searchName={searchName}
-        setSearchName={setSearchName}
-        onSearchClick={handleSearchClick}
-        onResetFilters={() => {
-          setSearchName("");
-          setFilteredData(data);
-          setSelectedRows([]);
-        }}
-      />
-     </div>
-     }
-     </div>
-      <TableComponent data={filteredData} columns={columns} />
-      <ModalConfirm
-        isOpen={confirmModal.open}
-        onClose={() => setConfirmModal((prev) => ({ ...prev, open: false }))}
-        onConfirm={confirmModal.onConfirm}
-        message={confirmModal.message}
-        confirmText={confirmModal.confirmText}
-        confirmClass={confirmModal.confirmClass}
-      />
-      </div>
-     }
+      {loading ? (
+        <Loading />
+      ) : (
+        <div>
+          <CategoriesPageHeader
+            title={flag === "categories" ? "الأصناف" : "الوحدات"}
+            flag={flag}
+            onAdd={handleAdd}
+          />
+          <div className="d-flex justify-content-between gap-4 align-items-center">
+            <div className="mt-2 px-2" style={{ Width: 500 }}>
+              <PrimarySelector
+                className="w-100 px-3"
+                value={flag}
+                onChange={(value) => {
+                  setFlag(value);
+                  setCurrentPage(1);
+                }}
+                options={[
+                  { value: "categories", label: "الأصناف" },
+                  { value: "units", label: "الوحدات" },
+                ]}
+                label="اختر الجدول"
+              />
+            </div>
+            {flag === "categories" && (
+              <div>
+                <CategoriesFilter
+                  searchName={searchName}
+                  setSearchName={setSearchName}
+                  onSearchClick={handleSearchClick}
+                  onResetFilters={() => {
+                    setSearchName("");
+                    setFilteredData(data);
+                    setSelectedRows([]);
+                    setCurrentPage(1);
+                  }}
+                />
+              </div>
+            )}
+          </div>
+          <TableComponent data={paginatedData} columns={columns} />
+          <div className="pagination">
+            <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
+              &laquo;
+            </button>
+            <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}>
+              &lt;
+            </button>
+
+            {[...Array(totalPages)].map((_, index) => (
+              <button
+                key={index + 1}
+                onClick={() => setCurrentPage(index + 1)}
+                className={currentPage === index + 1 ? "active" : ""}
+              >
+                {index + 1}
+              </button>
+            ))}
+
+            <button
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+              }
+            >
+              &gt;
+            </button>
+            <button
+              onClick={() => setCurrentPage(totalPages)}
+              disabled={currentPage === totalPages}
+            >
+              &raquo;
+            </button>
+          </div>
+          <ModalConfirm
+            isOpen={confirmModal.open}
+            onClose={() => setConfirmModal((prev) => ({ ...prev, open: false }))}
+            onConfirm={confirmModal.onConfirm}
+            message={confirmModal.message}
+            confirmText={confirmModal.confirmText}
+            confirmClass={confirmModal.confirmClass}
+          />
+        </div>
+      )}
     </>
   );
 }
