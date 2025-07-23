@@ -12,14 +12,15 @@ import ModalConfirm from "../UsersComponents/ModalConfirm";
 import { deleteImageFromStore } from "../../Redux/uploadingImage";
 import Loading from "../globalComonents/loading";
 import { UserRole } from "../../Redux/Slices/token";
+import RowsPerPageSelector from "../globalComonents/RowsPerPageSelector";
 
-const rowsPerPage = 10;
+// const rowsPerPage = 8;
 
 const CompaniesTbl = () => {
+
   const dispatch = useDispatch();
   const { companies ,loading } = useSelector((state) => state.Companies);
-
-
+  const [rowsPerPage, setRowsPerPage] = useState(8);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchName, setSearchName] = useState("");
   const [currentCompanies, setCurrentCompanies] = useState([]);
@@ -47,7 +48,7 @@ const CompaniesTbl = () => {
     const startIndex = (currentPage - 1) * rowsPerPage;
     const sliced = companies.slice(startIndex, startIndex + rowsPerPage);
     setCurrentCompanies(sliced);
-  }, [companies, currentPage]);
+  }, [companies, currentPage, rowsPerPage]);
   const totalPages = Math.ceil(companies.length / rowsPerPage);
 
   // for filtering
@@ -255,40 +256,52 @@ const CompaniesTbl = () => {
           </tbody>
         </table>
       </div>
-  
+            
+
+        
     {/* Pagination */}
-      <div className="pagination">
-        <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
-          &laquo;
-        </button>
-        <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}>
-          &lt;
-        </button>
+          <div className="pagination-container mt-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+            {/* اليمين: السليكتور */}
+            <div>
+              <RowsPerPageSelector value={rowsPerPage} onChange={setRowsPerPage} />
+            </div>
 
-        {[...Array(totalPages)].map((_, index) => (
-          <button
-            key={`page-${index}`}
-            onClick={() => setCurrentPage(index + 1)}
-            className={currentPage === index + 1 ? "active" : ""}
-          >
-            {index + 1}
-          </button>
-        ))}
+            {/* الوسط: الباجينيشن */}
+            <div className="pagination d-flex gap-1 flex-wrap justify-content-center">
+              <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
+                &laquo;
+              </button>
+              <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}>
+                &lt;
+              </button>
+              {[...Array(totalPages)].map((_, index) => (
+                <button
+                  key={index + 1}
+                  onClick={() => setCurrentPage(index + 1)}
+                  className={currentPage === index + 1 ? "active" : ""}
+                >
+                  {index + 1}
+                </button>
+              ))}
+              <button onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}>
+                &gt;
+              </button>
+              <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages}>
+                &raquo;
+              </button>
+            </div>
 
-        <button
-          onClick={() =>
-            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-          }
-        >
-          &gt;
-        </button>
-        <button
-          onClick={() => setCurrentPage(totalPages)}
-          disabled={currentPage === totalPages}
-        >
-          &raquo;
-        </button>
-      </div> 
+            {/* الشمال: رسالة عرض العناصر */}
+            <p className="mt-4 small text-muted">
+            {companies.length === 0 ? (
+              "لا يوجد شركات للعرض"
+            ) : (
+              <>عرض {(currentPage - 1) * rowsPerPage + 1} - {Math.min(currentPage * rowsPerPage, companies.length)} من أصل {companies.length} شركة</>
+            )}
+              
+            </p>
+          </div>
+
         </div>
       }
      

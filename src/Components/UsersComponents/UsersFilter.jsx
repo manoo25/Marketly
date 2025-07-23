@@ -1,11 +1,11 @@
 import React from 'react';
-import GovernorateFilter from './FilteredComponents/GovernorateFilter';
 import LightButton from '../globalComonents/LightButton';
 import RoleFilter from './FilteredComponents/RoleFilter';
 import NameSearch from './FilteredComponents/NameSearch';
 import EmailSearch from './FilteredComponents/EmailSearch';
 import DangerButton from '../globalComonents/DangerButton';
 import PrimaryButton from '../globalComonents/PrimaryButton';
+import GovernorateFilter from '../globalComonents/GovernorateFilter';
 
 function UsersFilter({
     searchName,
@@ -48,7 +48,7 @@ function UsersFilter({
             </div>
 
             <PrimaryButton
-                label="مسح "
+                label="إلغاء "
                 onClick={onResetFilters}
             // className="btn btn-outline-secondary me-2"
             />

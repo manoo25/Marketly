@@ -1,5 +1,5 @@
-import GovFilter from "../SalesComponents/FilterdComponents/GovFilter";
 import Namesearch from "../SalesComponents/FilterdComponents/Namesearch";
+import GovernorateFilter from "../globalComonents/GovernorateFilter";
 import LightButton from '../globalComonents/LightButton';
 import PrimaryButton from '../globalComonents/PrimaryButton';
 import DateSearch from "./DateSearch";
@@ -27,7 +27,7 @@ function ComplaintsFilter({
                 onSearchClick={onSearchClick}
             />
 
-            <GovFilter
+            <GovernorateFilter
                 selectedGovernorate={selectedGovernorate}
                 setSelectedGovernorate={setSelectedGovernorate}
             />

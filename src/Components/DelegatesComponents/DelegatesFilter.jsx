@@ -1,6 +1,5 @@
 // ✅ DelegatesFilter.js
 import React from 'react';
-import GovernorateFilter from '../UsersComponents/FilteredComponents/GovernorateFilter';
 import NameSearch from '../UsersComponents/FilteredComponents/NameSearch';
 import LightButton from '../globalComonents/LightButton';
 import PrimaryButton from '../globalComonents/PrimaryButton';
@@ -8,6 +7,7 @@ import PrimarySelector from '../globalComonents/PrimarySelector';
 import PrimarySearch from '../globalComonents/PrimarySearch';
 
 import { FaSearch } from 'react-icons/fa';
+import GovernorateFilter from '../globalComonents/GovernorateFilter';
 // import PhoneSearch from './FilteredComponents/PhoneSearch';
 
 function DelegatesFilter({

@@ -12,8 +12,12 @@ import { DeleteUnit } from "../Redux/Slices/units";
 import { DeleteCategory } from "../Redux/Slices/Categories";
 import CategoriesPageHeader from "../Components/CategoriesComponents/CategoriesPageHeader";
 import { UserRole } from "../Redux/Slices/token";
+import RowsPerPageSelector from "../Components/globalComonents/RowsPerPageSelector";
+// const rowsPerPage = 8;
+
 
 function Categories() {
+  const [rowsPerPage, setRowsPerPage] = useState(8);
   const dispatch = useDispatch();
   const [flag, setFlag] = useState("categories");
   const { categories,loading } = useSelector((state) => state.Categories);
@@ -63,12 +67,20 @@ function Categories() {
 
   // Selectors
   const handleSelectAll = () => {
-    if (selectedRows.length === filteredData.length) {
-      setSelectedRows([]);
+    const currentVisibleIds = currentPageData.map((row) => row.id);
+
+    const areAllSelected = currentVisibleIds.every((id) => selectedRows.includes(id));
+
+    if (areAllSelected) {
+      // شيّل بس الظاهرين من المختارين
+      setSelectedRows(selectedRows.filter((id) => !currentVisibleIds.includes(id)));
     } else {
-      setSelectedRows(filteredData.map((c) => c.id));
+      // ضيف الظاهرين فقط من غير تكرار
+      const newSelected = [...new Set([...selectedRows, ...currentVisibleIds])];
+      setSelectedRows(newSelected);
     }
   };
+
   const handleSelectRow = (id) => {
     setSelectedRows((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
@@ -121,6 +133,19 @@ function Categories() {
     else dispatch(GetUnits());
   };
 
+
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const currentPageData = filteredData.slice(startIndex, startIndex + rowsPerPage);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filteredData, flag,rowsPerPage]);
+
+  // Pagination
+
   // Table columns
   const columns = [
     {
@@ -129,9 +154,10 @@ function Categories() {
           <input
             type="checkbox"
             checked={
-              selectedRows.length === filteredData.length &&
-              filteredData.length > 0
+              currentPageData.length > 0 &&
+              currentPageData.every((row) => selectedRows.includes(row.id))
             }
+
             onChange={handleSelectAll}
           />
         </label>
@@ -196,6 +222,8 @@ function Categories() {
     },
   ];
 
+
+
   return (
     <>
      {loading?<Loading/>:
@@ -233,7 +261,58 @@ function Categories() {
      </div>
      }
      </div>
-      <TableComponent data={filteredData} columns={columns} />
+          <TableComponent data={currentPageData} columns={columns} />
+
+      {/* Pagination */}
+          <div className="pagination-container mt-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+            {/* اليمين: السليكتور */}
+            <div>
+              <RowsPerPageSelector value={rowsPerPage} onChange={setRowsPerPage} />
+            </div>
+
+            {/* الوسط: الباجينيشن */}
+            <div className="pagination d-flex gap-1 flex-wrap justify-content-center">
+              <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
+                &laquo;
+              </button>
+              <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}>
+                &lt;
+              </button>
+              {[...Array(totalPages)].map((_, index) => (
+                <button
+                  key={index + 1}
+                  onClick={() => setCurrentPage(index + 1)}
+                  className={currentPage === index + 1 ? "active" : ""}
+                >
+                  {index + 1}
+                </button>
+              ))}
+              <button onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}>
+                &gt;
+              </button>
+              <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages}>
+                &raquo;
+              </button>
+            </div>
+
+            {/* الشمال: رسالة عرض العناصر */}
+            <p className="mt-4 small text-muted">
+            {filteredData.length === 0 ? (
+              flag === "categories" ? "لا يوجد أصناف للعرض" : "لا يوجد وحدات للعرض"
+            ) : (
+              <>
+                عرض {startIndex + 1} - {Math.min(startIndex + rowsPerPage, filteredData.length)} من أصل {filteredData.length}{" "}
+                {flag === "categories" ? "صنف" : "وحدة"}
+              </>
+            )}
+              
+            </p>
+          </div>
+
+
+
+
+      {/* Pagination */}
       <ModalConfirm
         isOpen={confirmModal.open}
         onClose={() => setConfirmModal((prev) => ({ ...prev, open: false }))}

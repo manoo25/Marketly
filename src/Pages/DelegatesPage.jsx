@@ -57,7 +57,7 @@ export default function DelegatesPage() {
         phone: searchPhone,
         trader: searchTrader,
       }));
-    }, 500);
+    }, 0);
 
     return () => clearTimeout(delay);
   }, [searchName, searchPhone, searchTrader]);

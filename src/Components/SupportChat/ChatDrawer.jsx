@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import "./ChatDrawer.css";
 import { supabase } from "../../Supabase/SupabaseClient";
 import { buildConversationId } from "../../Redux/slices/messagesSlice";
-import { FaRobot } from "react-icons/fa";
+import SupportAvatar from "../../assets/Images/supportChat.png"
 
 // 🛠️ ثابت للدعم الفني (لو حبيت تغيره فيما بعد)
 const SUPPORT_ADMIN_ID = "a157b1db-54c3-46e3-968c-b3e0be6f6392";
@@ -163,7 +163,7 @@ export default function ChatDrawer({ currentUserId, userRole, onClose }) {
         <div className="chat-drawer-container">
             <div className="chat-header">
                 الدعم الفني
-                <button className="close-btn" onClick={onClose}>✖</button>
+                <button className="close-btn" style={{ color:"white" }} onClick={onClose}>✖</button>
             </div>
 
             <div className="chat-messages" ref={messagesContainerRef}>
@@ -231,7 +231,9 @@ export default function ChatDrawer({ currentUserId, userRole, onClose }) {
                                     </div>
 
                                     <div>
-                                        <FaRobot size={42} style={{ color: "#007bff", marginLeft: "5px" }} />
+                                        {/* <FaRobot size={42} style={{ color: "#007bff", marginLeft: "5px" }} /> */}
+                                        
+                                                        <img src={SupportAvatar}  width={"50px"}/>
                                     </div>
                                 </div>
                             )}

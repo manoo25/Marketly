@@ -8,13 +8,14 @@ import LabeledMenu from "../globalComonents/LabeledMenu";
 import Loading from "../globalComonents/loading";
 import { supabase } from "../../Supabase/SupabaseClient";
 import { deleteOrder, getReturnOrders, updateOrder } from "../../Redux/Slices/OrdersSlice";
+import RowsPerPageSelector from "../globalComonents/RowsPerPageSelector";
 
 
 
-
-const rowsPerPage = 4;
+// const rowsPerPage = 8;
 
 const ReturnsTbl = () => {
+    const [rowsPerPage, setRowsPerPage] = useState(8);
     const dispatch = useDispatch();
     const { loading } = useSelector((state) => state.Orders);
     const returns = useSelector((state) => state.Orders.orders);
@@ -62,7 +63,7 @@ console.log(returns)
         const startIndex = (currentPage - 1) * rowsPerPage;
         const sliced = filteredReturns.slice(startIndex, startIndex + rowsPerPage);
         setcurrentReturns(sliced);
-    }, [filteredReturns, currentPage]);
+    }, [filteredReturns, currentPage, rowsPerPage]);
 
     const totalPages = Math.ceil(filteredReturns.length / rowsPerPage);
 
@@ -355,38 +356,48 @@ console.log(returns)
                     </tbody>
                 </table>
             </div>
-            <div className="pagination">
-                <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
-                    &laquo;
-                </button>
-                <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}>
-                    &lt;
-                </button>
 
-                {[...Array(totalPages)].map((_, index) => (
-                    <button
-                        key={index + 1}
-                        onClick={() => setCurrentPage(index + 1)}
-                        className={currentPage === index + 1 ? "active" : ""}
-                    >
-                        {index + 1}
-                    </button>
-                ))}
+                <div className="pagination-container mt-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    {/* اليمين: السليكتور */}
+                    <div>
+                        <RowsPerPageSelector value={rowsPerPage} onChange={setRowsPerPage} />
+                    </div>
 
-                <button
-                    onClick={() =>
-                        setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                    }
-                >
-                    &gt;
-                </button>
-                <button
-                    onClick={() => setCurrentPage(totalPages)}
-                    disabled={currentPage === totalPages}
-                >
-                    &raquo;
-                </button>
-            </div>
+                    {/* الوسط: الباجينيشن */}
+                    <div className="pagination d-flex gap-1 flex-wrap justify-content-center">
+                        <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
+                            &laquo;
+                        </button>
+                        <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}>
+                            &lt;
+                        </button>
+                        {[...Array(totalPages)].map((_, index) => (
+                            <button
+                                key={index + 1}
+                                onClick={() => setCurrentPage(index + 1)}
+                                className={currentPage === index + 1 ? "active" : ""}
+                            >
+                                {index + 1}
+                            </button>
+                        ))}
+                        <button onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}>
+                            &gt;
+                        </button>
+                        <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages}>
+                            &raquo;
+                        </button>
+                    </div>
+
+                    {/* الشمال: رسالة عرض العناصر */}
+                    <p className="mt-4 small text-muted">
+                    {returns.length === 0 ? (
+                        "لا يوجد شكاوى للعرض"
+                    ) : (
+                            <>عرض {(currentPage - 1) * rowsPerPage + 1} - {Math.min(currentPage * rowsPerPage, returns.length)} من أصل {returns.length} مرتجع</>
+                    )}
+                        
+                    </p>
+                </div>
           </div>
         }
         

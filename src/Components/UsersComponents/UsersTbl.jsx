@@ -11,14 +11,16 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import LabeledMenuButton from "../globalComonents/LabeledMenu";
 import LabeledMenu from "../globalComonents/LabeledMenu";
 import UpdateRolesModal from "../modalsComponents/UpdateRolesModal";
+import RowsPerPageSelector from "../globalComonents/RowsPerPageSelector";
 // import ChatModal from "../UsersComponents/ChatModal";
 // import { generateConversationId } from "../../utils/generateConversationId";
 // import { getCurrentUserId } from "../../utils/getCurrentUserId";
 
-const rowsPerPage = 10;
+// const rowsPerPage = 8;
 
 const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, searchEmail, onBlockUser, onUpdateUserRole, onUpdateSelectedUseresRole, onBlockSelectedUsers, onUnblockSelectedUsers }) => {
- 
+
+  const [rowsPerPage, setRowsPerPage] = useState(8);
   const filteredUsers = users.filter((user) => {
     const matchGovernorate = selectedGovernorate ? user.governorate === selectedGovernorate : true;
     const matchRole = selectedRole ? user.role === selectedRole : true;
@@ -31,7 +33,7 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
   const totalPages = Math.ceil(filteredUsers.length / rowsPerPage);
   const startIndex = (currentPage - 1) * rowsPerPage;
   const currentUsers = filteredUsers.slice(startIndex, startIndex + rowsPerPage);
-  useEffect(() => setCurrentPage(1), [selectedRole, selectedGovernorate]);
+  useEffect(() => setCurrentPage(1), [selectedRole, selectedGovernorate, rowsPerPage]);
 
   const [confirmModal, setConfirmModal] = useState({ open: false, message: "", confirmText: "تأكيد", confirmClass: "btn-primary", onConfirm: () => { } });
   const [selectedUserIds, setSelectedUserIds] = useState([]);
@@ -467,38 +469,48 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
 
       {/* Send msg Modal */}
 
-      <div className="pagination" style={{ marginTop:"80px" }}>
-        <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
-          &laquo;
-        </button>
-        <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}>
-          &lt;
-        </button>
+      <div className="pagination-container mt-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+        {/* اليمين: السليكتور */}
+        <div>
+          <RowsPerPageSelector value={rowsPerPage} onChange={setRowsPerPage} />
+        </div>
 
-        {[...Array(totalPages)].map((_, index) => (
-          <button
-            key={index + 1}
-            onClick={() => setCurrentPage(index + 1)}
-            className={currentPage === index + 1 ? "active" : ""}
-          >
-            {index + 1}
+        {/* الوسط: الباجينيشن */}
+        <div className="pagination d-flex gap-1 flex-wrap justify-content-center">
+          <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
+            &laquo;
           </button>
-        ))}
+          <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}>
+            &lt;
+          </button>
+          {[...Array(totalPages)].map((_, index) => (
+            <button
+              key={index + 1}
+              onClick={() => setCurrentPage(index + 1)}
+              className={currentPage === index + 1 ? "active" : ""}
+            >
+              {index + 1}
+            </button>
+          ))}
+          <button onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}>
+            &gt;
+          </button>
+          <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages}>
+            &raquo;
+          </button>
+        </div>
 
-        <button
-          onClick={() =>
-            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-          }
-        >
-          &gt;
-        </button>
-        <button
-          onClick={() => setCurrentPage(totalPages)}
-          disabled={currentPage === totalPages}
-        >
-          &raquo;
-        </button>
+        {/* الشمال: رسالة عرض العناصر */}
+        <p className="mt-4 small text-muted">
+          {filteredUsers.length === 0 ? (
+            "لا يوجد مستخدمين للعرض"
+          ) : (
+            <>عرض {startIndex + 1} - {Math.min(startIndex + rowsPerPage, filteredUsers.length)} من أصل {filteredUsers.length} مستخدم</>
+          )}
+        </p>
       </div>
+
+
     </>
   );
 };

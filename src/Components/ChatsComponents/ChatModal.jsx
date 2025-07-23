@@ -245,7 +245,7 @@ export default function ChatModal({ users, searchValue, setSearchValue, onUserLi
                 </button>
                 {window.innerWidth < 800 && !isSidebarVisible && !selectedUser && (
                     <div className="mobile-chat-placeholder">
-                        <p>اضغط على زر <strong>العملاء</strong> لاختيار مستخدم وبدء المحادثة</p>
+                        <p>اضغط على زر <strong>العملاء</strong> لاختيار عميل وبدء المحادثة</p>
                     </div>
                 )}
 
@@ -379,7 +379,7 @@ export default function ChatModal({ users, searchValue, setSearchValue, onUserLi
                         </>
                     ) : (
                         <div className="chat-placeholder">
-                            <p>اختر مستخدم لبدء المحادثة</p>
+                            <p>اختر عميل لبدء المحادثة</p>
                         </div>
                     )}
                 </div>

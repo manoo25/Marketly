@@ -1,8 +1,10 @@
 .chat-drawer-container {
     position: fixed;
-    bottom: 90px;
-    left: 20px;
-    width: 420px;
+    bottom: 135px;
+    left: 40px;
+    width: 85vw;
+    /* ← responsive width */
+    max-width: 450px;
     max-height: 450px;
     background-color: #fff;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
@@ -12,11 +14,8 @@
     flex-direction: column;
     direction: rtl;
     z-index: 999;
-    -webkit-border-radius: 20px;
-    -moz-border-radius: 20px;
-    -ms-border-radius: 20px;
-    -o-border-radius: 20px;
 }
+
 
 .chat-header {
     background-color: #007bff;

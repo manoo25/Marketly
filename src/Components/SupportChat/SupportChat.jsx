@@ -4,22 +4,41 @@ import ChatDrawer from "./ChatDrawer";
 import { supabase } from "../../Supabase/SupabaseClient";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers } from "../../Redux/Slices/Users";
-import { FaRobot } from "react-icons/fa";
-
+import SupportAvatar from "../../assets/Images/supportChat.png";
 
 const SUPPORT_ADMIN_ID = "a157b1db-54c3-46e3-968c-b3e0be6f6392";
+
 export default function SupportChat() {
     const [isOpen, setIsOpen] = useState(false);
     const [unreadCount, setUnreadCount] = useState(0);
-    const dispatch = useDispatch();
+    const [showLoginMessage, setShowLoginMessage] = useState(false);
 
+    const dispatch = useDispatch();
     const { token: userId, UserRole: userRole } = useSelector(state => state.Token);
     const { users } = useSelector(state => state.Users);
 
     const toggleChat = async () => {
+        // لو مش مسجل دخول، أظهر رسالة فقط
+        if (!userId) {
+            if (!isOpen) {
+                setIsOpen(true);
+                setShowLoginMessage(true);
+
+                setTimeout(() => {
+                    setShowLoginMessage(false);
+                    setIsOpen(false); // ✅ نقفل الزر تلقائيًا
+                }, 2000);
+            } else {
+                // لو اتفتح بالفعل، قفله يدويًا
+                setIsOpen(false);
+                setShowLoginMessage(false);
+            }
+            return;
+        }
+
+        // لو مسجل دخول، كمل عادي وافتح/اقفل الشات
         setIsOpen(!isOpen);
 
-        // ✅ عند فتح الشات صفّر عداد الرسائل
         if (!isOpen) {
             const { error } = await supabase
                 .from("UsersMessage")
@@ -34,10 +53,9 @@ export default function SupportChat() {
                 console.error("❌ فشل في تصفير العداد:", error.message);
             }
 
-            setUnreadCount(0); // ← يصفر العداد مباشرةً في الواجهة
+            setUnreadCount(0);
         }
     };
-
 
     useEffect(() => {
         if (!users || users.length === 0) {
@@ -69,12 +87,35 @@ export default function SupportChat() {
     return (
         <>
             <div className="support-chat-float-button" onClick={toggleChat}>
-            
-                <FaRobot size={40} style={{ margin: "auto", color:"#007bff" }} />
+                <img
+                    src={SupportAvatar}
+                    width={"100px"}
+                    style={{
+                        border: "none",
+                        background: "transparent",
+                        boxShadow: "none",
+                        borderRadius: 0,
+                        margin: 0,
+                        padding: 0,
+                        display: "block"
+                    }}
+                    alt="Support"
+                />
                 {unreadCount > 0 && <span className="unread-count">{unreadCount}</span>}
             </div>
 
-            {isOpen && userId && <ChatDrawer currentUserId={userId} userRole={userRole} users={users} onClose={toggleChat} />}
+            {isOpen && userId ? (
+                <ChatDrawer
+                    currentUserId={userId}
+                    userRole={userRole}
+                    users={users}
+                    onClose={toggleChat}
+                />
+            ) : isOpen && showLoginMessage ? (
+                <div className="chat-login-required">
+                    الرجاء تسجيل الدخول للتحدث مع خدمة العملاء
+                </div>
+            ) : null}
         </>
     );
 }

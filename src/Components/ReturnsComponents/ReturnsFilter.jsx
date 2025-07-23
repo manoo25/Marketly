@@ -1,7 +1,7 @@
-import GovFilter from "./FilterdComponents/GovFilter";
 import StateFilter from "./FilterdComponents/StateFilter";
 import NameSearch from "./FilterdComponents/Namesearch";
 import PrimaryButton from '../globalComonents/PrimaryButton';
+import GovernorateFilter from "../globalComonents/GovernorateFilter";
 
 
 
@@ -22,7 +22,7 @@ function ReturnsFilter({
                 setSearchName={setSearchName}
             />
 
-            <GovFilter
+            <GovernorateFilter
                 selectedGovernorate={selectedGovernorate}
                 setSelectedGovernorate={setSelectedGovernorate}
             />

@@ -1,5 +1,5 @@
 import React from 'react'
-import PrimarySelector from '../../globalComonents/PrimarySelector'
+import PrimarySelector from './PrimarySelector'
 const citiesByGovernorate = [
   "الإسكندرية",
   "الإسماعيلية",
@@ -50,8 +50,5 @@ function GovernorateFilter({ selectedGovernorate, setSelectedGovernorate }) {
     
   )
 }
-
-
-<option value="cairo">القاهرة</option>
 
 export default GovernorateFilter;

@@ -14,10 +14,13 @@ import EditProductModal from "../modalsComponents/EditProductModal";
 import Switch from "../globalComonents/Switch";
 import Loading from "../globalComonents/loading";
 import { UserRole } from "../../Redux/Slices/token";
+import RowsPerPageSelector from "../globalComonents/RowsPerPageSelector";
 
-const rowsPerPage = 8;
+// const rowsPerPage = 8;
 
 const ProductsTbl = () => {
+  
+    const [rowsPerPage, setRowsPerPage] = useState(8);
   const dispatch = useDispatch();
   const { products, loading } = useSelector((state) => state.Products);
 
@@ -47,7 +50,7 @@ const ProductsTbl = () => {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchName, selectedCat, searchTrader, selectedCompany, showNotPublished]);
+  }, [searchName, selectedCat, searchTrader, selectedCompany, showNotPublished, setRowsPerPage]);
 
   const filteredProducts = useMemo(() => {
     return products.filter((x) => {
@@ -288,27 +291,49 @@ const ProductsTbl = () => {
             confirmClass={confirmModal.confirmClass}
           />
 
-          <div className="pagination">
-            <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
-              &laquo;
-            </button>
-            <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}>&lt;</button>
 
-            {[...Array(totalPages)].map((_, index) => (
-              <button
-                key={index + 1}
-                onClick={() => setCurrentPage(index + 1)}
-                className={currentPage === index + 1 ? "active" : ""}
-              >
-                {index + 1}
-              </button>
-            ))}
+            <div className="pagination-container mt-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+              {/* اليمين: السليكتور */}
+              <div>
+                <RowsPerPageSelector value={rowsPerPage} onChange={setRowsPerPage} />
+              </div>
 
-            <button onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}>&gt;</button>
-            <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages}>
-              &raquo;
-            </button>
-          </div>
+              {/* الوسط: الباجينيشن */}
+              <div className="pagination d-flex gap-1 flex-wrap justify-content-center">
+                <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
+                  &laquo;
+                </button>
+                <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}>
+                  &lt;
+                </button>
+                {[...Array(totalPages)].map((_, index) => (
+                  <button
+                    key={index + 1}
+                    onClick={() => setCurrentPage(index + 1)}
+                    className={currentPage === index + 1 ? "active" : ""}
+                  >
+                    {index + 1}
+                  </button>
+                ))}
+                <button onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}>
+                  &gt;
+                </button>
+                <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages}>
+                  &raquo;
+                </button>
+              </div>
+
+              {/* الشمال: رسالة عرض العناصر */}
+              <p className="mt-4 small text-muted">
+                
+              {filteredProducts.length === 0 ? (
+                "لا يوجد منتجات للعرض"
+              ) : (
+                <>عرض {startIndex + 1} - {Math.min(startIndex + rowsPerPage, filteredProducts.length)} من أصل {filteredProducts.length} منتج</>
+              )}
+              </p>
+            </div>
+
 
           <EditProductModal show={show} setShow={setShow} product={EditProduct} />
         </div>

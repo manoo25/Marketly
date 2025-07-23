@@ -15,11 +15,14 @@ import Loading from "../globalComonents/loading";
 import { fetchOrderItems } from "../../Redux/Slices/OrderItems";
 import { UserRole } from "../../Redux/Slices/token";
 import { supabase } from "../../Supabase/SupabaseClient";
+import RowsPerPageSelector from "../globalComonents/RowsPerPageSelector";
 
-const rowsPerPage = 4;
+// const rowsPerPage = 8;
 
 
 const OrdersTbl = () => {
+    
+      const [rowsPerPage, setRowsPerPage] = useState(8);
     const dispatch = useDispatch();
     const { orders,loading } = useSelector((state) => state.Orders);
  
@@ -64,7 +67,7 @@ const OrdersTbl = () => {
         });
         setFilteredOrders(filtered);
         setCurrentPage(1); 
-    }, [searchName, selectedGovernorate, selectedState, orders]);
+    }, [searchName, selectedGovernorate, selectedState, orders, rowsPerPage]);
 
 
     // update current Orders based on pagination or filtered list change
@@ -379,38 +382,50 @@ const OrdersTbl = () => {
                 </table>
             </div>
 
-            <div className="pagination">
-                <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
-                    &laquo;
-                </button>
-                <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}>
-                    &lt;
-                </button>
+            
+                    <div className="pagination-container mt-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+                        {/* اليمين: السليكتور */}
+                        <div>
+                            <RowsPerPageSelector value={rowsPerPage} onChange={setRowsPerPage} />
+                        </div>
 
-                {[...Array(totalPages)].map((_, index) => (
-                    <button
-                        key={index + 1}
-                        onClick={() => setCurrentPage(index + 1)}
-                        className={currentPage === index + 1 ? "active" : ""}
-                    >
-                        {index + 1}
-                    </button>
-                ))}
+                        {/* الوسط: الباجينيشن */}
+                        <div className="pagination d-flex gap-1 flex-wrap justify-content-center">
+                            <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
+                                &laquo;
+                            </button>
+                            <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}>
+                                &lt;
+                            </button>
+                            {[...Array(totalPages)].map((_, index) => (
+                                <button
+                                    key={index + 1}
+                                    onClick={() => setCurrentPage(index + 1)}
+                                    className={currentPage === index + 1 ? "active" : ""}
+                                >
+                                    {index + 1}
+                                </button>
+                            ))}
+                            <button onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}>
+                                &gt;
+                            </button>
+                            <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages}>
+                                &raquo;
+                            </button>
+                        </div>
 
-                <button
-                    onClick={() =>
-                        setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                    }
-                >
-                    &gt;
-                </button>
-                <button
-                    onClick={() => setCurrentPage(totalPages)}
-                    disabled={currentPage === totalPages}
-                >
-                    &raquo;
-                </button>
-            </div>
+                        {/* الشمال: رسالة عرض العناصر */}
+                        <p className="mt-4 small text-muted">
+                        {orders.length === 0 ? (
+                            "لا يوجد طلبات للعرض"
+                        ) : (
+                                <>عرض {(currentPage - 1) * rowsPerPage + 1} - {Math.min(currentPage * rowsPerPage, orders.length)} من أصل {orders.length} طلب</>
+                        )}
+                            
+                        </p>
+                    </div>
+
+            
 
             {/* مودال تعديل حالة الطلب */}
             {stateModalOpen && orderToEdit && (

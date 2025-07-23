@@ -7,8 +7,9 @@ import CustomMenu from "../globalComonents/CustomMenu";
 import LabeledMenu from "../globalComonents/LabeledMenu";
 import { UserRole } from "../../Redux/Slices/token";
 import "../../css/Table.css";
+import RowsPerPageSelector from "../globalComonents/RowsPerPageSelector";
 
-const rowsPerPage = 10;
+// const rowsPerPage = 8;
 
 /* لتجميع الأيام المتكررة لنفس الـ route (للعرض فقط) */
 const groupRoutes = (arr = []) =>
@@ -32,6 +33,9 @@ export default function DelegatesTbl({
   onDeleteDelegate,
   setEditModalData,
 }) {
+
+
+  const [rowsPerPage, setRowsPerPage] = useState(8);
   /* Pagination */
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(delegates.length / rowsPerPage);
@@ -41,7 +45,7 @@ export default function DelegatesTbl({
 
   useEffect(
     () => setCurrentPage(1),
-    [searchName, searchPhone, selectedGovernorate, selectedDay, users]
+    [searchName, searchPhone, selectedGovernorate, selectedDay, users, rowsPerPage]
   );
 
   /* اختيار الصفوف */
@@ -304,36 +308,48 @@ export default function DelegatesTbl({
         delegateName={modalName}
       />
 
+
       {/* Pagination ... كما كان */}
-      <div className="pagination" style={{ marginTop: "80px" }}>
-        <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
-          &laquo;
-        </button>
-        <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}>
-          &lt;
-        </button>
+      <div className="pagination-container mt-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+        {/* اليمين: السليكتور */}
+        <div>
+          <RowsPerPageSelector value={rowsPerPage} onChange={setRowsPerPage} />
+        </div>
 
-        {[...Array(totalPages)].map((_, index) => (
-          <button
-            key={index + 1}
-            onClick={() => setCurrentPage(index + 1)}
-            className={currentPage === index + 1 ? "active" : ""}
-          >
-            {index + 1}
+        {/* الوسط: الباجينيشن */}
+        <div className="pagination d-flex gap-1 flex-wrap justify-content-center">
+          <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
+            &laquo;
           </button>
-        ))}
+          <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}>
+            &lt;
+          </button>
+          {[...Array(totalPages)].map((_, index) => (
+            <button
+              key={index + 1}
+              onClick={() => setCurrentPage(index + 1)}
+              className={currentPage === index + 1 ? "active" : ""}
+            >
+              {index + 1}
+            </button>
+          ))}
+          <button onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}>
+            &gt;
+          </button>
+          <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages}>
+            &raquo;
+          </button>
+        </div>
 
-        <button
-          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-        >
-          &gt;
-        </button>
-        <button
-          onClick={() => setCurrentPage(totalPages)}
-          disabled={currentPage === totalPages}
-        >
-          &raquo;
-        </button>
+        {/* الشمال: رسالة عرض العناصر */}
+        <p className="mt-4 small text-muted">
+        {delegates.length === 0 ? (
+          "لا يوجد مناديب للعرض"
+        ) : (
+          <>عرض {startIdx + 1} - {Math.min(startIdx + rowsPerPage, delegates.length)} من أصل {delegates.length} مندوب</>
+        )}
+          
+        </p>
       </div>
 
       {/* ... */}

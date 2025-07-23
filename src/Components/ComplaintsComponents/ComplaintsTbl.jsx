@@ -9,13 +9,15 @@ import Loading from "../globalComonents/loading";
 import { UserRole } from "../../Redux/Slices/token";
 import { deleteComplaint, fetchcomplaints, updateComplaint } from "../../Redux/Slices/Complaints";
 import ComplaintsFilter from "./ComplaintsFilter";
+import RowsPerPageSelector from "../globalComonents/RowsPerPageSelector";
 
-const rowsPerPage = 10;
+// const rowsPerPage = 8;
 
 const ComplaintsTable = () => {
   const dispatch = useDispatch();
   const { complaints, loading } = useSelector((state) => state.Complaints);
 
+  const [rowsPerPage, setRowsPerPage] = useState(8);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchName, setSearchName] = useState("");
   const [selectedGovernorate, setSelectedGovernorate] = useState("");
@@ -42,7 +44,7 @@ const ComplaintsTable = () => {
     const startIndex = (currentPage - 1) * rowsPerPage;
     const sliced = complaints.slice(startIndex, startIndex + rowsPerPage);
     setCurrentComplaints(sliced);
-  }, [complaints, currentPage]);
+  }, [complaints, currentPage, rowsPerPage]);
   
   const totalPages = Math.ceil(complaints.length / rowsPerPage);
 
@@ -275,39 +277,50 @@ function handleUpdateComplaintState(id, newState) {
             </table>
           </div>
 
+
           {/* Pagination */}
-          <div className="pagination">
-            <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
-              &laquo;
-            </button>
-            <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}>
-              &lt;
-            </button>
+            <div className="pagination-container mt-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+              {/* اليمين: السليكتور */}
+              <div>
+                <RowsPerPageSelector value={rowsPerPage} onChange={setRowsPerPage} />
+              </div>
 
-            {[...Array(totalPages)].map((_, index) => (
-              <button
-                key={`page-${index}`}
-                onClick={() => setCurrentPage(index + 1)}
-                className={currentPage === index + 1 ? "active" : ""}
-              >
-                {index + 1}
-              </button>
-            ))}
+              {/* الوسط: الباجينيشن */}
+              <div className="pagination d-flex gap-1 flex-wrap justify-content-center">
+                <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
+                  &laquo;
+                </button>
+                <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}>
+                  &lt;
+                </button>
+                {[...Array(totalPages)].map((_, index) => (
+                  <button
+                    key={index + 1}
+                    onClick={() => setCurrentPage(index + 1)}
+                    className={currentPage === index + 1 ? "active" : ""}
+                  >
+                    {index + 1}
+                  </button>
+                ))}
+                <button onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}>
+                  &gt;
+                </button>
+                <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages}>
+                  &raquo;
+                </button>
+              </div>
 
-            <button
-              onClick={() =>
-                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-              }
-            >
-              &gt;
-            </button>
-            <button
-              onClick={() => setCurrentPage(totalPages)}
-              disabled={currentPage === totalPages}
-            >
-              &raquo;
-            </button>
-          </div>
+              {/* الشمال: رسالة عرض العناصر */}
+              <p className="mt-4 small text-muted">
+              {complaints.length === 0 ? (
+                "لا يوجد شكاوى للعرض"
+              ) : (
+                  <>عرض {(currentPage - 1) * rowsPerPage + 1} - {Math.min(currentPage * rowsPerPage, complaints.length)} من أصل {complaints.length} شكوى</>
+              )}
+                
+              </p>
+            </div>
+
         </div>
       )}
 
