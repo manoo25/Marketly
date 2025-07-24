@@ -12,15 +12,13 @@ import { DeleteUnit } from "../Redux/Slices/units";
 import { DeleteCategory } from "../Redux/Slices/Categories";
 import CategoriesPageHeader from "../Components/CategoriesComponents/CategoriesPageHeader";
 import { UserRole } from "../Redux/Slices/token";
-import RowsPerPageSelector from "../Components/globalComonents/RowsPerPageSelector";
-// const rowsPerPage = 8;
 
+const rowsPerPage = 5;
 
 function Categories() {
-  const [rowsPerPage, setRowsPerPage] = useState(8);
   const dispatch = useDispatch();
   const [flag, setFlag] = useState("categories");
-  const { categories,loading } = useSelector((state) => state.Categories);
+  const { categories, loading } = useSelector((state) => state.Categories);
   const { Units } = useSelector((state) => state.Units);
 
   // Search & selection state
@@ -31,15 +29,18 @@ function Categories() {
     message: "",
     confirmText: "تأكيد",
     confirmClass: "btn-primary",
-    onConfirm: () => {},
+    onConfirm: () => { },
   });
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+
   useEffect(() => {
-   if(!categories||categories.length===0){
-     dispatch(GetCategories());
-    dispatch(GetUnits());
-   }
-  }, [dispatch,UserRole]);
+    if (!categories || categories.length === 0) {
+      dispatch(GetCategories());
+      dispatch(GetUnits());
+    }
+  }, [dispatch, UserRole]);
 
   // Filtered data
   const data = flag === "categories" ? categories : Units;
@@ -49,6 +50,7 @@ function Categories() {
   useEffect(() => {
     setFilteredData(data);
     setSelectedRows([]);
+    setCurrentPage(1);
   }, [data, flag]);
 
   const handleSearchClick = () => {
@@ -63,21 +65,26 @@ function Categories() {
       );
     }
     setSelectedRows([]);
+    setCurrentPage(1);
   };
 
+  // Paginated data
+  const paginatedData = filteredData.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage
+  );
+  const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+
   // Selectors
-  const handleSelectAll = () => {
-    const currentVisibleIds = currentPageData.map((row) => row.id);
-
-    const areAllSelected = currentVisibleIds.every((id) => selectedRows.includes(id));
-
-    if (areAllSelected) {
-      // شيّل بس الظاهرين من المختارين
-      setSelectedRows(selectedRows.filter((id) => !currentVisibleIds.includes(id)));
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setSelectedRows((prev) => [
+        ...new Set([...prev, ...paginatedData.map((c) => c.id)]),
+      ]);
     } else {
-      // ضيف الظاهرين فقط من غير تكرار
-      const newSelected = [...new Set([...selectedRows, ...currentVisibleIds])];
-      setSelectedRows(newSelected);
+      setSelectedRows((prev) =>
+        prev.filter((id) => !paginatedData.some((c) => c.id === id))
+      );
     }
   };
 
@@ -133,19 +140,6 @@ function Categories() {
     else dispatch(GetUnits());
   };
 
-
-  // Pagination
-  const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(filteredData.length / rowsPerPage);
-  const startIndex = (currentPage - 1) * rowsPerPage;
-  const currentPageData = filteredData.slice(startIndex, startIndex + rowsPerPage);
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [filteredData, flag,rowsPerPage]);
-
-  // Pagination
-
   // Table columns
   const columns = [
     {
@@ -154,10 +148,9 @@ function Categories() {
           <input
             type="checkbox"
             checked={
-              currentPageData.length > 0 &&
-              currentPageData.every((row) => selectedRows.includes(row.id))
+              paginatedData.length > 0 &&
+              paginatedData.every((c) => selectedRows.includes(c.id))
             }
-
             onChange={handleSelectAll}
           />
         </label>
@@ -175,18 +168,18 @@ function Categories() {
     },
     ...(flag === "categories"
       ? [
-          {
-            header: "صورة",
-            accessor: "img",
-            render: (val) => (
-              <img
-                src={val}
-                alt="img"
-                style={{ width: "50px", borderRadius: "5px" }}
-              />
-            ),
-          },
-        ]
+        {
+          header: "صورة",
+          accessor: "img",
+          render: (val) => (
+            <img
+              src={val}
+              alt="img"
+              style={{ width: "50px", borderRadius: "5px" }}
+            />
+          ),
+        },
+      ]
       : []),
     { header: "الاسم", accessor: "name" },
     { header: "المعرف", accessor: "id" },
@@ -222,107 +215,92 @@ function Categories() {
     },
   ];
 
-
-
   return (
     <>
-     {loading?<Loading/>:
-      <div>
-         <CategoriesPageHeader
-        title={flag === "categories" ? "الأصناف" : "الوحدات"}
-        flag={flag}
-        onAdd={handleAdd}
-      />
-     <div className="d-flex justify-content-between gap-4 align-items-center">
-       <div className="mt-2 px-2" style={{ Width:500 }}>
-        <PrimarySelector
-        className="w-100 px-3"
-          value={flag}
-          onChange={setFlag}
-          options={[
-            { value: "categories", label: "الأصناف" },
-            { value: "units", label: "الوحدات" },
-          ]}
-          label="اختر الجدول"
-        />
-      </div>
-     {flag === "categories"&&
-      <div >
-       <CategoriesFilter
-        searchName={searchName}
-        setSearchName={setSearchName}
-        onSearchClick={handleSearchClick}
-        onResetFilters={() => {
-          setSearchName("");
-          setFilteredData(data);
-          setSelectedRows([]);
-        }}
-      />
-     </div>
-     }
-     </div>
-          <TableComponent data={currentPageData} columns={columns} />
-
-      {/* Pagination */}
-          <div className="pagination-container mt-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
-            {/* اليمين: السليكتور */}
-            <div>
-              <RowsPerPageSelector value={rowsPerPage} onChange={setRowsPerPage} />
+      {loading ? (
+        <Loading />
+      ) : (
+        <div>
+          <CategoriesPageHeader
+            title={flag === "categories" ? "الأصناف" : "الوحدات"}
+            flag={flag}
+            onAdd={handleAdd}
+          />
+          <div className="d-flex justify-content-between gap-4 align-items-center">
+            <div className="mt-2 px-2" style={{ Width: 500 }}>
+              <PrimarySelector
+                className="w-100 px-3"
+                value={flag}
+                onChange={(value) => {
+                  setFlag(value);
+                  setCurrentPage(1);
+                }}
+                options={[
+                  { value: "categories", label: "الأصناف" },
+                  { value: "units", label: "الوحدات" },
+                ]}
+                label="اختر الجدول"
+              />
             </div>
-
-            {/* الوسط: الباجينيشن */}
-            <div className="pagination d-flex gap-1 flex-wrap justify-content-center">
-              <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
-                &laquo;
-              </button>
-              <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}>
-                &lt;
-              </button>
-              {[...Array(totalPages)].map((_, index) => (
-                <button
-                  key={index + 1}
-                  onClick={() => setCurrentPage(index + 1)}
-                  className={currentPage === index + 1 ? "active" : ""}
-                >
-                  {index + 1}
-                </button>
-              ))}
-              <button onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}>
-                &gt;
-              </button>
-              <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages}>
-                &raquo;
-              </button>
-            </div>
-
-            {/* الشمال: رسالة عرض العناصر */}
-            <p className="mt-4 small text-muted">
-            {filteredData.length === 0 ? (
-              flag === "categories" ? "لا يوجد أصناف للعرض" : "لا يوجد وحدات للعرض"
-            ) : (
-              <>
-                عرض {startIndex + 1} - {Math.min(startIndex + rowsPerPage, filteredData.length)} من أصل {filteredData.length}{" "}
-                {flag === "categories" ? "صنف" : "وحدة"}
-              </>
+            {flag === "categories" && (
+              <div>
+                <CategoriesFilter
+                  searchName={searchName}
+                  setSearchName={setSearchName}
+                  onSearchClick={handleSearchClick}
+                  onResetFilters={() => {
+                    setSearchName("");
+                    setFilteredData(data);
+                    setSelectedRows([]);
+                    setCurrentPage(1);
+                  }}
+                />
+              </div>
             )}
-              
-            </p>
           </div>
+          <TableComponent data={paginatedData} columns={columns} />
+          <div className="pagination">
+            <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
+              &laquo;
+            </button>
+            <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}>
+              &lt;
+            </button>
 
+            {[...Array(totalPages)].map((_, index) => (
+              <button
+                key={index + 1}
+                onClick={() => setCurrentPage(index + 1)}
+                className={currentPage === index + 1 ? "active" : ""}
+              >
+                {index + 1}
+              </button>
+            ))}
 
-
-
-      {/* Pagination */}
-      <ModalConfirm
-        isOpen={confirmModal.open}
-        onClose={() => setConfirmModal((prev) => ({ ...prev, open: false }))}
-        onConfirm={confirmModal.onConfirm}
-        message={confirmModal.message}
-        confirmText={confirmModal.confirmText}
-        confirmClass={confirmModal.confirmClass}
-      />
-      </div>
-     }
+            <button
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+              }
+            >
+              &gt;
+            </button>
+            <button
+              onClick={() => setCurrentPage(totalPages)}
+              disabled={currentPage === totalPages}
+            >
+              &raquo;
+            </button>
+          </div>
+          <ModalConfirm
+            isOpen={confirmModal.open}
+            onClose={() => setConfirmModal((prev) => ({ ...prev, open: false }))}
+            onConfirm={confirmModal.onConfirm}
+            message={confirmModal.message}
+            confirmText={confirmModal.confirmText}
+            confirmClass={confirmModal.confirmClass}
+          />
+        </div>
+      )}
     </>
   );
 }
