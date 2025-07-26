@@ -2,8 +2,12 @@ import React from 'react';
 import { FaRocket } from 'react-icons/fa';
 import heroImage from '../../assets/Images/vendor_clean_expanded.png';
 import './hero.css';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
-const HeroSection = () => {
+const HeroSection = ( { token, role }) => {
+  const navigate = useNavigate();
+ if (token && !role) return null;
   return (
     <section className="hero-section">
       <div className="container">
@@ -22,13 +26,38 @@ const HeroSection = () => {
             <h1 className="hero-title mb-4" style={{ fontSize: '50px' }}>
               وصل متجرك <br /> بأفضل الموردين
             </h1>
-            <p className="hero-subtitle mb-4">
-              سهّل التوريد وخلّي شغلك يكبر مع منصتنا.
-            </p>
-            <button className="btn btn-get-started px-4 py-2 d-flex align-items-center justify-content-center gap-2 mt-3">
-  <FaRocket />
-  ابدأ الآن
-</button>
+          <p className="hero-subtitle mb-4">
+  ماركتلي بيربطك مباشرة بالموردين المعتمدين، <br />
+  ويوفّر لك أسعار تنافسية وتوصيل سريع لباب متجرك. <br />
+  خليك مركز في شغلك، واحنا نوصلّك كل اللي محتاجه.
+</p>
+{!token ? (
+  <button
+    className="btn btn-get-started px-4 py-2 d-flex align-items-center justify-content-center gap-2 mt-3 fw-bold"
+    onClick={() => navigate('/choose-role')}
+  >
+    <FaRocket />
+    ابدأ الآن
+  </button>
+) : role === 'admin' || role === 'trader' ? (
+  <button
+    className="btn btn-dashboard px-4 py-2 d-flex align-items-center justify-content-center gap-2 mt-3 fw-bold"
+    onClick={() => navigate('/Dashboard/Charts')}
+  >
+    <FaRocket />
+    انتقل إلى لوحة التحكم
+  </button>
+) : role === 'user' ? (
+  <a
+    className="btn btn-download px-4 py-2 d-flex align-items-center justify-content-center gap-2 mt-3 fw-bold"
+    href="https://your-app-download-link.com"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <FaRocket />
+    حمّل التطبيق الآن
+  </a>
+) : null}
           </div>
         </div>
       </div>

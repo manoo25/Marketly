@@ -1,0 +1,95 @@
+.testimonials-section {
+  padding: 60px 0;
+  background-color: #f9f9f951;
+  border-top: 1px solid #E0E0E0;
+  border-bottom: 1px solid #E0E0E0;
+  text-align: center;
+  margin: 40px 0;
+}
+
+.testimonials-title {
+  font-size: 28px;
+  font-weight: bold;
+  color: #1A1A1A;
+  margin-bottom: 32px;
+}
+
+/* ✅ مهم جدًا: نضمن أن السلايد نفسه يتمدد */
+.swiper-slide {
+  display: flex;
+  height: auto;
+}
+
+/* ✅ الكارت ياخد طول السلايد كله */
+.testimonial-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: #FFFFFF;
+  border: 1px solid #E0E0E0;
+  border-radius: 16px;
+  padding: 24px;
+  transition: box-shadow 0.3s ease;
+  min-height: 300px;
+}
+
+.testimonial-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* ✅ محتوى الفيدباك */
+.testimonial-feedback {
+  background-color: #F9F9F9;
+  border-radius: 12px;
+  padding: 16px;
+  color: #1A1A1A;
+  font-size: 15px;
+  line-height: 1.7;
+  text-align: right;
+  direction: rtl;
+  margin-bottom: 16px;
+  border-right: 4px solid #915EF6;
+  min-height: 120px; /* تثبيت الطول يساعد على توازن الكروت */
+  flex-grow: 1;
+}
+
+/* ✅ اسم المستخدم */
+.testimonial-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #1A1A1A;
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+.user-icon {
+  color: #7B51E4;
+  font-size: 18px;
+}
+
+/* ✅ تقييم النجوم */
+.testimonial-stars {
+  text-align: center;
+  color: #FFB400;
+  font-size: 20px;
+}
+
+/* ✅ رسبونسف */
+@media (max-width: 768px) {
+  .testimonial-card {
+    padding: 20px;
+  }
+  .testimonials-title {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .testimonial-header {
+    flex-direction: column;
+    gap: 6px;
+  }
+}

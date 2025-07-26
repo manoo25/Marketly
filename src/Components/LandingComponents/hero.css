@@ -1,9 +1,15 @@
 .hero-subtitle {
-  line-height: 1.7;
+  line-height: 1.8;
+  font-size: 18px;
+  max-width: 600px;
 }
 
+/* .hero-section {
+  background-color: white;
+} */
+
 .btn-get-started {
-  background: linear-gradient(90deg, #915EF6, #7B51E4);
+  background: linear-gradient(90deg, #327AFF, #7B51E4);
   color: #fff !important;
   font-weight: bold;
   font-size: 1.1rem;
@@ -17,4 +23,39 @@
   background: linear-gradient(90deg, #7B51E4, #915EF6);
   transform: scale(1.05);
   box-shadow: 0 4px 15px rgba(145, 94, 246, 0.4);
+}
+
+.btn-dashboard {
+  background: linear-gradient(90deg, #F9F9F9, #FFFFFF); /* مطابق للـ Soft + Background */
+  color: #915EF6 !important; /* Primary */
+  font-weight: bold;
+  font-size: 1.1rem;
+  border: 2px solid #915EF6; /* Primary */
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  min-width: 160px;
+}
+
+.btn-dashboard:hover {
+  background: linear-gradient(90deg, #FFFFFF, #F9F9F9);
+  transform: translateY(-2px);
+  border-color: #7B51E4;
+  color: #7B51E4 !important;
+  box-shadow: 0 6px 20px rgba(145, 94, 246, 0.25);
+}
+.btn-download {
+  background: linear-gradient(90deg, #327AFF, #327AFF); /* Accent */
+  color: #fff !important;
+  font-weight: bold;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  min-width: 160px;
+}
+
+.btn-download:hover {
+  background: linear-gradient(90deg, #295fc7, #327AFF); /* تدرج أغمق لنفس اللون */
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(50, 122, 255, 0.3); /* ظل من اللون الثانوي */
 }

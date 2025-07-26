@@ -10,6 +10,7 @@ import delegatesSlice from "./Slices/DelegatesSlice";
 import TokenSlice from "./Slices/token";
 import complaintsSlice from "./Slices/Complaints";
 import messagesSlice from "./slices/messagesSlice";
+import testimonialsReducer  from "./Slices/testimonialsSlice";
 
 export const Store = configureStore({
   reducer: {
@@ -24,5 +25,6 @@ export const Store = configureStore({
     Delegates: delegatesSlice.reducer,
     Token: TokenSlice.reducer,
     Complaints: complaintsSlice.reducer,
+     Testimonials: testimonialsReducer,
   },
 });

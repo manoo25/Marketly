@@ -16,70 +16,114 @@ const Footer = () => {
     <footer
       style={{
         background: colors.softBg,
-        color: colors.textSecondary,
         borderTop: `1px solid ${colors.border}`,
-        marginTop: 48,
-        boxShadow: "0 -2px 24px #0001",
+        marginTop: 64,
         direction: "rtl",
-        padding: "0",
+        fontFamily: "inherit",
       }}
-      className="footer-section w-100"
     >
-      <div className="container py-4 px-2">
-        {/* First Row */}
-        <div
-          className="row gy-4 gx-2 justify-content-between flex-wrap flex-row-reverse"
-          style={{ paddingBottom: "1rem", borderBottom: `1px solid ${colors.border}` }}
-        >
-          {/* 1. Brand & Slogan */}
-          <div className="col-12 col-md-4 text-center text-md-end order-1 d-flex flex-column align-items-center align-items-md-end">
+      <div className="container py-5 px-3">
+        <div className="row gy-4 gx-5 justify-content-between align-items-start">
+          <div className="col-12 col-md-4">
             <h4
               style={{
-                fontWeight: "bold",
-                letterSpacing: 0.5,
                 color: colors.primary,
-                fontSize: "1.5rem",
-                marginBottom: 6,
+                fontWeight: 700,
+                fontSize: "1.75rem",
+                letterSpacing: "0.5px",
               }}
             >
-              Marketly
+              ماركتلي
             </h4>
             <p
               style={{
-                fontSize: "0.95rem",
                 color: colors.textSecondary,
-                marginBottom: 0,
-                maxWidth: 280,
-                lineHeight: 1.6,
+                fontSize: "0.95rem",
+                lineHeight: 1.8,
+                marginBottom: "0.5rem",
               }}
             >
-              منصة ذكية لإدارة متجرك — سهولة، سرعة، واحترافية.
+              منصة ذكية تربط بين التجار وأصحاب المحلات لتسهيل شراء المنتجات
+              الغذائية بالجملة — بدون وسيط تقليدي، وبدون مخازن. وفر وقتك، واطلب
+              بضغطة واحدة، والتاجر يوصّل لباب المحل.
             </p>
+            <p
+              style={{
+                fontWeight: "bold",
+                color: colors.text,
+                marginTop: 4,
+              }}
+            >
+              ماركتلي... الوسيط الذكي لتجارتك اليومية.
+            </p>
+            <div className="mt-3 d-flex gap-3">
+              {[
+                {
+                  icon: "facebook",
+                  label: "Facebook",
+                  href: "https://facebook.com/marketly.app",
+                },
+                {
+                  icon: "instagram",
+                  label: "Instagram",
+                  href: "https://instagram.com/marketly.app",
+                },
+                {
+                  icon: "whatsapp",
+                  label: "WhatsApp",
+                  href: "https://wa.me/201234567890",
+                },
+              ].map(({ icon, label, href }, idx) => (
+                <a
+                  key={idx}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  style={{
+                    color: colors.icon,
+                    fontSize: "1.5rem",
+                    transition: "transform 0.3s ease, color 0.3s ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.color = colors.primary;
+                    e.target.style.transform = "scale(1.2)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.color = colors.icon;
+                    e.target.style.transform = "scale(1)";
+                  }}
+                >
+                  <i className={`fab fa-${icon}`}></i>
+                </a>
+              ))}
+            </div>
           </div>
 
-          {/* 2. Center Links */}
-          <div className="col-12 col-md-4 text-center order-2 d-flex flex-column align-items-center justify-content-center">
+          <div className="col-12 col-md-4">
+            <h5 style={{ color: colors.text, fontWeight: 600 }}>روابط مهمة</h5>
             <ul
-              className="list-inline mb-0 d-flex flex-wrap justify-content-center gap-3"
-              style={{ padding: 0 }}
+              className="list-unstyled mt-3"
+              style={{ color: colors.textSecondary, lineHeight: 2 }}
             >
               {[
                 { text: "المميزات", href: "#features" },
-                { text: "الأسئلة الشائعة", href: "#faq" },
                 { text: "الدعم الفني", href: "mailto:support@marketly.app" },
-              ].map(({ text, href }, idx) => (
-                <li className="list-inline-item" key={idx}>
+                { text: "الأسئلة الشائعة", href: "#faq" },
+                { text: "شروط الاستخدام", href: "#terms" },
+                { text: "سياسة الخصوصية", href: "#privacy" },
+              ].map(({ text, href }, i) => (
+                <li key={i} className="mb-1">
                   <a
                     href={href}
-                    aria-label={text}
                     style={{
                       color: colors.accent,
                       textDecoration: "none",
-                      fontWeight: 500,
                       transition: "color 0.3s",
                     }}
-                    className="footer-link"
-                    onMouseEnter={(e) => (e.target.style.color = colors.primary)}
+                    onMouseEnter={(e) =>
+                      (e.target.style.color = colors.primary)
+                    }
                     onMouseLeave={(e) => (e.target.style.color = colors.accent)}
                   >
                     {text}
@@ -89,49 +133,42 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* 3. Social & Copyright */}
-          <div className="col-12 col-md-4 text-center text-md-start order-3 d-flex flex-column align-items-center align-items-md-start">
-            <div style={{ fontSize: "0.95rem", color: colors.textSecondary }}>
-              جميع الحقوق محفوظة لـ Marketly © {new Date().getFullYear()}
-            </div>
-            <div className="mt-3 d-flex gap-3">
-              {[
-                { href: "https://facebook.com/marketly.app", icon: "facebook", label: "Facebook" },
-                { href: "https://instagram.com/marketly.app", icon: "instagram", label: "Instagram" },
-                { href: "https://wa.me/201234567890", icon: "whatsapp", label: "WhatsApp" },
-              ].map(({ href, icon, label }, idx) => (
-                <a
-                  key={idx}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={label}
-                  style={{
-                    color: colors.icon,
-                    fontSize: "1.3rem",
-                    transition: "color 0.3s",
-                  }}
-                  className="footer-icon"
-                  onMouseEnter={(e) => (e.target.style.color = colors.primary)}
-                  onMouseLeave={(e) => (e.target.style.color = colors.icon)}
-                >
-                  <i className={`fab fa-${icon}`}></i>
-                </a>
-              ))}
-            </div>
+          <div className="col-12 col-md-3">
+            <h5 style={{ color: colors.text, fontWeight: 600 }}>تواصل معنا</h5>
+            <ul
+              className="list-unstyled mt-3"
+              style={{
+                color: colors.textSecondary,
+                fontSize: "1.05rem",
+                lineHeight: 2.2,
+              }}
+            >
+              <li className="mb-2">
+                <i className="fas fa-envelope ms-2"></i>
+                support@marketly.app
+              </li>
+              <li>
+                <i className="fas fa-phone ms-2"></i>
+                01012345678
+              </li>
+              {/* <li>
+                <i className="fas fa-map-marker-alt ms-2"></i>
+                القاهرة، مصر - مدينة نصر (مقر خدمة العملاء)
+              </li> */}
+            </ul>
           </div>
         </div>
 
-        {/* Second Row - Bottom Center Text */}
         <div
-          className="text-center w-100"
+          className="text-center mt-4 pt-3 border-top"
           style={{
-            fontSize: "0.85rem",
+            fontSize: "0.9rem",
             color: colors.textSecondary,
-            marginTop: "12px",
+            borderColor: colors.border,
           }}
         >
-          تصميم وتجميع فريق ماركتلي - بإتقان 💜
+          جميع الحقوق محفوظة © {new Date().getFullYear()} — تصميم وتجميع فريق
+          ديڤ هاوس 
         </div>
       </div>
     </footer>

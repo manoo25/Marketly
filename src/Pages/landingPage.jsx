@@ -7,20 +7,25 @@ import DownloadSection from "../Components/LandingComponents/DownLoadSection";
 import ScrollToTopButton from "../Components/LandingComponents/ScrollToTopButton";
 import SupportChat from "../Components/SupportChat/SupportChat";
 import { useSelector } from "react-redux";
+import CompaniesCarousel from "../Components/LandingComponents/companiescarousel";
+import TestimonialsSection from "../Components/LandingComponents/TestimonialsSection";
 
 function Landing() {
-  const { UserRole } = useSelector((state) => state.Token);
+  const { token, UserRole } = useSelector((state) => state.Token);
+
   return (
     <>
-      <LandingNav />
+      <LandingNav token={token} />
       <div className="container ">
-        <HeroSection />
+        <HeroSection token={token} role={UserRole} />
         <FeaturesSection />
         <DownloadSection />
+        <CompaniesCarousel />
         <FAQComponent />
+        <TestimonialsSection />
       </div>
       <ScrollToTopButton />
-      {UserRole !== 'admin' && <SupportChat />}
+      {UserRole !== "admin" && <SupportChat />}
       <Footer />
     </>
   );
