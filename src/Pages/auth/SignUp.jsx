@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Form, Button, Col, Row, Modal } from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import {  supabase } from "../../Supabase/SupabaseClient";
+import { supabase } from "../../Supabase/SupabaseClient";
 import { uploadImagesToSupabase } from "../../Redux/uploadingImage";
 import { FaCamera, FaMapMarkerAlt } from "react-icons/fa";
 import styles from "../../css/AuthLayout.module.css";
@@ -49,14 +49,14 @@ const SignUp = () => {
   const [submittedRole, setSubmittedRole] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
-  const dispatch=useDispatch();
+  const dispatch = useDispatch();
   const roleFromRoute = location.state?.role || "";
- useEffect(() => {
-  if (!roleFromRoute) {
-   
-    navigate("/choose-role");
-  }
-}, []);
+  useEffect(() => {
+    if (!roleFromRoute) {
+
+      navigate("/choose-role");
+    }
+  }, []);
 
 
   const validationSchema = Yup.object({
@@ -93,9 +93,74 @@ const SignUp = () => {
       userImage: null,
     },
     validationSchema,
+    //     onSubmit: async (values) => {
+    //       setIsSubmitting(true);
+    //       try {
+    //         const { data: existingUsers, error: fetchError } = await supabase
+    //           .from("users")
+    //           .select("email, phone");
+    //         if (fetchError) throw fetchError;
+
+    //         const emailExists = existingUsers.some((u) => u.email === values.email);
+    //         const phoneExists = existingUsers.some((u) => u.phone === values.phone);
+
+    //         if (emailExists) {
+    //           formik.setFieldError("email", "البريد مسجل مسبقًا");
+    //           setIsSubmitting(false);
+    //           return;
+    //         }
+    //         if (phoneExists) {
+    //           formik.setFieldError("phone", "رقم الهاتف مستخدم من قبل");
+    //           setIsSubmitting(false);
+    //           return;
+    //         }
+
+    //  let imageUrls = [];
+    // if (values.userImage) {
+    //   imageUrls = await uploadImagesToSupabase(values.userImage, "users");
+    // }
+
+    //         const newUser = {
+    //           name: values.name,
+    //           email: values.email,
+    //           phone: values.phone,
+    //           password: values.password,
+    //           governorate: values.governorate,
+    //           city: values.city,
+    //           role: roleFromRoute,
+    //           location: values.location,
+    //           image: imageUrls && imageUrls.length > 0 ? imageUrls[0] : '',
+    //           isBlocked: false,
+    //         };
+    // console.log(newUser);
+
+    //         const { data: insertedUsers, error } = await supabase
+    //           .from("users")
+    //           .insert([newUser])
+    //           .select("id");
+
+    //         if (error) throw error;
+
+    //         const userId = insertedUsers[0]?.id;
+    //         sessionStorage.setItem("userID", userId);
+    //         dispatch(GetToken());
+
+
+    //         setSubmittedRole(roleFromRoute);
+    //         setShowSuccessModal(true);
+    //         formik.resetForm();
+    //         setImagePreview(null);
+    //       } catch (error) {
+    //         console.error("❌ خطأ في التسجيل:", error.message);
+    //         alert("حدث خطأ أثناء التسجيل: " + error.message);
+    //       } finally {
+    //         setIsSubmitting(false);
+    //       }
+    //     },
     onSubmit: async (values) => {
       setIsSubmitting(true);
       try {
+        // 1. التحقق من وجود الإيميل أو رقم الهاتف بالفعل
         const { data: existingUsers, error: fetchError } = await supabase
           .from("users")
           .select("email, phone");
@@ -115,36 +180,45 @@ const SignUp = () => {
           return;
         }
 
- let imageUrls = [];
-if (values.userImage) {
-  imageUrls = await uploadImagesToSupabase(values.userImage, "users");
-}
+        // 2. رفع صورة المستخدم
+        let imageUrls = [];
+        if (values.userImage) {
+          imageUrls = await uploadImagesToSupabase(values.userImage, "users");
+        }
 
+        // 3. إنشاء مستخدم في auth
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+          email: values.email,
+          password: values.password,
+        });
+
+        if (authError) throw authError;
+
+        const userId = authData.user.id;
+
+        // 4. إدخال باقي بيانات المستخدم في جدول users
         const newUser = {
+          id: userId, // ربط المستخدم بجدول auth
           name: values.name,
           email: values.email,
           phone: values.phone,
-          password: values.password,
           governorate: values.governorate,
           city: values.city,
           role: roleFromRoute,
           location: values.location,
-          image: imageUrls && imageUrls.length > 0 ? imageUrls[0] : '',
+          image: imageUrls.length > 0 ? imageUrls[0] : '',
           isBlocked: false,
+          password: values.password,
         };
-console.log(newUser);
 
-        const { data: insertedUsers, error } = await supabase
+        const { error: insertError } = await supabase
           .from("users")
-          .insert([newUser])
-          .select("id");
+          .insert([newUser]);
 
-        if (error) throw error;
+        if (insertError) throw insertError;
 
-        const userId = insertedUsers[0]?.id;
         sessionStorage.setItem("userID", userId);
         dispatch(GetToken());
-        
 
         setSubmittedRole(roleFromRoute);
         setShowSuccessModal(true);
@@ -156,7 +230,8 @@ console.log(newUser);
       } finally {
         setIsSubmitting(false);
       }
-    },
+    }
+
   });
 
   const handleImageChange = (e) => {
@@ -176,53 +251,53 @@ console.log(newUser);
       navigate("/Landing");
     }
   };
-const getLocationAndSetAddress = () => {
-  navigator.geolocation.getCurrentPosition(
-    async (position) => {
-      const { latitude, longitude } = position.coords;
+  const getLocationAndSetAddress = () => {
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
 
-      try {
-        const response = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=ar`,
-          {
-            headers: {
-              "User-Agent": "wholesale-app/1.0 (wholesale@example.com)",
-            },
-          }
-        );
+        try {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=ar`,
+            {
+              headers: {
+                "User-Agent": "wholesale-app/1.0 (wholesale@example.com)",
+              },
+            }
+          );
 
-        const data = await response.json();
+          const data = await response.json();
 
-        const fullAddress = [
-          data.address.house_number,
-          data.address.road,
-          data.address.residential,
-          data.address.neighbourhood,
-          data.address.suburb,
-          data.address.village,
-          data.address.town,
-          data.address.city,
-          data.address.state_district,
-          data.address.state,
-          data.address.postcode,
-          data.address.country,
-        ]
-          .filter(Boolean)
-          .join(", ");
+          const fullAddress = [
+            data.address.house_number,
+            data.address.road,
+            data.address.residential,
+            data.address.neighbourhood,
+            data.address.suburb,
+            data.address.village,
+            data.address.town,
+            data.address.city,
+            data.address.state_district,
+            data.address.state,
+            data.address.postcode,
+            data.address.country,
+          ]
+            .filter(Boolean)
+            .join(", ");
 
-        formik.setFieldValue("location", fullAddress);
-      } catch (error) {
-        alert("فشل في جلب العنوان من الخدمة.");
+          formik.setFieldValue("location", fullAddress);
+        } catch (error) {
+          alert("فشل في جلب العنوان من الخدمة.");
+          console.error(error);
+        }
+      },
+      (error) => {
+        alert("حدث خطأ أثناء تحديد الموقع.");
         console.error(error);
-      }
-    },
-    (error) => {
-      alert("حدث خطأ أثناء تحديد الموقع.");
-      console.error(error);
-    },
-    { enableHighAccuracy: true, timeout: 10000 }
-  );
-};
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  };
 
 
   return (
@@ -384,10 +459,10 @@ const getLocationAndSetAddress = () => {
                     >
                       <option value="">اختر المحافظة</option>
                       {citiesByGovernorate.map((gov) => (
-    <option key={gov} value={gov}>
-      {gov}
-    </option>
-  ))}
+                        <option key={gov} value={gov}>
+                          {gov}
+                        </option>
+                      ))}
                     </Form.Select>
                     {formik.touched.governorate && formik.errors.governorate && (
                       <div className="text-danger small">{formik.errors.governorate}</div>
@@ -396,23 +471,23 @@ const getLocationAndSetAddress = () => {
                 </Col>
 
                 {/* المدينة */}
-               <Col md={6}>
-  <Form.Group>
-    <Form.Label className="fw-semibold">المدينة</Form.Label>
-    <Form.Control
-      type="text"
-      name="city"
-      value={formik.values.city}
-      onChange={formik.handleChange}
-      onBlur={formik.handleBlur}
-      className="py-2"
-      placeholder="ادخل اسم المدينة"
-    />
-    {formik.touched.city && formik.errors.city && (
-      <div className="text-danger small">{formik.errors.city}</div>
-    )}
-  </Form.Group>
-</Col>
+                <Col md={6}>
+                  <Form.Group>
+                    <Form.Label className="fw-semibold">المدينة</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="city"
+                      value={formik.values.city}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      className="py-2"
+                      placeholder="ادخل اسم المدينة"
+                    />
+                    {formik.touched.city && formik.errors.city && (
+                      <div className="text-danger small">{formik.errors.city}</div>
+                    )}
+                  </Form.Group>
+                </Col>
 
 
                 {/* العنوان */}

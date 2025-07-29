@@ -9,10 +9,12 @@ import { GetToken } from "../../Redux/Slices/token";
 import styles from "../../css/AuthLayout.module.css";
 import "../../css/global.css";
 import Logo from "../../assets/Images/Logo.png";
+import ForgotPasswordModal from "./ForgetPasswordModal";
 
 const SigninPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch(); // ✅ تفعيل dispatch
@@ -77,6 +79,65 @@ console.log(result);
         setIsSubmitting(false);
       }
     },
+    
+
+// onSubmit: async (values) => {
+    //   setIsSubmitting(true);
+    //   try {
+    //     // ✅ تسجيل الدخول عبر Supabase Auth
+    //     const { data, error } = await supabase.auth.signInWithPassword({
+    //       email: values.email,
+    //       password: values.password,
+    //     });
+
+    //     if (error || !data?.user) {
+    //       formik.setErrors({
+    //         email: "البريد أو كلمة المرور غير صحيحة",
+    //         password: "البريد أو كلمة المرور غير صحيحة",
+    //       });
+    //       return;
+    //     }
+
+    //     const { user } = data;
+    //     sessionStorage.setItem("userID", user.id);
+
+    //     // ✅ جلب بيانات المستخدم من جدول users (لو عندك بيانات إضافية)
+    //     const { data: userDetails, error: userDetailsError } = await supabase
+    //       .from("users")
+    //       .select("*")
+    //       .eq("id", user.id)
+    //       .single();
+
+    //     if (userDetailsError) {
+    //       console.error("خطأ أثناء جلب تفاصيل المستخدم:", userDetailsError.message);
+    //       alert("حدث خطأ أثناء تحميل بيانات المستخدم");
+    //       return;
+    //     }
+
+    //     // ✅ تحقق من الحظر
+    //     if (userDetails.isBlocked) {
+    //       alert("أنت محظور، يرجى التواصل معنا!");
+    //       navigate("/");
+    //       return;
+    //     }
+
+    //     // ✅ جلب التوكن
+    //     await dispatch(GetToken());
+
+    //     // ✅ توجيه حسب الدور
+    //     if (userDetails.role === "admin" || userDetails.role === "trader") {
+    //       navigate("/Dashboard/Charts");
+    //     } else {
+    //       navigate("/Landing");
+    //     }
+    //   } catch (err) {
+    //     console.error("❌ خطأ أثناء تسجيل الدخول:", err.message);
+    //     alert("حدث خطأ أثناء تسجيل الدخول");
+    //   } finally {
+    //     setIsSubmitting(false);
+    //   }
+    // }
+
   });
 
   const loginWithGoogle = async () => {
@@ -231,9 +292,17 @@ console.log(result);
                 </Col>
 
                 <Col md={12} className="d-flex justify-content-end">
-                  <Link to="#" className="text-decoration-none text-success">
+                  <Link
+                    to="#"
+                    className="text-decoration-none text-success"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setShowForgotPasswordModal(true);
+                    }}
+                  >
                     نسيت كلمة المرور؟
                   </Link>
+
                 </Col>
 
                 <Col md={12}>
@@ -287,7 +356,11 @@ console.log(result);
                   </Button>
                 </Col>
               </Row>
-            </Form>
+            </Form> 
+            <ForgotPasswordModal
+              show={showForgotPasswordModal}
+              handleClose={() => setShowForgotPasswordModal(false)}
+            />
 
             <div className="d-flex align-items-center my-3">
               <hr className="flex-grow-1" />

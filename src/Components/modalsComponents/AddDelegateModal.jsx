@@ -9,6 +9,7 @@ import PrimaryButton from '../globalComonents/PrimaryButton';
 import { uploadImagesToSupabase } from '../../Redux/uploadingImage';
 import { createDelegate, fetchDelegates } from '../../Redux/Slices/DelegatesSlice';
 import { UserRole } from '../../Redux/Slices/token';
+import { AiOutlineClose } from 'react-icons/ai';
 
 /* ───────── ثوابت ───────── */
 const daysOfWeek = ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'];
@@ -201,7 +202,11 @@ const AddDelegateModal = () => {
             <Modal show={show} onHide={handleClose} centered>
                 <Modal.Header className="justify-content-between">
                     <Modal.Title>إضافة مندوب</Modal.Title>
-                    <Button variant="" onClick={handleClose} style={{ fontSize: '1.5rem', border: 'none', background: 'none' }}>&times;</Button>
+                    <Button variant="" onClick={handleClose} style={{ fontSize: '1.5rem', border: 'none', background: 'none' }}>
+
+                        
+                                            <AiOutlineClose size={24} style={{ color: "black" }} />
+                    </Button>
                 </Modal.Header>
 
                 <Modal.Body>

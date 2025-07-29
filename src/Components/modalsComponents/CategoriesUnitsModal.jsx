@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { uploadImagesToSupabase } from "../../Redux/uploadingImage";
 import { AddCategory } from "../../Redux/Slices/Categories";
 import { AddUnit } from "../../Redux/Slices/units";
+import { AiOutlineClose } from "react-icons/ai";
 
 const CategoriesUnitsModal = ({ type, onAdd }) => {
   const dispatch = useDispatch();
@@ -65,13 +66,19 @@ const CategoriesUnitsModal = ({ type, onAdd }) => {
         {isCategory ? "إضافة صنف" : "إضافة وحدة"}
       </Button>
       <Modal show={show} onHide={() => setShow(false)} centered>
-        <Modal.Header>
+        <Modal.Header className="justify-content-between align-items-center" dir="rtl">
           <Modal.Title>{isCategory ? "إضافة تصنيف" : "إضافة وحدة"}</Modal.Title>
+
           <button
-            className="fa-solid fa-close border-0 bg-transparent"
+            className="btn btn-link p-0"
             onClick={() => setShow(false)}
-          />
+            style={{ fontSize: '1.5rem', color: 'black', textDecoration: 'none' }}
+            aria-label="Close"
+          >
+            <AiOutlineClose size={24} />
+          </button>
         </Modal.Header>
+
         <Modal.Body className="p-4">
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">

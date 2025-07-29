@@ -7,6 +7,7 @@ import * as Yup from "yup";
 import { useDispatch } from "react-redux";
 import { createCompany } from "../../Redux/Slices/CompaniesSlice";
 import { uploadImagesToSupabase } from "../../Redux/uploadingImage";
+import { AiOutlineClose } from "react-icons/ai";
 
 const AddCompanyModal = () => {
   const dispatch = useDispatch();
@@ -62,15 +63,18 @@ const AddCompanyModal = () => {
       />
 
       <Modal show={show} onHide={() => setShow(false)} centered>
-        <Modal.Header>
-          <div className="w-100 d-flex align-items-center justify-content-between">
-            <Modal.Title>إضافة شركة</Modal.Title>
-            <button
-              className="fa-solid fa-close border-0 bg-transparent"
-              onClick={() => setShow(false)}
-            />
-          </div>
+        <Modal.Header className="justify-content-between align-items-center" dir="rtl">
+          <Modal.Title>إضافة شركة</Modal.Title>
+          <button
+            className="border-0 bg-transparent"
+            onClick={() => setShow(false)}
+            style={{ fontSize: '1.5rem' }}
+            aria-label="Close"
+          >
+            <AiOutlineClose size={24} style={{ color: "black" }} />
+          </button>
         </Modal.Header>
+
 
         <Modal.Body className="p-4">
           <Form noValidate onSubmit={formik.handleSubmit}>

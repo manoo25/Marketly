@@ -294,7 +294,12 @@ export default function ChatModal({ users, searchValue, setSearchValue, onUserLi
                                     }}
 
                                 >
-                                    <img src={user.image && user.image.trim() !== "" ? user.image : avatar} className="user-avatar" />
+                                    {/* <img src={user.image && user.image.trim() !== "" ? user.image : avatar} className="user-avatar" /> */}
+                                    <img
+                                        src={user.image && user.image.trim() !== "" && user.image.startsWith("http") ? user.image : avatar}
+                                        className="user-avatar"
+                                    />
+
                                     <div className="user-text">
                                         <div className="user-name">{user.name} <span className="user-role">{getRoleLabel(user.role)}</span></div>
                                         {/* <span className="user-role">{getRoleLabel(user.role)}</span> */}
