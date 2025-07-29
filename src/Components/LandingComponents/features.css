@@ -11,9 +11,7 @@
   }
 }
 
-/* .features-section {
-  padding-bottom: 50px;
-} */
+.features-section{   background-color: #f9f9f951 !important;}
 .feature-card {
   background: #FFFFFF;
   border-radius: 16px;

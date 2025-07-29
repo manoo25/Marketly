@@ -6,7 +6,7 @@ export const GetToken = createAsyncThunk(
   "Token/GetToken",
   async (_, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('userID');
+      const token = sessionStorage.getItem('userID');
       if (!token) throw new Error("لا يوجد مستخدم مسجل دخول");
       
       const { data, error } = await supabase

@@ -7,6 +7,8 @@ import ProtectedDashboardRoute from "./Components/Authcomponent/protecteddashboa
 import ProtectedAuthRoute from "./Components/Authcomponent/protectedauthroute";
 import Loading from "./Components/globalComonents/loading";
 import NotFound from "./Components/Notfound/NotFound";
+// import Feedbackpage from "./Pages/Feedbackpage";
+
 
 // Lazy Loaded Pages
 const Layout = lazy(() => import("./Pages/Layout"));
@@ -30,6 +32,7 @@ const GoogleUserRoute = lazy(() => import("./Pages/auth/GoogleUserRoute"));
 const SigninPage = lazy(() => import("./Pages/auth/SignIn"));
 const Landing = lazy(() => import("./Pages/landingPage"));
 const Chats = lazy(() => import("./Pages/Chats"));
+const Feedbackpage = lazy(() => import("./Pages/Feedbackpage"));
 
 function App() {
   const dispatch = useDispatch();
@@ -60,6 +63,7 @@ function App() {
         { path: "Sales", element: <Sales /> },
         { path: "Delegates", element: <DelegatesPage /> },
         { path: "Complaints", element: <Complaints /> },
+        { path: "Feedback", element: <Feedbackpage /> },
       ],
     },
     {

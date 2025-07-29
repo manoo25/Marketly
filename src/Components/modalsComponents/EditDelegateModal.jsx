@@ -84,7 +84,7 @@ const EditDelegateModal = ({ show, onClose, delegate, users, onUpdateSuccess, on
   useEffect(() => { if (formik.values.phone) checkUnique(formik.values.phone); }, [formik.values.phone]);
   useEffect(() => {
      if (UserRole!='admin') {
-     setTid(localStorage.getItem("userID"))
+     setTid(sessionStorage.getItem("userID"))
      }
     }, [UserRole]);
 

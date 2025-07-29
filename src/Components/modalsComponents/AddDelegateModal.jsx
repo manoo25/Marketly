@@ -65,7 +65,7 @@ const AddDelegateModal = () => {
     useEffect(() => { dispatch(fetchDelegates()); }, [dispatch]);
       useEffect(() => {
          if (UserRole!='admin') {
-         setSelectedTraderId(localStorage.getItem("userID"))
+         setSelectedTraderId(sessionStorage.getItem("userID"))
          }
         }, [UserRole]);
 

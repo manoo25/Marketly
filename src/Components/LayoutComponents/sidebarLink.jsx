@@ -18,7 +18,8 @@ function SidebarLink({ SetPageTitle }) {
     { text: 'الشركات', icon: 'fa-solid fa-chart-line', path: '/Dashboard/companies', role: 'admin' },
     { text: 'الطلبات', icon: 'fa-solid fa-receipt', path: '/Dashboard/Orders' },
     { text: 'المرتجعات', icon: 'fa-solid fa-undo', path: '/Dashboard/Returns' },
-    { text: 'الشكاوى', icon: 'fa-solid fa-undo', path: '/Dashboard/Complaints', role: 'admin' }
+    { text: 'الشكاوى', icon: 'fa-solid fa-undo', path: '/Dashboard/Complaints', role: 'admin' },
+    { text: 'الآراء', icon: 'fa-solid fa-comment-dots', path: '/Dashboard/Feedback', role: 'admin' }
   ];
 
   const productsSubLinks = [

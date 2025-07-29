@@ -15,7 +15,7 @@ const SigninPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch(); // ✅ تفعيل dispatch
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
@@ -54,20 +54,17 @@ const SigninPage = () => {
         }
 
         const user = users[0];
-        localStorage.setItem("userID", user.id);
-
-        // 🟡 نجيب بيانات المستخدم من Supabase وندخلها في Redux
-        const result = await dispatch(GetToken());
-
+        sessionStorage.setItem("userID", user.id);
+const result = await dispatch(GetToken());
+console.log(result);
         if (user.isBlocked) {
-          alert("You Are Blocked Please ContactUs !!");
+          alert("أنت محظور، يرجى التواصل معنا!");
           navigate("/");
           return;
         }
 
-        localStorage.removeItem("sb-auxwhdusfpgyzbwgjize-auth-token");
+        sessionStorage.removeItem("sb-auxwhdusfpgyzbwgjize-auth-token");
 
-        // ✅ توجيه احترافي حسب الدور
         if (user.role === "admin" || user.role === "trader") {
           navigate("/Dashboard/Charts");
         } else {

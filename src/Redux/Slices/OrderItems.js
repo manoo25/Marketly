@@ -6,7 +6,7 @@ import { UserRole } from "./token";
 export const fetchOrderItems = createAsyncThunk(
   "orderItems/fetchOrderItems",
   async (_, { rejectWithValue }) => {
-     const token = localStorage.getItem('userID');
+     const token = sessionStorage.getItem('userID');
     try {
       let query = supabase
         .from("order_items")

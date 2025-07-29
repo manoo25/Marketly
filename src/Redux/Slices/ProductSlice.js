@@ -7,7 +7,7 @@ export const fetchProducts = createAsyncThunk(
   "products/fetchproducts",
   async (_, { rejectWithValue }) => {
     try {
-      const userId = localStorage.getItem("userID");
+      const userId = sessionStorage.getItem("userID");
 
       let query = supabase
         .from("products")

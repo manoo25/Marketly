@@ -7,7 +7,7 @@ export const getOrders = createAsyncThunk(
   "orders/getOrders",
   async (_, { rejectWithValue }) => {
     try {
-      const userId = localStorage.getItem("userID");
+      const userId = sessionStorage.getItem("userID");
    
 
       let query = supabase.from("orders").select(`
@@ -34,7 +34,7 @@ export const getDoneOrders = createAsyncThunk(
   "orders/getDoneOrders",
   async (_, { rejectWithValue }) => {
     try {
-      const userId = localStorage.getItem("userID");
+      const userId = sessionStorage.getItem("userID");
 
       let query = supabase.from("orders").select(`
         *,
@@ -62,7 +62,7 @@ export const getReturnOrders = createAsyncThunk(
   "orders/getDoneOrders",
   async (_, { rejectWithValue }) => {
     try {
-      const userId = localStorage.getItem("userID");
+      const userId = sessionStorage.getItem("userID");
 
       let query = supabase.from("orders").select(`
         *,

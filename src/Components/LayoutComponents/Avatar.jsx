@@ -15,7 +15,7 @@ const navigate = useNavigate();
 function Logout() {
   navigate("/");  
    window.location.reload();
-  localStorage.removeItem('userID');
+  sessionStorage.removeItem('userID');
 }
 
   return (

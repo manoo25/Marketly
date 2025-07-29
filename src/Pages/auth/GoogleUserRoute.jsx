@@ -40,7 +40,7 @@ const GoogleUserRoute = () => {
       }
 
       // المستخدم مسموح له
-      localStorage.setItem("userID", currentUser.id);
+      sessionStorage.setItem("userID", currentUser.id);
       navigate("/Dashboard/Charts"); // التوجيه بعد التحقق
     };
 

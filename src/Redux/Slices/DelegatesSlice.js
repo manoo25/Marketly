@@ -7,7 +7,7 @@ export const fetchDelegates = createAsyncThunk(
   "delegates/fetchDelegates",
   async (_, { rejectWithValue }) => {
     try {
-      const userId = localStorage.getItem("userID");
+      const userId = sessionStorage.getItem("userID");
      
 
       let query = supabase.from("delegates").select("*");

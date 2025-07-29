@@ -142,7 +142,7 @@ console.log(newUser);
         if (error) throw error;
 
         const userId = insertedUsers[0]?.id;
-        localStorage.setItem("userID", userId);
+        sessionStorage.setItem("userID", userId);
         dispatch(GetToken());
         
 
