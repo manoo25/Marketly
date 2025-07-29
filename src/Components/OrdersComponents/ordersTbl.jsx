@@ -26,6 +26,7 @@ const OrdersTbl = () => {
     const dispatch = useDispatch();
     const { orders,loading } = useSelector((state) => state.Orders);
  
+   console.log(orders);
    
 
     const [currentPage, setCurrentPage] = useState(1);
