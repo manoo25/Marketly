@@ -68,22 +68,41 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
   // };
   
   // Modals for  Block And Delete Confirm  
+  // const handleBlockUser = (user) => {
+  //   console.log("🚨 USER:", user);
+
+  //   const isBlocked = user.isBlocked;
+  //   setConfirmModal({
+  //     open: true,
+  //     message: isBlocked
+  //       ? `هل تريد إلغاء حظر ${user.name}؟`
+  //       : `هل تريد حظر ${user.name}؟`,
+  //     confirmText: isBlocked ? "إلغاء الحظر" : "حظر",
+  //     confirmClass: "btn-warning",
+  //     onConfirm: () => {
+  //       onBlockUser(user); 
+  //       setConfirmModal((prev) => ({ ...prev, open: false }));
+  //     },
+  //   });
+  // };
   const handleBlockUser = (user) => {
-    const isBlocked = user.isBlocked;
+    const selectedUser = user;
+
     setConfirmModal({
       open: true,
-      message: isBlocked
-        ? `هل تريد إلغاء حظر ${user.name}؟`
-        : `هل تريد حظر ${user.name}؟`,
-      confirmText: isBlocked ? "إلغاء الحظر" : "حظر",
+      message: selectedUser.isBlocked
+        ? `هل تريد إلغاء حظر ${selectedUser.name}؟`
+        : `هل تريد حظر ${selectedUser.name}؟`,
+      confirmText: selectedUser.isBlocked ? "إلغاء الحظر" : "حظر",
       confirmClass: "btn-warning",
       onConfirm: () => {
-        onBlockUser(user); 
+        if (!selectedUser || !selectedUser.id) return;
+        onBlockUser(selectedUser);
         setConfirmModal((prev) => ({ ...prev, open: false }));
       },
     });
   };
-  
+
 
   // const handleDeleteUser = (user) => {
   //   setConfirmModal({
@@ -108,6 +127,7 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
       case "admin": return "أدمن";
       case "trader": return "تاجر";
       case "user": return "مستخدم";
+      case "delegate": return "مندوب";
       default: return role;
     }
   };
@@ -250,8 +270,22 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
               <th>المحافظة</th>
               <th>المدينة</th>
               <th style={{ position:"relative", zIndex:1 }}>
-
-                <LabeledMenu
+                <CustomMenu
+                  options={[
+                    {
+                      label: "تعديل الصلاحية", icon: "fa-solid fa-user-pen", color: "blue", onClick: () => {
+                        if (selectedUserIds.length === 0) {
+                          alert("من فضلك اختر مستخدمين أولاً");
+                          return;
+                        }
+                        setBulkRoleModalOpen(true);
+                      }
+                    },
+                    { label: "حظر المحدد", icon: "fa-solid fa-ban", color: "red", onClick: handleBulkBlockConfirm, },
+                    { label: "إلغاء الحظر", icon: "fa-solid fa-unlock", color: "orange", onClick: handleBulkUnblockConfirm },
+                  ]}
+                />
+                {/* <LabeledMenu
                   id="bulkActions"
                   label="إجراءات جماعية"
                   options={[
@@ -269,7 +303,7 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
                     { label: "حظر المحدد", icon: "fa-solid fa-ban", color: "red", onClick: handleBulkBlockConfirm, },
                     { label: "إلغاء الحظر", icon: "fa-solid fa-unlock", color: "orange", onClick: handleBulkUnblockConfirm },
                   ]}
-                />
+                /> */}
 
 
               </th>

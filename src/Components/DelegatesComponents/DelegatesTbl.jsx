@@ -8,6 +8,7 @@ import LabeledMenu from "../globalComonents/LabeledMenu";
 import { UserRole } from "../../Redux/Slices/token";
 import "../../css/Table.css";
 import RowsPerPageSelector from "../globalComonents/RowsPerPageSelector";
+import PasswordChangeModal from "./PasswordChangeModal";
 
 // const rowsPerPage = 8;
 
@@ -33,6 +34,7 @@ export default function DelegatesTbl({
   onDeleteDelegate,
   setEditModalData,
 }) {
+  console.log("delegates =>", delegates);
 
 
   const [rowsPerPage, setRowsPerPage] = useState(8);
@@ -45,7 +47,7 @@ export default function DelegatesTbl({
 
   useEffect(
     () => setCurrentPage(1),
-    [searchName, searchPhone, selectedGovernorate, selectedDay, users, rowsPerPage]
+    [searchName, searchPhone, selectedGovernorate, selectedDay, rowsPerPage]
   );
 
   /* اختيار الصفوف */
@@ -81,6 +83,13 @@ export default function DelegatesTbl({
   };
 
   /* ---------- UI ---------- */
+  const [passwordModalData, setPasswordModalData] = useState({
+    open: false,
+    userId: null,
+    userName: "",
+  });
+
+
   return (
     <>
       <div className="user-table">
@@ -109,7 +118,31 @@ export default function DelegatesTbl({
               <th>خط السير</th>
               <th></th>
               <th>
-                <LabeledMenu
+                <CustomMenu
+                  options={[
+                    {
+                      label: "حذف المناديب",
+                      icon: "fa-solid fa-trash",
+                      color: "red",
+                      onClick: () => {
+                        if (!selectedIds.length)
+                          return alert("اختر على الأقل مندوب واحد");
+                        setConfirmModal({
+                          open: true,
+                          message: `هل أنت متأكد من حذف ${selectedIds.length} مندوب؟`,
+                          confirmText: "نعم، احذف",
+                          confirmClass: "btn-danger",
+                          onConfirm: () => {
+                            selectedIds.forEach(onDeleteDelegate);
+                            setSelectedIds([]);
+                            setConfirmModal((p) => ({ ...p, open: false }));
+                          },
+                        });
+                      },
+                    },
+                  ]}
+                />
+                {/* <LabeledMenu
                   id="bulkActions"
                   label="إجراءات جماعية"
                   options={[
@@ -134,7 +167,7 @@ export default function DelegatesTbl({
                       },
                     },
                   ]}
-                />
+                /> */}
               </th>
             </tr>
           </thead>
@@ -270,10 +303,23 @@ export default function DelegatesTbl({
                       options={[
                         {
                           label: "تعديل",
-                          icon: "fa-solid fa-pen",
+                          icon: "fa-solid fa-user-pen",
                           color: "blue",
                           onClick: () => setEditModalData(delegate),
                         },
+                        {
+                          label: "تعديل كلمة المرور",
+                          icon: "fa-solid fa-lock",
+                          color: "orange",
+                          onClick: () => {
+                            setPasswordModalData({
+                              open: true,
+                              userId: delegate.id,
+                              userName: delegate.name,
+                            });
+                          },
+                        },
+
                         {
                           label: "حذف المندوب",
                           icon: "fa-solid fa-trash",
@@ -307,6 +353,14 @@ export default function DelegatesTbl({
         routes={modalRoutes} // الآن الخام (تحتوى governorate)
         delegateName={modalName}
       />
+      <PasswordChangeModal
+        isOpen={passwordModalData.open}
+        userId={passwordModalData.userId}
+        userName={passwordModalData.userName}
+        onClose={() => setPasswordModalData({ open: false, userId: null, userName: "" })}
+      />
+
+
 
 
       {/* Pagination ... كما كان */}

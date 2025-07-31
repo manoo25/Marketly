@@ -28,21 +28,102 @@ export const fetchDelegates = createAsyncThunk(
 );
 
 // ✅ Create Delegate
+// export const createDelegate = createAsyncThunk(
+//   "delegates/createDelegate",
+//   async (delegateData, { rejectWithValue }) => {
+//     try {
+//       const { data, error } = await supabase
+//         .from("delegates")
+//         .insert(delegateData)
+//         .select();
+//       if (error) throw error;
+//       return data[0];
+//     } catch (error) {
+//       return rejectWithValue(error.message);
+//     }
+//   }
+// );
+
 export const createDelegate = createAsyncThunk(
   "delegates/createDelegate",
   async (delegateData, { rejectWithValue }) => {
     try {
+      // const phoneAsEmail = `${delegateData.phone}@delegate.com`;
+      const phoneAsEmail = `${delegateData.phone}`;
+
+      // التحقق من وجود مستخدم بنفس رقم الهاتف (عن طريق الإيميل المولد)
+      const { data: existingUser, error: checkError } = await supabase
+        .from("users")
+        .select("id")
+        .eq("email", phoneAsEmail)
+        .maybeSingle();
+
+      if (checkError) throw checkError;
+      if (existingUser) throw new Error("يوجد مستخدم بنفس رقم الهاتف.");
+      
+      const userId = sessionStorage.getItem("userID");
+      // 1. إدخال بيانات المندوب في جدول users
+      const userPayload = {
+        name: delegateData.name,
+        email: phoneAsEmail,
+        password: delegateData.phone,
+        location: "",
+        role: "delegate",
+        isBlocked: false,
+        phone: delegateData.phone,
+        governorate: delegateData.routes?.[0]?.governorate || "",
+        city: "",
+        image: delegateData.image || null,
+        routes: null,
+        trader_id: userId,
+      };
+
+      const { data: insertedUser, error: insertUserError } = await supabase
+        .from("users")
+        .insert(userPayload)
+        .select("id")
+        .single();
+
+      if (insertUserError) throw insertUserError;
+
+      const delegateId = insertedUser.id;
+      console.log("Delegate User Ud : " , delegateId)
+      const {
+        data: { user },
+        error: authError,
+      } = await supabase.auth.getUser();
+
+      console.log("🧾 Logged-in user:", user);
+      console.log("❗Auth Error:", authError);
+
+      // 2. إدخال بياناته في جدول delegates
+      const delegatePayload = {
+        id: delegateId,
+        name: delegateData.name,
+        phone: delegateData.phone,
+        image: delegateData.image,
+        trader_id: userId,
+        routes: delegateData.routes,
+      };
+
+      // 👇 اطبع البيانات هنا
+      console.log("Delegate Payload to be inserted:", delegatePayload);
+
       const { data, error } = await supabase
         .from("delegates")
-        .insert(delegateData)
-        .select();
+        .insert(delegatePayload)
+        .select()
+        .single();
+
       if (error) throw error;
-      return data[0];
+
+      return data;
     } catch (error) {
       return rejectWithValue(error.message);
     }
   }
 );
+
 
 // ✅ Update Single Delegate
 export const updateDelegate = createAsyncThunk(

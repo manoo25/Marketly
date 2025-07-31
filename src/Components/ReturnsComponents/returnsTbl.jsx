@@ -275,8 +275,29 @@ console.log(returns)
                             <th>تاريخ الاسترجاع</th>
                             <th>عرض </th>
                             <th style={{ position: "relative", zIndex: 1 }}>
-
-                                <LabeledMenu
+                                    <CustomMenu
+                                        options={[
+                                            {
+                                                label: "تعديل الحالة", icon: "fa-solid fa-pen", color: "blue", onClick: () => {
+                                                    if (SelectedReturns.length === 0) {
+                                                        alert("من فضلك اختر طلبات أولاً");
+                                                        return;
+                                                    }
+                                                    setBulkStateModalOpen(true);
+                                                }
+                                            },
+                                            {
+                                                label: "مسح المحدد", icon: "fa-solid fa-trash", color: "red", onClick: () => {
+                                                    if (SelectedReturns.length === 0) {
+                                                        alert("من فضلك اختر طلبات أولاً");
+                                                        return;
+                                                    }
+                                                    handleBulkDeleteReturns()
+                                                }
+                                            }
+                                        ]}
+                                    />
+                                {/* <LabeledMenu
                                     id="bulkActions"
                                     label="إجراءات جماعية"
                                     options={[
@@ -299,7 +320,7 @@ console.log(returns)
                                             }
                                         }
                                     ]}
-                                />
+                                /> */}
                             </th>
                         </tr>
                     </thead>
@@ -345,7 +366,7 @@ console.log(returns)
                                         id={ret.id}
                                         options={[
                                             {
-                                                label: "تعديل الحالة", icon: "fa-solid fa-user-pen", color: "blue", onClick: () => handleOpenStateModal(ret)
+                                                label: "تعديل الحالة", icon: "fa-solid fa-pen", color: "blue", onClick: () => handleOpenStateModal(ret)
                                             },
                                             { label: "مسح الطلب", icon: "fa-solid fa-trash", color: "red", onClick: () => handleDeleteReturn(ret.id) }
                                         ]}

@@ -292,8 +292,29 @@ const OrdersTbl = () => {
                             <th>تاريخ الطلب</th>
                             <th>عرض الطلب</th>
                             <th style={{ position: "relative", zIndex: 1 }}>
-
-                                <LabeledMenu
+                                        <CustomMenu
+                                            options={[
+                                                {
+                                                    label: "تعديل الحالة", icon: "fa-solid fa-pen", color: "blue", onClick: () => {
+                                                        if (SelectedOrders.length === 0) {
+                                                            alert("من فضلك اختر طلبات أولاً");
+                                                            return;
+                                                        }
+                                                        setBulkStateModalOpen(true);
+                                                    }
+                                                },
+                                                {
+                                                    label: "مسح المحدد", icon: "fa-solid fa-trash", color: "red", onClick: () => {
+                                                        if (SelectedOrders.length === 0) {
+                                                            alert("من فضلك اختر طلبات أولاً");
+                                                            return;
+                                                        }
+                                                        handleBulkDeleteOrders()
+                                                    }
+                                                }
+                                            ]}
+                                        />
+                                {/* <LabeledMenu
                                     id="bulkActions"
                                     label="إجراءات جماعية"
                                     options={[
@@ -316,7 +337,7 @@ const OrdersTbl = () => {
                                             }
                                         }
                                     ]}
-                                />
+                                /> */}
                             </th>
                         </tr>
                     </thead>
@@ -365,13 +386,15 @@ const OrdersTbl = () => {
                                         id={order.id}
                                         options={[
                                             {
-                                                label: "تعديل الحالة", icon: "fa-solid fa-user-pen", color: "blue", onClick: () => handleOpenStateModal(order)
+                                                label: "تعديل الحالة", icon: "fa-solid fa-pen", color: "blue", onClick: () => handleOpenStateModal(order)
                                             },
                                             { label: "مسح الطلب", icon: "fa-solid fa-trash", color: "red", onClick: () => handleDeleteOrder(order.id) },
-                                            { label: "اختيار مندوب", icon: "fa-solid fa-user", color: "red", onClick: () =>{
-                                                 setshowDelegateModal(true)
-                                                 SetOrderLocaction({orderId:order.id,governorate:order.user.governorate,location:order.user.location,city:order.user.city})
-                                            } }
+                                            {
+                                                label: "اختيار مندوب", icon: "fa-solid fa-user", color: "red", onClick: () => {
+                                                    setshowDelegateModal(true)
+                                                    SetOrderLocaction({ orderId: order.id, governorate: order.user.governorate, location: order.user.location, city: order.user.city })
+                                                }
+                                            }
                                         ]}
                                     />
 

@@ -6,7 +6,7 @@ import PrimaryButton from '../globalComonents/PrimaryButton';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
-import { createUser } from '../../Redux/Slices/Users';
+import { UserRegister } from '../../Redux/Slices/Users';
 import { uploadImagesToSupabase } from '../../Redux/uploadingImage'; // نفس الدالة
 
 
@@ -84,7 +84,7 @@ const AddUserModal = () => {
         password: formik.values.password,
       };
 
-      await dispatch(createUser(values)).unwrap();
+      await dispatch(UserRegister(values)).unwrap();
 
       formik.resetForm();
       setImages([]);

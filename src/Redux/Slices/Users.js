@@ -65,22 +65,46 @@ export const fetchUsers = createAsyncThunk(
 );
 
 // ✅ تحديث مستخدم
+// export const updateUser = createAsyncThunk(
+//   "users/updateUser",
+//   async ({ id, updatedData }, { rejectWithValue }) => {
+//     try {
+//       const { data, error } = await supabase
+//         .from("users")
+//         .update(updatedData)
+//         .eq("id", id)
+//         .select();
+//       if (error) throw error;
+//       return data[0];
+//     } catch (error) {
+//       return rejectWithValue(error.message);
+//     }
+//   }
+// );
 export const updateUser = createAsyncThunk(
   "users/updateUser",
   async ({ id, updatedData }, { rejectWithValue }) => {
     try {
+      // console.log("🔁 trying to update user with id:", id);
       const { data, error } = await supabase
         .from("users")
         .update(updatedData)
         .eq("id", id)
         .select();
+
+      // console.log("📦 result:", data, error);
+
       if (error) throw error;
+      if (!data || data.length === 0)
+        throw new Error("No data returned from update");
+
       return data[0];
     } catch (error) {
       return rejectWithValue(error.message);
     }
   }
 );
+
 
 // ✅ تحديث مجموعة من المستخدمين
 export const updateSelectedUsers = createAsyncThunk(
@@ -159,14 +183,34 @@ const usersSlice = createSlice({
       })
 
       // تحديث مستخدم
+      // .addCase(updateUser.fulfilled, (state, action) => {
+      //   const index = state.users.findIndex(
+      //     (user) => user.id === action.payload.id
+      //   );
+      //   if (index !== -1) {
+      //     state.users[index] = action.payload;
+      //   }
+      // })
       .addCase(updateUser.fulfilled, (state, action) => {
+        const updatedUser = action.payload;
+
+        // ✅ لو التحديث فقط على كلمة المرور، تجاهل التعديل في الواجهة
+        if (
+          Object.keys(updatedUser).length === 2 && // id + password
+          updatedUser.password &&
+          updatedUser.id
+        ) {
+          return;
+        }
+
         const index = state.users.findIndex(
-          (user) => user.id === action.payload.id
+          (user) => user.id === updatedUser.id
         );
         if (index !== -1) {
-          state.users[index] = action.payload;
+          state.users[index] = updatedUser;
         }
       })
+
       .addCase(updateUser.rejected, (state, action) => {
         state.error = action.payload;
       })

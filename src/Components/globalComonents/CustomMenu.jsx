@@ -92,8 +92,8 @@ function CustomMenu({id="", options=[]}) {
                             }}
                             className="custom-btn-menu"
                         >
-                            <span style={{ color: `${option.color}` }} className={option.icon}></span>
-                            <span className='mb-2'>{option.label}</span>
+                            <span style={{ color: `${option.color}`, marginLeft:"0px" }} className={option.icon}></span>
+                            <span >{option.label}</span>
                         </button>
                     </li>
                 ))}

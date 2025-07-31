@@ -132,7 +132,7 @@ export default function DelegatesPage() {
       filters.day === "" ||
       (filters.day === "ALL_DAYS" && delegate.routes?.length === 7) ||
       delegate.routes?.some((route) => route.day === filters.day);
-
+    console.log("✅ filtering users", users);
     return (
       matchesName &&
       matchPhone &&

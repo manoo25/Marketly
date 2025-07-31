@@ -233,7 +233,7 @@ const CompaniesTbl = () => {
                     options={[
                       {
                         label: "تعديل",
-                        icon: "fa-solid fa-paper-plane",
+                        icon: "fa-solid fa-pen",
                         color: "green",
                         onClick: () => {
                           setShow(true);

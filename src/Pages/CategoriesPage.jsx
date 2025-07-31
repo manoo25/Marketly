@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import "../css/Table.css";
 import { useSelector, useDispatch } from "react-redux";
 import { GetCategories } from "../Redux/Slices/Categories";
 import { GetUnits } from "../Redux/Slices/units";
@@ -12,8 +13,8 @@ import { DeleteUnit } from "../Redux/Slices/units";
 import { DeleteCategory } from "../Redux/Slices/Categories";
 import CategoriesPageHeader from "../Components/CategoriesComponents/CategoriesPageHeader";
 import { UserRole } from "../Redux/Slices/token";
-
-const rowsPerPage = 5;
+import RowsPerPageSelector from "../Components/globalComonents/RowsPerPageSelector";
+// const rowsPerPage = 5;
 
 function Categories() {
   const dispatch = useDispatch();
@@ -33,6 +34,8 @@ function Categories() {
   });
 
   // Pagination state
+  
+  const [rowsPerPage, setRowsPerPage] = useState(8);
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
@@ -214,6 +217,11 @@ function Categories() {
       ),
     },
   ];
+  
+  const label = flag === "categories" ? "صنف" : "وحدة";
+  label;
+  const pluralLabel = flag === "categories" ? "أصناف" : "وحدات";
+
 
   return (
     <>
@@ -259,7 +267,7 @@ function Categories() {
             )}
           </div>
           <TableComponent data={paginatedData} columns={columns} />
-          <div className="pagination">
+          {/* <div className="pagination">
             <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
               &laquo;
             </button>
@@ -290,7 +298,54 @@ function Categories() {
             >
               &raquo;
             </button>
-          </div>
+          </div> */}
+
+            {/* Pagination */}
+            <div className="pagination-container mt-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+              {/* اليمين: السليكتور */}
+              <div>
+                <RowsPerPageSelector value={rowsPerPage} onChange={setRowsPerPage} />
+              </div>
+
+              {/* الوسط: الباجينيشن */}
+              <div className="pagination d-flex gap-1 flex-wrap justify-content-center">
+                <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
+                  &laquo;
+                </button>
+                <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}>
+                  &lt;
+                </button>
+                {[...Array(totalPages)].map((_, index) => (
+                  <button
+                    key={index + 1}
+                    onClick={() => setCurrentPage(index + 1)}
+                    className={currentPage === index + 1 ? "active" : ""}
+                  >
+                    {index + 1}
+                  </button>
+                ))}
+                <button onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}>
+                  &gt;
+                </button>
+                <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages}>
+                  &raquo;
+                </button>
+              </div>
+
+              {/* الشمال: رسالة عرض العناصر */}
+              <p className="mt-4 small text-muted">
+                {filteredData.length === 0 ? (
+                  `لا يوجد ${pluralLabel} للعرض`
+                ) : (
+                  <>
+                    عرض {(currentPage - 1) * rowsPerPage + 1} -
+                    {Math.min(currentPage * rowsPerPage, filteredData.length)} من أصل {filteredData.length} {label}
+                  </>
+                )}
+              </p>
+
+            </div>
+          
           <ModalConfirm
             isOpen={confirmModal.open}
             onClose={() => setConfirmModal((prev) => ({ ...prev, open: false }))}
