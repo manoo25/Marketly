@@ -10,7 +10,7 @@ function GoogleUserSetup() {
 
   const [formData, setFormData] = useState({
     phone: "",
-    role: "",
+    role: "trader",
     city: "",
     governorate: "",
     location: "",
@@ -153,9 +153,9 @@ function GoogleUserSetup() {
                 className="py-2"
                 required
               >
-                <option value="">اختر النوع</option>
+                {/* <option value="">اختر النوع</option> */}
                 <option value="trader">تاجر</option>
-                <option value="user">مستخدم</option>
+                {/* <option value="user">مستخدم</option> */}
               </Form.Select>
             </Form.Group>
             <Button

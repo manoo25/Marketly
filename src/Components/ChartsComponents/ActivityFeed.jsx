@@ -55,7 +55,7 @@ if (UserRole=='trader') {
                     <h5 className="card-title mb-0">آخر الأحداث</h5>
                     <small className="text-muted">آخر إشعارات النظام</small>
                 </div>
-                <button className="btn btn-link btn-sm">عرض الكل</button>
+                {/* <button className="btn btn-link btn-sm">عرض الكل</button> */}
             </div>
             <div className="card-body">
                 <div className="list-group list-group-flush">

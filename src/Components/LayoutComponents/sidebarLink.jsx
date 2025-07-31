@@ -12,7 +12,7 @@ function SidebarLink({ SetPageTitle }) {
     { text: 'لوحة التحكم', icon: 'fa-solid fa-gauge', path: '/Dashboard/Charts' },
     { text: 'المستخدمين', icon: 'fa-solid fa-users', path: '/Dashboard/Users', role: 'admin' },
     { text: 'المحادثات', icon: 'fa-solid fa-comments', path: '/Dashboard/Chats', role: 'admin' },
-    { text: 'الأصناف', icon: 'fa-solid fa-layer-group', path: '/Dashboard/Categories', role: 'admin' },
+    { text: 'الأصناف والوحدات', icon: 'fa-solid fa-layer-group', path: '/Dashboard/Categories', role: 'admin' },
     { text: 'المبيعات', icon: 'fa-solid fa-chart-line', path: '/Dashboard/Sales' },
     { text: 'المناديب', icon: 'fa-solid fa-user-tie', path: '/Dashboard/Delegates' }, 
     { text: 'الشركات', icon: 'fa-solid fa-chart-line', path: '/Dashboard/companies', role: 'admin' },

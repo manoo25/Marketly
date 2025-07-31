@@ -3,7 +3,7 @@ import { FaRocket } from 'react-icons/fa';
 import heroImage from '../../assets/Images/vendor_clean_expanded.png';
 import './hero.css';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
 
 const HeroSection = ( { token, role }) => {
   const navigate = useNavigate();

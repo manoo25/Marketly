@@ -69,16 +69,7 @@ const SignUp = () => {
     governorate: Yup.string().required("المحافظة مطلوبة"),
     city: Yup.string().required("المدينة مطلوبة"),
     location: Yup.string().required("العنوان مطلوب"),
-    // userImage: Yup.mixed()
-    //   .required("الصورة مطلوبة")
-    //   .test("fileSize", "حجم الصورة كبير جداً (الحد الأقصى 2MB)", (value) => {
-    //     if (!value || value.length === 0) return false;
-    //     return value[0].size <= 2000000;
-    //   })
-    //   .test("fileType", "نوع الملف غير مدعوم (JPEG, PNG فقط)", (value) => {
-    //     if (!value || value.length === 0) return false;
-    //     return ["image/jpeg", "image/png", "image/jpg"].includes(value[0].type);
-    //   }),
+
   });
 
   const formik = useFormik({
@@ -93,70 +84,7 @@ const SignUp = () => {
       userImage: null,
     },
     validationSchema,
-    //     onSubmit: async (values) => {
-    //       setIsSubmitting(true);
-    //       try {
-    //         const { data: existingUsers, error: fetchError } = await supabase
-    //           .from("users")
-    //           .select("email, phone");
-    //         if (fetchError) throw fetchError;
 
-    //         const emailExists = existingUsers.some((u) => u.email === values.email);
-    //         const phoneExists = existingUsers.some((u) => u.phone === values.phone);
-
-    //         if (emailExists) {
-    //           formik.setFieldError("email", "البريد مسجل مسبقًا");
-    //           setIsSubmitting(false);
-    //           return;
-    //         }
-    //         if (phoneExists) {
-    //           formik.setFieldError("phone", "رقم الهاتف مستخدم من قبل");
-    //           setIsSubmitting(false);
-    //           return;
-    //         }
-
-    //  let imageUrls = [];
-    // if (values.userImage) {
-    //   imageUrls = await uploadImagesToSupabase(values.userImage, "users");
-    // }
-
-    //         const newUser = {
-    //           name: values.name,
-    //           email: values.email,
-    //           phone: values.phone,
-    //           password: values.password,
-    //           governorate: values.governorate,
-    //           city: values.city,
-    //           role: roleFromRoute,
-    //           location: values.location,
-    //           image: imageUrls && imageUrls.length > 0 ? imageUrls[0] : '',
-    //           isBlocked: false,
-    //         };
-    // console.log(newUser);
-
-    //         const { data: insertedUsers, error } = await supabase
-    //           .from("users")
-    //           .insert([newUser])
-    //           .select("id");
-
-    //         if (error) throw error;
-
-    //         const userId = insertedUsers[0]?.id;
-    //         sessionStorage.setItem("userID", userId);
-    //         dispatch(GetToken());
-
-
-    //         setSubmittedRole(roleFromRoute);
-    //         setShowSuccessModal(true);
-    //         formik.resetForm();
-    //         setImagePreview(null);
-    //       } catch (error) {
-    //         console.error("❌ خطأ في التسجيل:", error.message);
-    //         alert("حدث خطأ أثناء التسجيل: " + error.message);
-    //       } finally {
-    //         setIsSubmitting(false);
-    //       }
-    //     },
     onSubmit: async (values) => {
       setIsSubmitting(true);
       try {

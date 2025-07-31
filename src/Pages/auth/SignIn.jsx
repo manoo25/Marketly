@@ -65,7 +65,7 @@ console.log(result);
           return;
         }
 
-        sessionStorage.removeItem("sb-auxwhdusfpgyzbwgjize-auth-token");
+        localStorage.removeItem("sb-auxwhdusfpgyzbwgjize-auth-token");
 
         if (user.role === "admin" || user.role === "trader") {
           navigate("/Dashboard/Charts");
