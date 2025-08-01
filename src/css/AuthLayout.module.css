@@ -29,9 +29,9 @@
 }
 
 .signupSideImg {
-  max-width: 100%;
+  max-width: 70%;
   border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  /* box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); */
 }
  
 .signupFormWrapper {
@@ -56,11 +56,10 @@ input:focus,
   select:focus,
   textarea:focus {
     outline: none;
-    box-shadow: none !important;
-    border-color: transparent !important;  
+    box-shadow: none !important; 
   }
   input,select,textarea{
-    border-color:transparent !important ;
+    /* border-color:transparent !important ; */
   }
  
  

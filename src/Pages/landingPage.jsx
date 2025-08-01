@@ -26,7 +26,7 @@ function Landing() {
       </div>
       <ScrollToTopButton />
       {UserRole !== "admin" && <SupportChat />}
-      <Footer />
+      <Footer/>
     </>
   );
 }

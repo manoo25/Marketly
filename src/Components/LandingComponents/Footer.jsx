@@ -20,7 +20,7 @@ const Footer = () => {
         marginTop: 64,
         direction: "rtl",
         fontFamily: "inherit",
-      }}
+      }}ئئ
     >
       <div className="container py-5 px-3">
         <div className="row gy-4 gx-5 justify-content-between align-items-start">

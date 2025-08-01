@@ -63,16 +63,10 @@ const AddCompanyModal = () => {
       />
 
       <Modal show={show} onHide={() => setShow(false)} centered>
-        <Modal.Header className="justify-content-between align-items-center" dir="rtl">
+        <Modal.Header className="border-0 pb-0 d-flex align-items-center justify-content-between w-100" dir="rtl">
           <Modal.Title>إضافة شركة</Modal.Title>
-          <button
-            className="border-0 bg-transparent"
-            onClick={() => setShow(false)}
-            style={{ fontSize: '1.5rem' }}
-            aria-label="Close"
-          >
-            <AiOutlineClose size={24} style={{ color: "black" }} />
-          </button>
+          <button className='fa-solid fa-close border-0 bg-transparent CloseModalBtn' onClick={() => setShow(false)} />
+
         </Modal.Header>
 
 

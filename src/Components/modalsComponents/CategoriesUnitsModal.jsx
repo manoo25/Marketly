@@ -66,17 +66,12 @@ const CategoriesUnitsModal = ({ type, onAdd }) => {
         {isCategory ? "إضافة صنف" : "إضافة وحدة"}
       </Button>
       <Modal show={show} onHide={() => setShow(false)} centered>
-        <Modal.Header className="justify-content-between align-items-center" dir="rtl">
+        <Modal.Header className="border-0 pb-0 d-flex align-items-center justify-content-between w-100" dir="rtl">
           <Modal.Title>{isCategory ? "إضافة تصنيف" : "إضافة وحدة"}</Modal.Title>
 
-          <button
-            className="btn btn-link p-0"
-            onClick={() => setShow(false)}
-            style={{ fontSize: '1.5rem', color: 'black', textDecoration: 'none' }}
-            aria-label="Close"
-          >
-            <AiOutlineClose size={24} />
-          </button>
+         <button className='fa-solid fa-close border-0 bg-transparent CloseModalBtn' onClick={() => setShow(false)} />
+
+             
         </Modal.Header>
 
         <Modal.Body className="p-4">

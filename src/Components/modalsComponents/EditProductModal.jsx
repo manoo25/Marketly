@@ -161,9 +161,11 @@ const EditProductModal = ({ product, show, setShow }) => {
   return (
     <>
       <Modal show={show} onHide={() => setShow(false)} centered dialogClassName="AddProductModal">
-        <Modal.Header>
-          <Modal.Title>تعديل المنتج</Modal.Title>
-          <button className="fa-solid fa-close border-0 bg-transparent CloseModalBtn" onClick={() => setShow(false)} />
+   <Modal.Header>
+          <div className="border-0 pb-0 d-flex align-items-center justify-content-between w-100">
+            <Modal.Title>تعديل المنتج</Modal.Title>
+            <button className='fa-solid fa-close border-0 bg-transparent CloseModalBtn' onClick={() => setShow(false)} />
+          </div>
         </Modal.Header>
 
         <Modal.Body className="p-4">

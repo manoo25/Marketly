@@ -90,7 +90,7 @@ function EditProfileModal({ show, handleClose }) {
 
     return (
         <Modal show={show} onHide={closeModal} centered dialogClassName={styles.customModal} className='customModal'>
-            <Modal.Header className="justify-content-between align-items-center" dir="rtl">
+            {/* <Modal.Header className="justify-content-between align-items-center" dir="rtl">
                 <Modal.Title>تعديل الملف الشخصي</Modal.Title>
                 <Button
                     variant="link"
@@ -100,7 +100,14 @@ function EditProfileModal({ show, handleClose }) {
                 >
                     <AiOutlineClose size={24} style={{ color: "black" }} />
                 </Button>
-            </Modal.Header>
+            </Modal.Header> */}
+
+            <Modal.Header>
+          <div className="border-0 pb-0 d-flex align-items-center justify-content-between w-100">
+            <Modal.Title>تعديل الملف الشخصي</Modal.Title>
+            <button className='fa-solid fa-close border-0 bg-transparent CloseModalBtn' onClick={() => setShow(false)} />
+          </div>
+        </Modal.Header>
 
             <Modal.Body>
                 <Form onSubmit={formik.handleSubmit}>

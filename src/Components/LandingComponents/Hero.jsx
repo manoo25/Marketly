@@ -9,7 +9,7 @@ const HeroSection = ( { token, role }) => {
   const navigate = useNavigate();
  if (token && !role) return null;
   return (
-    <section className="hero-section">
+    <section className="hero-section mb-5">
       <div className="container">
         <div className="row align-items-center">
           <div className="col-lg-5 mb-4 mb-lg-0">
@@ -33,7 +33,9 @@ const HeroSection = ( { token, role }) => {
 </p>
 {!token ? (
   <button
-    className="btn btn-get-started px-4 py-2 d-flex align-items-center justify-content-center gap-2 mt-3 fw-bold"
+    // className="btn btn-get-started px-4 py-2 d-flex align-items-center justify-content-center gap-2 mt-3 fw-bold"
+    className="btn btn-dashboard px-4 py-2 d-flex align-items-center justify-content-center gap-2 mt-3 fw-bold"
+
     onClick={() => navigate('/choose-role')}
   >
     <FaRocket />
@@ -49,7 +51,7 @@ const HeroSection = ( { token, role }) => {
   </button>
 ) : role === 'user' ? (
   <a
-    className="btn btn-download px-4 py-2 d-flex align-items-center justify-content-center gap-2 mt-3 fw-bold"
+    className="btn btn-dashboard px-4 py-2 d-flex align-items-center justify-content-center gap-2 mt-3 fw-bold"
     href="https://your-app-download-link.com"
     target="_blank"
     rel="noopener noreferrer"

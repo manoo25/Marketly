@@ -17,7 +17,7 @@ const SigninPage = () => {
   const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
 
   const navigate = useNavigate();
-  const dispatch = useDispatch(); // ✅ تفعيل dispatch
+  const dispatch = useDispatch();
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
@@ -57,8 +57,9 @@ const SigninPage = () => {
 
         const user = users[0];
         sessionStorage.setItem("userID", user.id);
-const result = await dispatch(GetToken());
-console.log(result);
+        const result = await dispatch(GetToken());
+        console.log(result);
+
         if (user.isBlocked) {
           alert("أنت محظور، يرجى التواصل معنا!");
           navigate("/");
@@ -79,65 +80,6 @@ console.log(result);
         setIsSubmitting(false);
       }
     },
-    
-
-// onSubmit: async (values) => {
-    //   setIsSubmitting(true);
-    //   try {
-    //     // ✅ تسجيل الدخول عبر Supabase Auth
-    //     const { data, error } = await supabase.auth.signInWithPassword({
-    //       email: values.email,
-    //       password: values.password,
-    //     });
-
-    //     if (error || !data?.user) {
-    //       formik.setErrors({
-    //         email: "البريد أو كلمة المرور غير صحيحة",
-    //         password: "البريد أو كلمة المرور غير صحيحة",
-    //       });
-    //       return;
-    //     }
-
-    //     const { user } = data;
-    //     sessionStorage.setItem("userID", user.id);
-
-    //     // ✅ جلب بيانات المستخدم من جدول users (لو عندك بيانات إضافية)
-    //     const { data: userDetails, error: userDetailsError } = await supabase
-    //       .from("users")
-    //       .select("*")
-    //       .eq("id", user.id)
-    //       .single();
-
-    //     if (userDetailsError) {
-    //       console.error("خطأ أثناء جلب تفاصيل المستخدم:", userDetailsError.message);
-    //       alert("حدث خطأ أثناء تحميل بيانات المستخدم");
-    //       return;
-    //     }
-
-    //     // ✅ تحقق من الحظر
-    //     if (userDetails.isBlocked) {
-    //       alert("أنت محظور، يرجى التواصل معنا!");
-    //       navigate("/");
-    //       return;
-    //     }
-
-    //     // ✅ جلب التوكن
-    //     await dispatch(GetToken());
-
-    //     // ✅ توجيه حسب الدور
-    //     if (userDetails.role === "admin" || userDetails.role === "trader") {
-    //       navigate("/Dashboard/Charts");
-    //     } else {
-    //       navigate("/Landing");
-    //     }
-    //   } catch (err) {
-    //     console.error("❌ خطأ أثناء تسجيل الدخول:", err.message);
-    //     alert("حدث خطأ أثناء تسجيل الدخول");
-    //   } finally {
-    //     setIsSubmitting(false);
-    //   }
-    // }
-
   });
 
   const loginWithGoogle = async () => {
@@ -157,73 +99,9 @@ console.log(result);
   return (
     <div className={styles.signupPage}>
       <Row className="g-0 justify-content-center align-items-center min-vh-100">
-        {/* الجانب الأيسر */}
-        <Col
-          md={4}
-          className="d-none d-md-flex align-items-center justify-content-center p-4"
-          style={{
-            background: "linear-gradient(135deg, #5f27cd, #74b9ff)",
-            borderTopLeftRadius: "16px",
-            borderBottomLeftRadius: "16px",
-            color: "#fff",
-            flexDirection: "column",
-            textAlign: "center",
-            position: "relative",
-            overflow: "hidden",
-          }}
-        >
-          <div
-            style={{
-              position: "absolute",
-              top: "-60px",
-              right: "-60px",
-              width: "200px",
-              height: "200px",
-              borderRadius: "50%",
-              background: "rgba(255, 255, 255, 0.05)",
-              zIndex: 0,
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              bottom: "-40px",
-              left: "-40px",
-              width: "120px",
-              height: "120px",
-              borderRadius: "50%",
-              background: "rgba(0, 0, 0, 0.05)",
-              zIndex: 0,
-            }}
-          />
-          <img
-            src={Logo}
-            alt="Marketly Logo"
-            style={{
-              maxWidth: "120px",
-              marginBottom: "1.2rem",
-              zIndex: 2,
-              filter: "drop-shadow(0 3px 6px rgba(0,0,0,0.25))",
-            }}
-          />
-          <h3 style={{ fontWeight: "bold", marginBottom: "0.5rem", zIndex: 2 }}>
-            أهلاً بك في <span style={{ color: "#00ffe0" }}>Marketly</span>
-          </h3>
-          <p
-            style={{
-              fontSize: "0.95rem",
-              lineHeight: "1.7",
-              maxWidth: "260px",
-              zIndex: 2,
-              opacity: 0.95,
-            }}
-          >
-            تحكّم في متجرك الذكي بسهولة، وسرعة، واحترافية. كل شيء في مكان واحد —
-            لأننا نعرف قيمة وقتك.
-          </p>
-          <p className="mt-3 text-white-50" style={{ fontSize: "0.85rem" }}>
-            جرب Marketly وغيّر طريقة إدارتك لمتجرك.
-          </p>
+        {/* الجانب الأيسر - تم تحديثه ليكون مشابهًا لصفحة التسجيل */}
+        <Col md={4} className={`d-none d-md-flex align-items-center justify-content-center ${styles.signupImageSection}`}>
+          <img src={Logo} alt="شعار" className={styles.signupSideImg} />
         </Col>
 
         {/* نموذج تسجيل الدخول */}
@@ -302,7 +180,6 @@ console.log(result);
                   >
                     نسيت كلمة المرور؟
                   </Link>
-
                 </Col>
 
                 <Col md={12}>
@@ -356,7 +233,7 @@ console.log(result);
                   </Button>
                 </Col>
               </Row>
-            </Form> 
+            </Form>
             <ForgotPasswordModal
               show={showForgotPasswordModal}
               handleClose={() => setShowForgotPasswordModal(false)}

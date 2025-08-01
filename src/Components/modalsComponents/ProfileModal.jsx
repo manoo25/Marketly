@@ -15,11 +15,13 @@ const EditProfileModal = ({ show, handleClose }) => {
   };
 
   return (
-    <Modal show={show} onHide={handleClose} centered dialogClassName={styles.customModal}>
-      <div className="d-flex justify-content-between align-items-center px-3 pt-3">
-        <Modal.Title>تعديل الملف الشخصي</Modal.Title>
-        <Modal.Header closeButton className="border-0 pb-0" />
-      </div>
+    <Modal show={show} onHide={handleClose} centered dialogClassName={styles.customModal}>     
+              <Modal.Header>
+                <div className="border-0 pb-0 d-flex align-items-center justify-content-between w-100">
+                  <Modal.Title>تعديل الملف الشخصي</Modal.Title>
+                  <button className='fa-solid fa-close border-0 bg-transparent CloseModalBtn' onClick={handleClose} />
+                </div>
+              </Modal.Header>
 
       <Modal.Body className="p-4">
         <Form>

@@ -200,14 +200,21 @@ const AddDelegateModal = () => {
             <PrimaryButton label="إضافة مندوب" icon="fa-solid fa-user-plus" onClick={() => setShow(true)} />
 
             <Modal show={show} onHide={handleClose} centered>
-                <Modal.Header className="justify-content-between">
+                {/* <Modal.Header className="justify-content-between">
                     <Modal.Title>إضافة مندوب</Modal.Title>
                     <Button variant="" onClick={handleClose} style={{ fontSize: '1.5rem', border: 'none', background: 'none' }}>
 
                         
                                             <AiOutlineClose size={24} style={{ color: "black" }} />
                     </Button>
-                </Modal.Header>
+                </Modal.Header> */}
+
+                <Modal.Header>
+          <div className="border-0 pb-0 d-flex align-items-center justify-content-between w-100">
+            <Modal.Title>إضافة مندوب</Modal.Title>
+            <button className='fa-solid fa-close border-0 bg-transparent CloseModalBtn' onClick={() => setShow(false)} />
+          </div>
+        </Modal.Header>
 
                 <Modal.Body>
                     <Form noValidate onSubmit={formik.handleSubmit}>

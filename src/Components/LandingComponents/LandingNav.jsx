@@ -14,12 +14,12 @@ const LandingNavbar = ( { token}) => {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-5">
       <div className="container">
         <a
           className="navbar-brand fw-bolder"
           href="#"
-          style={{ color: "#2d3e82", fontSize: "30px" }}
+          style={{ color: "#915EF6", fontSize: "30px" }}
         >
           Marketly
         </a>
