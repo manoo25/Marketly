@@ -13,7 +13,7 @@ const EmptyState = ({
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        minHeight: "calc(100vh - 200px)", // يمكن تعديل القيمة حسب الحاجة
+        minHeight: "calc(100vh - 200px)", 
         padding: "20px",
       }}
     >

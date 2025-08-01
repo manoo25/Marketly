@@ -5,7 +5,7 @@ function TestimonialCard({ testimonial }) {
   const { rate, feed_back, users } = testimonial;
 
   return (
-    <div className="testimonial-card chat-style">
+    <div className="testimonial-card chat-style"  id="testimonials-section" >
       <div className="testimonial-header">
         <span className="user-icon">👤</span>
         <span className="testimonial-user">{users?.name || "مستخدم"}</span>

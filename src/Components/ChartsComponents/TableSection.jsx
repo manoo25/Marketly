@@ -13,7 +13,7 @@ function TableSection() {
             .slice(0, 4);
     }, [orders]);
 
- const getStatusBadge = (status) => {
+    const getStatusBadge = (status) => {
         switch (status?.toLowerCase()) {
             case "done":
             case "مكتمل":
@@ -39,7 +39,7 @@ function TableSection() {
                 {/* Recent Orders */}
                 <div className='col-12'>
                     <div className='card shadow-sm border-0'>
-                        <div className='card-header bg-white  p-3' style={{ borderColorlor: '#6c757d' }}>
+                        <div className='card-header bg-white p-3' style={{ borderColor: '#6c757d' }}>
                             <div className='d-flex align-items-center justify-content-between'>
                                 <div>
                                     <h5 className='card-title mb-1 text-muted'>أحدث الطلبات</h5>
@@ -54,30 +54,37 @@ function TableSection() {
                             </div>
                         </div>
                         <div className='table-responsive'>
-                            <table className='table table-hover mb-0'>
-                                <thead className='bg-light'>
-                                    <tr>
-                                        <th className='text-nowrap p-3' style={{ color: '#6c757d' }}>رقم الطلب</th>
-                                        <th className='text-nowrap p-3' style={{ color: '#6c757d' }}>العميل</th>
-                                        <th className='text-nowrap p-3' style={{ color: '#6c757d' }}>الحالة</th>
-                                        <th className='text-nowrap p-3' style={{ color: '#6c757d' }}>التاريخ</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {recentOrders.map((order) => (
-                                        <tr key={order.id}>
-                                            <td className='p-3'><span className='text-primary fw-semibold'>#{order.id}</span></td>
-                                            <td className='p-3'>{order.user?.name || "—"}</td>
-                                            <td className='p-3'>
-                                                <span className={getStatusBadge(order.status)}>{order.status}</span>
-                                            </td>
-                                            <td className='p-3'>
-                                                {new Date(order.created_at).toLocaleDateString('ar-EG')}
-                                            </td>
+                            {recentOrders.length > 0 ? (
+                                <table className='table table-hover mb-0'>
+                                    <thead className='bg-light'>
+                                        <tr>
+                                            <th className='text-nowrap p-3' style={{ color: '#6c757d' }}>رقم الطلب</th>
+                                            <th className='text-nowrap p-3' style={{ color: '#6c757d' }}>العميل</th>
+                                            <th className='text-nowrap p-3' style={{ color: '#6c757d' }}>الحالة</th>
+                                            <th className='text-nowrap p-3' style={{ color: '#6c757d' }}>التاريخ</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        {recentOrders.map((order) => (
+                                            <tr key={order.id}>
+                                                <td className='p-3'><span className='text-primary fw-semibold'>#{order.id}</span></td>
+                                                <td className='p-3'>{order.user?.name || "—"}</td>
+                                                <td className='p-3'>
+                                                    <span className={getStatusBadge(order.status)}>{order.status}</span>
+                                                </td>
+                                                <td className='p-3'>
+                                                    {new Date(order.created_at).toLocaleDateString('ar-EG')}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            ) : (
+                                <div className='text-center py-5'>
+                                    <i className='bi bi-inbox fs-1 text-muted'></i>
+                                    <p className='text-muted mt-3'>لا توجد طلبات لعرضها</p>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

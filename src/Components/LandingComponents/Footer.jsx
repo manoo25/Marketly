@@ -12,6 +12,13 @@ const colors = {
 };
 
 const Footer = () => {
+  const scrollToSection = (sectionId) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <footer
       style={{
@@ -20,7 +27,7 @@ const Footer = () => {
         marginTop: 64,
         direction: "rtl",
         fontFamily: "inherit",
-      }}ئئ
+      }}
     >
       <div className="container py-5 px-3">
         <div className="row gy-4 gx-5 justify-content-between align-items-start">
@@ -107,27 +114,51 @@ const Footer = () => {
               style={{ color: colors.textSecondary, lineHeight: 2 }}
             >
               {[
-                { text: "المميزات", href: "#features" },
-                { text: "الدعم الفني", href: "mailto:support@marketly.app" },
-                { text: "الأسئلة الشائعة", href: "#faq" },
-                { text: "شروط الاستخدام", href: "#terms" },
-                { text: "سياسة الخصوصية", href: "#privacy" },
-              ].map(({ text, href }, i) => (
+                { text: "حمل التطبيق", sectionId: "download-section" },
+                { text: "شركاؤنا", sectionId: "companies-section" },
+                { text: "الأسئلة الشائعة", sectionId: "faq-section" },
+                { text: "آراء عملائنا", sectionId: "testimonials-section" },
+               ].map(({ text, sectionId, href }, i) => (
                 <li key={i} className="mb-1">
-                  <a
-                    href={href}
-                    style={{
-                      color: colors.accent,
-                      textDecoration: "none",
-                      transition: "color 0.3s",
-                    }}
-                    onMouseEnter={(e) =>
-                      (e.target.style.color = colors.primary)
-                    }
-                    onMouseLeave={(e) => (e.target.style.color = colors.accent)}
-                  >
-                    {text}
-                  </a>
+                  {sectionId ? (
+                    <button
+                      onClick={() => scrollToSection(sectionId)}
+                      style={{
+                        color: colors.accent,
+                        textDecoration: "none",
+                        transition: "color 0.3s",
+                        background: "none",
+                        border: "none",
+                        padding: 0,
+                        cursor: "pointer",
+                      }}
+                      onMouseEnter={(e) =>
+                        (e.target.style.color = colors.primary)
+                      }
+                      onMouseLeave={(e) =>
+                        (e.target.style.color = colors.accent)
+                      }
+                    >
+                      {text}
+                    </button>
+                  ) : (
+                    <a
+                      href={href}
+                      style={{
+                        color: colors.accent,
+                        textDecoration: "none",
+                        transition: "color 0.3s",
+                      }}
+                      onMouseEnter={(e) =>
+                        (e.target.style.color = colors.primary)
+                      }
+                      onMouseLeave={(e) =>
+                        (e.target.style.color = colors.accent)
+                      }
+                    >
+                      {text}
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>
@@ -151,10 +182,6 @@ const Footer = () => {
                 <i className="fas fa-phone ms-2"></i>
                 01012345678
               </li>
-              {/* <li>
-                <i className="fas fa-map-marker-alt ms-2"></i>
-                القاهرة، مصر - مدينة نصر (مقر خدمة العملاء)
-              </li> */}
             </ul>
           </div>
         </div>

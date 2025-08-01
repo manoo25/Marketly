@@ -42,7 +42,7 @@ const FAQComponent = () => {
   };
 
   return (
-    <div className="faq-component">
+    <div className="faq-component"  id="faq-section">
       <div className="container">
         <h2 className="section-title">الأسئلة الشائعة</h2>
         <p className="section-subtitle">
