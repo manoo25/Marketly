@@ -25,7 +25,7 @@ function Nav({handleToggleSidebar,isSidebarOpen,PageTitle}) {
             <img
   src={Arrow}
   style={{ width: '22px', height: '22px' }}
-  className={`NavArrow-icon ${isSidebarOpen ? 'rotated' : ''}`}
+  className={`NavArrow-icon ${!isSidebarOpen ? 'rotated' : ''}`}
 />
 </span>
 

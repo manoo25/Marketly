@@ -414,35 +414,39 @@ const OrdersTbl = () => {
                                         <td>
                                             <CustomMenu
                                                 id={order.id}
-                                                options={[
-                                                    {
-                                                        label: "تعديل الحالة", 
-                                                        icon: "fa-solid fa-pen", 
-                                                        color: "blue", 
-                                                        onClick: () => handleOpenStateModal(order)
-                                                    },
-                                                    { 
-                                                        label: "مسح الطلب", 
-                                                        icon: "fa-solid fa-trash", 
-                                                        color: "red", 
-                                                        // onClick: () => handleDeleteOrder(order.id) 
-                                                        onClick: () => handleDeleteOrder(order)
-                                                    },
-                                                    {
-                                                        label: "اختيار مندوب", 
-                                                        icon: "fa-solid fa-user", 
-                                                        color: "red", 
-                                                        onClick: () => {
-                                                            setshowDelegateModal(true)
-                                                            SetOrderLocaction({ 
-                                                                orderId: order.id, 
-                                                                governorate: order.user.governorate, 
-                                                                location: order.user.location, 
-                                                                city: order.user.city 
-                                                            })
-                                                        }
-                                                    }
-                                                ]}
+                                               options={[
+  ...(order.status === "pending" || order.status === "inprogress"
+    ? [
+        {
+          label: "تعديل الحالة",
+          icon: "fa-solid fa-pen",
+          color: "blue",
+          onClick: () => handleOpenStateModal(order),
+        },
+        {
+          label: "اختيار مندوب",
+          icon: "fa-solid fa-user",
+          color: "red",
+          onClick: () => {
+            setshowDelegateModal(true);
+            SetOrderLocaction({
+              orderId: order.id,
+              governorate: order.user.governorate,
+              location: order.user.location,
+              city: order.user.city,
+            });
+          },
+        },
+      ]
+    : []),
+  {
+    label: "مسح الطلب",
+    icon: "fa-solid fa-trash",
+    color: "red",
+    onClick: () => handleDeleteOrder(order),
+  },
+]}
+
                                             />
                                         </td>
                                     </tr>

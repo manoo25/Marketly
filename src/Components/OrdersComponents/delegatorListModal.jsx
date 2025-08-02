@@ -47,8 +47,7 @@ function DelegatorListModal({ show, Setshow, location }) {
               .filter(d =>
                 Array.isArray(d.routes) &&
                 d.routes.some(r =>
-                  normalize(r.governorate)==(normalize(location.governorate)) &&
-                  normalize(r.route)?.includes(normalize(location.city))
+                  normalize(r.governorate)==(normalize(location.governorate)) 
                 )
               )
               .map((delegate, idx) => (
@@ -84,11 +83,7 @@ function DelegatorListModal({ show, Setshow, location }) {
   <div className="mb-2">
     <strong>الأيام:</strong>{' '}
     {delegate.routes
-      .filter(r =>
-        (normalize(r.route)?.includes(normalize(location.governorate)) ||
-         normalize(r.route)?.includes(normalize(location.city)))
-        && r.day
-      )
+     
       .map((r, i) => (
         <Badge bg="info" key={i} className="me-1">{r.day}</Badge>
       ))}

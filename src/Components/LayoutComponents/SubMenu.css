@@ -24,7 +24,7 @@
     font-size: 1rem;
 }
 .NavArrow-icon {
-  transition: transform 0.4s ease;
+  transition: transform 0.2s ease;
 }
 
 .NavArrow-icon.rotated {
