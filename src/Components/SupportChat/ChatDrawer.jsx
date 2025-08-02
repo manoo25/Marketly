@@ -21,11 +21,72 @@ export default function ChatDrawer({ currentUserId, userRole, onClose }) {
             ? date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
             : date.toLocaleDateString();
     };
+    // const fetchMessages = async () => {
+    //     if (!currentUserId) return;
+
+    //     const conversationId = buildConversationId(SUPPORT_ADMIN_ROLE, currentUserId);
+
+    //     const { data, error } = await supabase
+    //         .from("UsersMessage")
+    //         .select("*")
+    //         .or(
+    //             `and(sender_id.eq.${currentUserId},receiver_id.eq.${SUPPORT_ADMIN_ID}),and(sender_id.eq.${SUPPORT_ADMIN_ID},receiver_id.eq.${currentUserId})`
+    //         )
+    //         .order("created_at", { ascending: true });
+
+    //     if (error) {
+    //         console.error("❌ فشل في جلب الرسائل:", error.message);
+    //         return;
+    //     }
+
+    //     // ✅ لو مفيش ولا رسالة، نضيف رسالة ترحيب تلقائية
+    //     if (data.length === 0) {
+    //         const welcomeMessage = {
+    //             conversation_id: conversationId,
+    //             sender_id: SUPPORT_ADMIN_ID, // أو تقدر تستخدم SUPPORT_ADMIN_ID
+    //             receiver_id: currentUserId,
+    //             sender_role: SUPPORT_ADMIN_ROLE,
+    //             receiver_role: userRole,
+    //             actual_sender_id: SUPPORT_ADMIN_ID,
+    //             content: "مرحبًا بك! اكتب رسالتك وسنقوم بالرد عليك في أقرب وقت 😊",
+    //         };
+
+    //         const { error: insertError } = await supabase
+    //             .from("UsersMessage")
+    //             .insert([welcomeMessage]);
+
+    //         if (insertError) {
+    //             console.error("❌ فشل في إضافة رسالة الترحيب:", insertError.message);
+    //         } else {
+    //             // بعد ما نضيف الرسالة الترحيبية، نعيد التحميل
+    //             return fetchMessages();
+    //         }
+    //     }
+
+    //     setMessages(data);
+
+    //     // ✅ نحدث read_at لو في رسائل جاية من الأدمن
+    //     const unreadAdminMessages = data.filter(
+    //         (msg) => msg.sender_id === SUPPORT_ADMIN_ID && !msg.read_at
+    //     );
+
+    //     if (unreadAdminMessages.length > 0) {
+    //         await supabase
+    //             .from("UsersMessage")
+    //             .update({ read_at: new Date().toISOString() })
+    //             .match({
+    //                 sender_id: SUPPORT_ADMIN_ID,
+    //                 receiver_id: currentUserId,
+    //             })
+    //             .is("read_at", null);
+    //     }
+    // };
+
     const fetchMessages = async () => {
         if (!currentUserId) return;
 
         const conversationId = buildConversationId(SUPPORT_ADMIN_ROLE, currentUserId);
-
+        conversationId;
         const { data, error } = await supabase
             .from("UsersMessage")
             .select("*")
@@ -39,33 +100,24 @@ export default function ChatDrawer({ currentUserId, userRole, onClose }) {
             return;
         }
 
-        // ✅ لو مفيش ولا رسالة، نضيف رسالة ترحيب تلقائية
+        // ✅ لو مفيش ولا رسالة حقيقية، نظهر رسالة ترحيب وهمية فقط
         if (data.length === 0) {
             const welcomeMessage = {
-                conversation_id: conversationId,
-                sender_id: SUPPORT_ADMIN_ID, // أو تقدر تستخدم SUPPORT_ADMIN_ID
+                id: "static-welcome", // أي ID وهمي لتجنب تكرار React key warning
+                sender_id: SUPPORT_ADMIN_ID,
                 receiver_id: currentUserId,
-                sender_role: SUPPORT_ADMIN_ROLE,
-                receiver_role: userRole,
-                actual_sender_id: SUPPORT_ADMIN_ID,
                 content: "مرحبًا بك! اكتب رسالتك وسنقوم بالرد عليك في أقرب وقت 😊",
+                created_at: new Date().toISOString(),
+                is_static_welcome: true, // تقدر تستخدمه لو حبيت تخصها بتنسيق أو سلوك مختلف
             };
 
-            const { error: insertError } = await supabase
-                .from("UsersMessage")
-                .insert([welcomeMessage]);
-
-            if (insertError) {
-                console.error("❌ فشل في إضافة رسالة الترحيب:", insertError.message);
-            } else {
-                // بعد ما نضيف الرسالة الترحيبية، نعيد التحميل
-                return fetchMessages();
-            }
+            setMessages([welcomeMessage]);
+            return;
         }
 
         setMessages(data);
 
-        // ✅ نحدث read_at لو في رسائل جاية من الأدمن
+        // ✅ تحديث read_at للرسائل الغير مقروءة من الأدمن
         const unreadAdminMessages = data.filter(
             (msg) => msg.sender_id === SUPPORT_ADMIN_ID && !msg.read_at
         );
@@ -207,7 +259,7 @@ export default function ChatDrawer({ currentUserId, userRole, onClose }) {
 
                             {/* الأدمن: على اليمين وبجنبه الروبوت */}
                             {!isUser && (
-                                <div style={{ display:"flex" , alignItems:"center" }}>
+                                <div style={{ display:"flex" , alignItems:"center", justifyContent: "flex-end" }}>
                                     <div
                                         className="chat-message admin-msg"
                                         style={{
@@ -233,7 +285,7 @@ export default function ChatDrawer({ currentUserId, userRole, onClose }) {
                                     <div>
                                         {/* <FaRobot size={42} style={{ color: "#007bff", marginLeft: "5px" }} /> */}
                                         
-                                                        <img src={SupportAvatar}  width={"50px"}/>
+                                                        <img src={SupportAvatar}  width={"40px"}/>
                                     </div>
                                 </div>
                             )}
@@ -257,7 +309,10 @@ export default function ChatDrawer({ currentUserId, userRole, onClose }) {
                     placeholder="اكتب رسالتك..."
                 />
 
-                <button onClick={handleSend}>إرسال</button>
+                <button onClick={handleSend}>
+
+                    <i className="fa-solid fa-paper-plane"></i>
+                    </button>
             </div>
         </div>
     );

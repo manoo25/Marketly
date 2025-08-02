@@ -9,6 +9,7 @@ import "../../css/Table.css";
 import RowsPerPageSelector from "../globalComonents/RowsPerPageSelector";
 import PasswordChangeModal from "./PasswordChangeModal";
 import EmptyState from "../Notfound/EmptyState"; // تأكد من استيراد المكون
+import NotificationModal from "../modalsComponents/NotificationModal";
 
 const groupRoutes = (arr = []) =>
   arr.reduce((acc, cur) => {
@@ -78,6 +79,10 @@ export default function DelegatesTbl({
     // مثلاً: setSearchName(""); setSelectedGovernorate(""); etc.
   };
 
+      //NotificationModal
+      const [notification, setNotification] = useState({ isOpen: false, message: "" });
+  
+      //NotificationModal
   return (
     <>
       {delegates.length === 0 ? (
@@ -121,8 +126,15 @@ export default function DelegatesTbl({
                           icon: "fa-solid fa-trash",
                           color: "red",
                           onClick: () => {
-                            if (!selectedIds.length)
-                              return alert("اختر على الأقل مندوب واحد");
+                            // if (!selectedIds.length)
+                            //   return alert("اختر على الأقل مندوب واحد");
+                            if (selectedIds.length === 0) {
+                              setNotification({
+                                isOpen: true,
+                                message: "من فضلك، اختر على الأقل مندوب واحد."
+                              });
+                              return;
+                            }
                             setConfirmModal({
                               open: true,
                               message: `هل أنت متأكد من حذف ${selectedIds.length} مندوب؟`,
@@ -365,6 +377,11 @@ export default function DelegatesTbl({
         message={confirmModal.message}
         confirmText={confirmModal.confirmText}
         confirmClass={confirmModal.confirmClass}
+      />
+      <NotificationModal
+        isOpen={notification.isOpen}
+        message={notification.message}
+        onClose={() => setNotification({ isOpen: false, message: "" })}
       />
     </>
   );

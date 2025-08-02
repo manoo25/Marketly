@@ -12,6 +12,7 @@ import LabeledMenuButton from "../globalComonents/LabeledMenu";
 import LabeledMenu from "../globalComonents/LabeledMenu";
 import UpdateRolesModal from "../modalsComponents/UpdateRolesModal";
 import RowsPerPageSelector from "../globalComonents/RowsPerPageSelector";
+import NotificationModal from "../modalsComponents/NotificationModal";
 // import ChatModal from "../UsersComponents/ChatModal";
 // import { generateConversationId } from "../../utils/generateConversationId";
 // import { getCurrentUserId } from "../../utils/getCurrentUserId";
@@ -182,7 +183,10 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
   // Block Selected Users Confirm
   const handleBulkBlockConfirm = () => {
     if (selectedUserIds.length === 0) {
-      alert("من فضلك اختر مستخدمين أولاً");
+      setNotification({
+        isOpen: true,
+        message: "من فضلك أختر مستخدمين أولاََ."
+      });
       return;
     }
 
@@ -203,7 +207,10 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
   // UnBlock Selected Users Confirm
   const handleBulkUnblockConfirm = () => {
     if (selectedUserIds.length === 0) {
-      alert("من فضلك اختر مستخدمين أولاً");
+      setNotification({
+        isOpen: true,
+        message: "من فضلك أختر مستخدمين أولاََ."
+      });
       return;
     }
 
@@ -221,23 +228,11 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
   
   // UnBlock Selected Users Confirm
 
-
-  // Send Msg to User or Users
-  // const [showMessageModal, setShowMessageModal] = useState(false);
-  // const [messageText, setMessageText] = useState("");
-  // const [messageTargetIds, setMessageTargetIds] = useState([]);
-
-  // Send Msg to User or Users
-
-  // const openMessageModal = (userIds) => {
-  //   if (!userIds || userIds.length === 0) {
-  //     alert("من فضلك اختر مستخدمين لإرسال الرسالة");
-  //     return;
-  //   }
-  //   setMessageTargetIds(userIds);
-  //   setShowMessageModal(true);
-  // };
   
+      //NotificationModal
+      const [notification, setNotification] = useState({ isOpen: false, message: "" });
+  
+      //NotificationModal
 
   return (
     <>
@@ -275,7 +270,10 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
                     {
                       label: "تعديل الصلاحية", icon: "fa-solid fa-user-pen", color: "blue", onClick: () => {
                         if (selectedUserIds.length === 0) {
-                          alert("من فضلك اختر مستخدمين أولاً");
+                          setNotification({
+                            isOpen: true,
+                            message: "من فضلك أختر مستخدمين أولاََ."
+                          });
                           return;
                         }
                         setBulkRoleModalOpen(true);
@@ -285,26 +283,7 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
                     { label: "إلغاء الحظر", icon: "fa-solid fa-unlock", color: "orange", onClick: handleBulkUnblockConfirm },
                   ]}
                 />
-                {/* <LabeledMenu
-                  id="bulkActions"
-                  label="إجراءات جماعية"
-                  options={[
-                    // {
-                    //   label: "إرسال رسالة", icon: "fa-solid fa-paper-plane", color: "green", onClick: () => openMessageModal(selectedUserIds)
-                    // },
-                    {
-                      label: "تعديل الصلاحية", icon: "fa-solid fa-user-pen", color: "blue", onClick: () => {
-                        if (selectedUserIds.length === 0) {
-                          alert("من فضلك اختر مستخدمين أولاً");
-                          return;
-                        }
-                        setBulkRoleModalOpen(true);
-                    }},
-                    { label: "حظر المحدد", icon: "fa-solid fa-ban", color: "red", onClick: handleBulkBlockConfirm, },
-                    { label: "إلغاء الحظر", icon: "fa-solid fa-unlock", color: "orange", onClick: handleBulkUnblockConfirm },
-                  ]}
-                /> */}
-
+        
 
               </th>
 
@@ -544,7 +523,11 @@ const UsersTbl = ({ users, selectedGovernorate, selectedRole, searchName, search
         </p>
       </div>
 
-
+      <NotificationModal
+        isOpen={notification.isOpen}
+        message={notification.message}
+        onClose={() => setNotification({ isOpen: false, message: "" })}
+      />
     </>
   );
 };

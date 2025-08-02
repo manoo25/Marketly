@@ -11,6 +11,7 @@ import { deleteComplaint, fetchcomplaints, updateComplaint } from "../../Redux/S
 import ComplaintsFilter from "./ComplaintsFilter";
 import RowsPerPageSelector from "../globalComonents/RowsPerPageSelector";
 import EmptyState from "../Notfound/EmptyState";
+import NotificationModal from "../modalsComponents/NotificationModal";
 
 // const rowsPerPage = 8;
 
@@ -122,6 +123,13 @@ const ComplaintsTable = () => {
 
   // حذف جماعي
   const handleDeleteSelected = () => {
+    if (selectedComplaints.length === 0) {
+      setNotification({
+        isOpen: true,
+        message: "من فضلك، يجب تحديد شكوى واحدة على الأقل."
+      });
+      return;
+    }
     setConfirmModal({
       open: true,
       message: `هل تريد حذف ${selectedComplaints.length} شكوى؟`,
@@ -139,6 +147,10 @@ const ComplaintsTable = () => {
 function handleUpdateComplaintState(id, newState) {
   dispatch(updateComplaint({ id, updatedData: { state: newState } }));
 }
+
+    //NotificationModal
+    const [notification, setNotification] = useState({ isOpen: false, message: "" });
+    //NotificationModal
   return (
     <>
      <ComplaintsFilter
@@ -348,6 +360,11 @@ function handleUpdateComplaintState(id, newState) {
         confirmText={confirmModal.confirmText}
         confirmClass={confirmModal.confirmClass}
       />
+      <NotificationModal
+                      isOpen={notification.isOpen}
+                      message={notification.message}
+                      onClose={() => setNotification({ isOpen: false, message: "" })}
+                  />
     </>
   );
 };

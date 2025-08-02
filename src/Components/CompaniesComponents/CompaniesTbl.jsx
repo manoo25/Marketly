@@ -13,6 +13,7 @@ import { deleteImageFromStore } from "../../Redux/uploadingImage";
 import Loading from "../globalComonents/loading";
 import { UserRole } from "../../Redux/Slices/token";
 import RowsPerPageSelector from "../globalComonents/RowsPerPageSelector";
+import NotificationModal from "../modalsComponents/NotificationModal";
 
 // const rowsPerPage = 8;
 
@@ -123,6 +124,13 @@ const CompaniesTbl = () => {
   };
   // حذف جماعي
   const handleDeleteSelected = () => {
+    if (selectedCompanies.length === 0) {
+      setNotification({
+        isOpen: true,
+        message: "من فضلك، يجب تحديد شركة واحدة عل الأقل."
+      });
+      return;
+    }
     setConfirmModal({
       open: true,
       message: `هل تريد حذف ${selectedCompanies.length} شركة؟`,
@@ -142,6 +150,9 @@ const CompaniesTbl = () => {
     });
   };
 
+      //NotificationModal
+      const [notification, setNotification] = useState({ isOpen: false, message: "" });
+      //NotificationModal
   return (
     <>
     {loading?<Loading/>:
@@ -317,6 +328,11 @@ const CompaniesTbl = () => {
 
      
       <EditCompaniesModal show={show} setShow={setShow} company={editCompany} />
+      <NotificationModal
+        isOpen={notification.isOpen}
+        message={notification.message}
+        onClose={() => setNotification({ isOpen: false, message: "" })}
+      />
     </>
   );
 };

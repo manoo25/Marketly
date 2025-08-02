@@ -14,6 +14,7 @@ import { DeleteCategory } from "../Redux/Slices/Categories";
 import CategoriesPageHeader from "../Components/CategoriesComponents/CategoriesPageHeader";
 import { UserRole } from "../Redux/Slices/token";
 import RowsPerPageSelector from "../Components/globalComonents/RowsPerPageSelector";
+import NotificationModal from "../Components/modalsComponents/NotificationModal";
 // const rowsPerPage = 5;
 
 function Categories() {
@@ -117,9 +118,17 @@ function Categories() {
     });
   };
   const handleDeleteSelected = () => {
+    if (selectedRows.length === 0) {
+      setNotification({
+        isOpen: true,
+        // استخدمنا متغير 'label' هنا عشان الرسالة تتغير تلقائيًا
+        message: `الرجاء تحديد ${pluralLabel} أولاً.`
+      });
+      return;
+    }
     setConfirmModal({
       open: true,
-      message: `هل تريد حذف ${selectedRows.length} عنصر؟`,
+      message: `هل تريد حذف ${selectedRows.length} ${label}؟`,
       confirmText: "حذف الكل",
       confirmClass: "btn-danger",
       onConfirm: async () => {
@@ -223,6 +232,9 @@ function Categories() {
   const pluralLabel = flag === "categories" ? "أصناف" : "وحدات";
 
 
+      //NotificationModal
+      const [notification, setNotification] = useState({ isOpen: false, message: "" });
+      //NotificationModal
   return (
     <>
       {loading ? (
@@ -354,6 +366,11 @@ function Categories() {
             confirmText={confirmModal.confirmText}
             confirmClass={confirmModal.confirmClass}
           />
+            <NotificationModal
+              isOpen={notification.isOpen}
+              message={notification.message}
+              onClose={() => setNotification({ isOpen: false, message: "" })}
+            />
         </div>
       )}
     </>

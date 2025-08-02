@@ -105,7 +105,7 @@ function EditProfileModal({ show, handleClose }) {
             <Modal.Header>
           <div className="border-0 pb-0 d-flex align-items-center justify-content-between w-100">
             <Modal.Title>تعديل الملف الشخصي</Modal.Title>
-            <button className='fa-solid fa-close border-0 bg-transparent CloseModalBtn' onClick={() => setShow(false)} />
+                    <button className='fa-solid fa-close border-0 bg-transparent CloseModalBtn' onClick={closeModal} />
           </div>
         </Modal.Header>
 
@@ -159,8 +159,8 @@ function EditProfileModal({ show, handleClose }) {
                         </Col>
 
                         <Col md={6}>
-                            <Form.Group>
-                                <Form.Label>الاسم</Form.Label>
+                            <Form.Group className='mb-2'>
+                                <Form.Label className='pe-2 mb-0'>الاسم</Form.Label>
                                 <Form.Control {...formik.getFieldProps('name')} />
                                 {formik.touched.name && formik.errors.name && (
                                     <div className="text-danger">{formik.errors.name}</div>
@@ -169,8 +169,8 @@ function EditProfileModal({ show, handleClose }) {
                         </Col>
 
                         <Col md={6}>
-                            <Form.Group>
-                                <Form.Label>البريد الإلكتروني</Form.Label>
+                            <Form.Group className='mb-2'>
+                                <Form.Label className='pe-2 mb-0'>البريد الإلكتروني</Form.Label>
                                 <Form.Control {...formik.getFieldProps('email')} disabled />
                                 {formik.touched.email && formik.errors.email && (
                                     <div className="text-danger">{formik.errors.email}</div>
@@ -179,8 +179,8 @@ function EditProfileModal({ show, handleClose }) {
                         </Col>
 
                         <Col md={6}>
-                            <Form.Group>
-                                <Form.Label>رقم الهاتف</Form.Label>
+                            <Form.Group className='mb-2'>
+                                <Form.Label className='pe-2 mb-0'>رقم الهاتف</Form.Label>
                                 <Form.Control {...formik.getFieldProps('phone')} />
                                 {formik.touched.phone && formik.errors.phone && (
                                     <div className="text-danger">{formik.errors.phone}</div>
@@ -189,8 +189,8 @@ function EditProfileModal({ show, handleClose }) {
                         </Col>
 
                         <Col md={6}>
-                            <Form.Group>
-                                <Form.Label>المحافظة</Form.Label>
+                            <Form.Group className='mb-2'>
+                                <Form.Label className='pe-2 mb-0'>المحافظة</Form.Label>
                                 <Form.Select
                                     name="governorate"
                                     value={formik.values.governorate}
@@ -211,15 +211,15 @@ function EditProfileModal({ show, handleClose }) {
                         </Col>
 
                         <Col md={6}>
-                            <Form.Group>
-                                <Form.Label>المدينة</Form.Label>
+                            <Form.Group className='mb-2'>
+                                <Form.Label className='pe-2 mb-0'>المدينة</Form.Label>
                                 <Form.Control {...formik.getFieldProps('city')} />
                             </Form.Group>
                         </Col>
 
                         <Col md={12}>
                             <Form.Group>
-                                <Form.Label>العنوان</Form.Label>
+                                <Form.Label className='pe-2 mb-0'>العنوان</Form.Label>
                                 <Form.Control {...formik.getFieldProps('location')} />
                                 {formik.touched.location && formik.errors.location && (
                                     <div className="text-danger">{formik.errors.location}</div>

@@ -10,6 +10,7 @@ import Loading from "../globalComonents/loading";
 import CustomMenu from "../globalComonents/CustomMenu";
 import ModalConfirm from "../UsersComponents/ModalConfirm";
 import RowsPerPageSelector from "../globalComonents/RowsPerPageSelector";
+import NotificationModal from "../modalsComponents/NotificationModal";
 
 const MAX_FEEDBACK_LENGTH = 40;
 
@@ -71,7 +72,13 @@ const TestimonialsTbl = () => {
   // };
 
   const handleDeleteSelected = () => {
-    if (!selectedIds.length) return alert("اختر على الأقل رأي واحد");
+    if (selectedIds.length === 0) {
+      setNotification({
+        isOpen: true,
+        message: "من فضلك، اختر على الأقل رأي واحد."
+      });
+      return;
+    }
     setConfirmModal({
       open: true,
       message: `هل تريد حذف ${selectedIds.length} رأي؟`,
@@ -109,6 +116,10 @@ const TestimonialsTbl = () => {
       : text;
   };
 
+      //NotificationModal
+      const [notification, setNotification] = useState({ isOpen: false, message: "" });
+  
+      //NotificationModal
   return (
     <>
       {loading ? (
@@ -385,6 +396,11 @@ const TestimonialsTbl = () => {
         message={confirmModal.message}
         confirmText={confirmModal.confirmText}
         confirmClass={confirmModal.confirmClass}
+      />
+      <NotificationModal
+        isOpen={notification.isOpen}
+        message={notification.message}
+        onClose={() => setNotification({ isOpen: false, message: "" })}
       />
     </>
   );

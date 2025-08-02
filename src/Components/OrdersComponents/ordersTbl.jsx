@@ -17,6 +17,8 @@ import { UserRole } from "../../Redux/Slices/token";
 import { supabase } from "../../Supabase/SupabaseClient";
 import RowsPerPageSelector from "../globalComonents/RowsPerPageSelector";
 import EmptyState from "../Notfound/EmptyState";
+import ModalConfirm from "../UsersComponents/ModalConfirm";
+import NotificationModal from "../modalsComponents/NotificationModal";
 
 const OrdersTbl = () => {
     const [rowsPerPage, setRowsPerPage] = useState(8);
@@ -106,7 +108,14 @@ const OrdersTbl = () => {
     const [bulkNewStatus, setBulkNewStatus] = useState("");
 
     const handleBulkUpdateOrderStatus = async () => {
-        if (!bulkNewStatus || SelectedOrders.length === 0) return;
+        // if (!bulkNewStatus || SelectedOrders.length === 0) return;
+        if (SelectedOrders.length === 0) {
+            setNotification({
+                isOpen: true,
+                message: "من فضلك، يجب تحديد طلب واحد على الأقل لتعديل الحالة."
+            });
+            return;
+        }
         for (const id of SelectedOrders) {
             await dispatch(updateOrder({ id, updatedData: { status: bulkNewStatus } }));
         }
@@ -115,25 +124,73 @@ const OrdersTbl = () => {
         SetSelectedOrders([]);
     };
 
-    const handleBulkDeleteOrders = async () => {
-        if (SelectedOrders.length === 0) return;
-        if (!window.confirm(`هل أنت متأكد أنك تريد حذف ${SelectedOrders.length} طلب؟`)) return;
-        for (const id of SelectedOrders) {
-            await supabase.from("order_items").delete().eq("order_id", id);
-            await dispatch(deleteOrder(id));
+    // const handleBulkDeleteOrders = async () => {
+    //     if (SelectedOrders.length === 0) return;
+    //     if (!window.confirm(`هل أنت متأكد أنك تريد حذف ${SelectedOrders.length} طلب؟`)) return;
+    //     for (const id of SelectedOrders) {
+    //         await supabase.from("order_items").delete().eq("order_id", id);
+    //         await dispatch(deleteOrder(id));
+    //     }
+    //     SetSelectedOrders([]);
+    //     dispatch(getOrders());
+    // };
+
+    const handleBulkDeleteOrders = () => {
+        // if (SelectedOrders.length === 0) {
+        //     // يمكن استخدام مودال تنبيه هنا أيضًا لو أردت، لكن alert سريع ومناسب للخطأ
+        //     alert("من فضلك اختر طلبات أولاً");
+        //     return;
+        // }
+        if (SelectedOrders.length === 0) {
+            setNotification({
+                isOpen: true,
+                message: "من فضلك، يجب تحديد طلب واحد على الأقل لتنفيذ الحذف."
+            });
+            return;
         }
-        SetSelectedOrders([]);
-        dispatch(getOrders());
+        setConfirmModal({
+            open: true,
+            message: `هل أنت متأكد أنك تريد حذف ${SelectedOrders.length} طلب؟`,
+            confirmText: "نعم، احذف",
+            confirmClass: "btn-danger",
+            onConfirm: async () => {
+                for (const id of SelectedOrders) {
+                    await supabase.from("order_items").delete().eq("order_id", id);
+                    await dispatch(deleteOrder(id));
+                }
+                SetSelectedOrders([]);
+                dispatch(getOrders());
+                setConfirmModal({ ...confirmModal, open: false }); // إغلاق المودال بعد التنفيذ
+            },
+        });
     };
 
-    const handleDeleteOrder = async (orderId) => {
-        if (window.confirm("هل أنت متأكد أنك تريد حذف هذا الطلب؟")) {
-            await supabase.from("order_items").delete().eq("order_id", orderId);
-            await dispatch(deleteOrder(orderId));
-            SetSelectedOrders(prev => prev.filter(id => id !== orderId));
-            dispatch(getOrders());
-        }
+
+    // const handleDeleteOrder = async (orderId) => {
+    //     if (window.confirm("هل أنت متأكد أنك تريد حذف هذا الطلب؟")) {
+    //         await supabase.from("order_items").delete().eq("order_id", orderId);
+    //         await dispatch(deleteOrder(orderId));
+    //         SetSelectedOrders(prev => prev.filter(id => id !== orderId));
+    //         dispatch(getOrders());
+    //     }
+    // };
+
+    const handleDeleteOrder = (order) => {
+        setConfirmModal({
+            open: true,
+            message: `هل أنت متأكد من حذف طلب العميل (${order.user?.name || '---'})؟`,
+            confirmText: "نعم، احذف",
+            confirmClass: "btn-danger",
+            onConfirm: async () => {
+                await supabase.from("order_items").delete().eq("order_id", order.id);
+                await dispatch(deleteOrder(order.id));
+                SetSelectedOrders(prev => prev.filter(id => id !== order.id));
+                dispatch(getOrders());
+                setConfirmModal({ ...confirmModal, open: false }); // إغلاق المودال بعد التنفيذ
+            },
+        });
     };
+
 
     const [viewModalOpen, setViewModalOpen] = useState(false);
     const [orderItems, setOrderItems] = useState([]);
@@ -188,6 +245,21 @@ const OrdersTbl = () => {
         const year = toArabicDigits(date.getFullYear());
         return `${day}-${month}-${year}`;
     };
+
+
+    // ConfirmModal
+    const [confirmModal, setConfirmModal] = useState({
+        open: false,
+        message: "",
+        confirmText: "نعم، حذف",
+        confirmClass: "btn-danger",
+        onConfirm: () => { },
+    });
+    // ConfirmModal
+
+    //NotificationModal
+    const [notification, setNotification] = useState({ isOpen: false, message: "" });
+    //NotificationModal
 
     return (
         <>
@@ -260,7 +332,10 @@ const OrdersTbl = () => {
                                                     color: "blue", 
                                                     onClick: () => {
                                                         if (SelectedOrders.length === 0) {
-                                                            alert("من فضلك اختر طلبات أولاً");
+                                                            setNotification({
+                                                                isOpen: true,
+                                                                message: "من فضلك، يجب تحديد طلب واحد على الأقل لتعديل الحالة."
+                                                            });
                                                             return;
                                                         }
                                                         setBulkStateModalOpen(true);
@@ -270,13 +345,14 @@ const OrdersTbl = () => {
                                                     label: "مسح المحدد", 
                                                     icon: "fa-solid fa-trash", 
                                                     color: "red", 
-                                                    onClick: () => {
-                                                        if (SelectedOrders.length === 0) {
-                                                            alert("من فضلك اختر طلبات أولاً");
-                                                            return;
-                                                        }
-                                                        handleBulkDeleteOrders()
-                                                    }
+                                                    // onClick: () => {
+                                                    //     if (SelectedOrders.length === 0) {
+                                                    //         alert("من فضلك اختر طلبات أولاً");
+                                                    //         return;
+                                                    //     }
+                                                    //     handleBulkDeleteOrders()
+                                                    // }
+                                                    onClick: handleBulkDeleteOrders
                                                 }
                                             ]}
                                         />
@@ -349,7 +425,8 @@ const OrdersTbl = () => {
                                                         label: "مسح الطلب", 
                                                         icon: "fa-solid fa-trash", 
                                                         color: "red", 
-                                                        onClick: () => handleDeleteOrder(order.id) 
+                                                        // onClick: () => handleDeleteOrder(order.id) 
+                                                        onClick: () => handleDeleteOrder(order)
                                                     },
                                                     {
                                                         label: "اختيار مندوب", 
@@ -625,6 +702,19 @@ const OrdersTbl = () => {
             )}
 
             <DelegatorListModal show={showDelegateModal} Setshow={setshowDelegateModal} location={OrderLocaction} />
+            <ModalConfirm
+                    isOpen={confirmModal.open}
+                    onClose={() => setConfirmModal((p) => ({ ...p, open: false }))}
+                    onConfirm={confirmModal.onConfirm}
+                    message={confirmModal.message}
+                    confirmText={confirmModal.confirmText}
+                    confirmClass={confirmModal.confirmClass}
+            />
+            <NotificationModal
+                isOpen={notification.isOpen}
+                message={notification.message}
+                onClose={() => setNotification({ isOpen: false, message: "" })}
+            />
         </>
     );
 };

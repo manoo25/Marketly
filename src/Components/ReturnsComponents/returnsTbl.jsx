@@ -9,6 +9,7 @@ import { supabase } from "../../Supabase/SupabaseClient";
 import { deleteOrder, getReturnOrders, updateOrder } from "../../Redux/Slices/OrdersSlice";
 import RowsPerPageSelector from "../globalComonents/RowsPerPageSelector";
 import EmptyState from "../Notfound/EmptyState";
+import NotificationModal from "../modalsComponents/NotificationModal";
 
 const ReturnsTbl = () => {
     const [rowsPerPage, setRowsPerPage] = useState(8);
@@ -180,6 +181,9 @@ const ReturnsTbl = () => {
         return `${day}-${month}-${year}`;
     };
 
+        //NotificationModal
+        const [notification, setNotification] = useState({ isOpen: false, message: "" });
+        //NotificationModal
     return (
         <>
          <ReturnsFilter
@@ -247,8 +251,15 @@ const ReturnsTbl = () => {
                                                     icon: "fa-solid fa-pen",
                                                     color: "blue",
                                                     onClick: () => {
+                                                        // if (SelectedReturns.length === 0) {
+                                                        //     alert("من فضلك اختر طلبات أولاً");
+                                                        //     return;
+                                                        // }
                                                         if (SelectedReturns.length === 0) {
-                                                            alert("من فضلك اختر طلبات أولاً");
+                                                            setNotification({
+                                                                isOpen: true,
+                                                                message: "من فضلك، يجب تحديد طلب واحد على الأقل."
+                                                            });
                                                             return;
                                                         }
                                                         setBulkStateModalOpen(true);
@@ -259,8 +270,15 @@ const ReturnsTbl = () => {
                                                     icon: "fa-solid fa-trash",
                                                     color: "red",
                                                     onClick: () => {
+                                                        // if (SelectedReturns.length === 0) {
+                                                        //     alert("من فضلك اختر طلبات أولاً");
+                                                        //     return;
+                                                        // }
                                                         if (SelectedReturns.length === 0) {
-                                                            alert("من فضلك اختر طلبات أولاً");
+                                                            setNotification({
+                                                                isOpen: true,
+                                                                message: "من فضلك، يجب تحديد طلب واحد على الأقل."
+                                                            });
                                                             return;
                                                         }
                                                         handleBulkDeleteReturns()
@@ -595,6 +613,11 @@ const ReturnsTbl = () => {
                     </div>
                 </div>
             )}
+            <NotificationModal
+                isOpen={notification.isOpen}
+                message={notification.message}
+                onClose={() => setNotification({ isOpen: false, message: "" })}
+            />
         </>
     );
 };
