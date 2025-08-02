@@ -3,7 +3,7 @@ import {  useDispatch } from "react-redux";
 import { clearAuthData } from "../../Redux/Slices/token";
 import { FaRocket } from "react-icons/fa"; // أيقونة من React Icons
 import "./nav.css"; //
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const LandingNavbar = ( { token}) => {
   const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -53,13 +53,13 @@ const LandingNavbar = ( { token}) => {
           </ul>
 
           {!token ? (
-            <button
-              className="btn btn-primary btn-cta px-4 py-2 d-flex align-items-center gap-2 fw-bold"
-              onClick={() => navigate("/SigninPage")}
-            >
-              <FaRocket />
-              تسجيل الدخول
-            </button>
+           <Link
+  to="/SigninPage"
+  className="btn btn-primary btn-cta px-4 py-2 d-flex align-items-center gap-2 fw-bold"
+>
+  <FaRocket />
+  تسجيل الدخول
+</Link>
           ) : (
             <button
               className="btn btn-primary btn-cta px-4 py-2 d-flex align-items-center gap-2 fw-bold"
