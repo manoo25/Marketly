@@ -10,6 +10,7 @@ import { UserRole } from "../../Redux/Slices/token";
 import { deleteComplaint, fetchcomplaints, updateComplaint } from "../../Redux/Slices/Complaints";
 import ComplaintsFilter from "./ComplaintsFilter";
 import RowsPerPageSelector from "../globalComonents/RowsPerPageSelector";
+import EmptyState from "../Notfound/EmptyState";
 
 // const rowsPerPage = 8;
 
@@ -140,11 +141,7 @@ function handleUpdateComplaintState(id, newState) {
 }
   return (
     <>
-      {loading ? (
-        <Loading />
-      ) : (
-        <div>
-          <ComplaintsFilter
+     <ComplaintsFilter
             searchName={searchName}
             setSearchName={setSearchName}
             onSearchClick={handleSearchClick}
@@ -155,6 +152,22 @@ function handleUpdateComplaintState(id, newState) {
             selectedGovernorate={selectedGovernorate}
             setSelectedGovernorate={setSelectedGovernorate}
           />
+      {loading ? (
+        <Loading />
+      ) :
+      
+      
+      currentComplaints.length==0?(
+                <EmptyState
+                    title="لا توجد شكاوى"
+                    description="لا يوجد شكاوى مطابقة لبحثك أو لم يتم إضافة أي شكاوى بعد."
+                    actionText="إعادة تعيين الفلتر"
+                    onActionClick={onResetFilters}
+                    icon="fa-file-invoice"
+                />
+            ) : (
+        <div>
+         
           <div className="user-table z-0">
             <table border="1" width="100%" dir="rtl" className="table">
               <thead>
@@ -322,7 +335,10 @@ function handleUpdateComplaintState(id, newState) {
             </div>
 
         </div>
-      )}
+      )
+
+      
+     }
 
       <ModalConfirm
         isOpen={confirmModal.open}

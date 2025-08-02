@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 function TableSection() {
     const { orders } = useSelector((state) => state.Orders);
-      const navigate = useNavigate();
+    const navigate = useNavigate();
 
     // أحدث 4 طلبات مرتبة تنازلياً حسب التاريخ
     const recentOrders = useMemo(() => {
@@ -38,54 +38,56 @@ function TableSection() {
             <div className='row g-4'>
                 {/* Recent Orders */}
                 <div className='col-12'>
-                    <div className='card shadow-sm'>
-                        <div className='card-header bg-white border-bottom p-3'>
+                    <div className='card shadow-sm border-0'>
+                        <div className='card-header bg-white p-3' style={{ borderColor: '#6c757d' }}>
                             <div className='d-flex align-items-center justify-content-between'>
                                 <div>
-                                    <h5 className='card-title mb-1'>أحدث الطلبات</h5>
+                                    <h5 className='card-title mb-1 text-muted'>أحدث الطلبات</h5>
                                     <p className='text-muted small mb-0'>آخر طلبات العملاء</p>
                                 </div>
-                                <a 
-                                onClick={()=>navigate("/Dashboard/Orders")}
-                                className='btn btn-link p-0'>عرض الكل</a>
+                                <button 
+                                    onClick={() => navigate("/Dashboard/Orders")}
+                                    className='btn btn-link p-0 text-primary'
+                                >
+                                    عرض الكل
+                                </button>
                             </div>
                         </div>
-                        <div className='table-responsive pb-2'>
-                            <table className='table table-hover table-borderless mb-0'>
-                                <thead className='table-light'>
-                                    <tr>
-                                        <th className='text-nowrap p-3'>رقم الطلب</th>
-                                        <th className='text-nowrap p-3'>العميل</th>
-                                        
-                                     
-                                        <th className='text-nowrap p-3'>الحالة</th>
-                                        <th className='text-nowrap p-3'>التاريخ</th>
-                                       
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {recentOrders.map((order) => (
-                                        <tr key={order.id}>
-                                            <td className='p-3'><span className='text-primary fw-semibold'>#{order.id}</span></td>
-                                            <td className='p-3'>{order.user.name || "—"}</td>
-                                        
-                                            
-                                            <td className='p-3'>
-                                                <span className={getStatusBadge(order.status)}>{order.status}</span>
-                                            </td>
-                                            <td className='p-3'>
-                                                {new Date(order.created_at).toLocaleDateString('ar-EG')}
-                                            </td>
-                                          
+                        <div className='table-responsive'>
+                            {recentOrders.length > 0 ? (
+                                <table className='table table-hover mb-0'>
+                                    <thead className='bg-light'>
+                                        <tr>
+                                            <th className='text-nowrap p-3' style={{ color: '#6c757d' }}>رقم الطلب</th>
+                                            <th className='text-nowrap p-3' style={{ color: '#6c757d' }}>العميل</th>
+                                            <th className='text-nowrap p-3' style={{ color: '#6c757d' }}>الحالة</th>
+                                            <th className='text-nowrap p-3' style={{ color: '#6c757d' }}>التاريخ</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        {recentOrders.map((order) => (
+                                            <tr key={order.id}>
+                                                <td className='p-3'><span className='text-primary fw-semibold'>#{order.id}</span></td>
+                                                <td className='p-3'>{order.user?.name || "—"}</td>
+                                                <td className='p-3'>
+                                                    <span className={getStatusBadge(order.status)}>{order.status}</span>
+                                                </td>
+                                                <td className='p-3'>
+                                                    {new Date(order.created_at).toLocaleDateString('ar-EG')}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            ) : (
+                                <div className='text-center py-5'>
+                                    <i className='bi bi-inbox fs-1 text-muted'></i>
+                                    <p className='text-muted mt-3'>لا توجد طلبات لعرضها</p>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
-
-                {/* باقي الكارتات مثلاً أعلى المنتجات... احتفظ بها كما هي أو حدثها حسب الداتا الفعلية */}
             </div>
         </div>
     );

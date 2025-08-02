@@ -1,5 +1,6 @@
 
 import AvatarDropdown from "./Avatar";
+import Arrow from "../../assets/Images/Arrow.png";
 
 function Nav({handleToggleSidebar,isSidebarOpen,PageTitle}) {
     
@@ -16,15 +17,19 @@ function Nav({handleToggleSidebar,isSidebarOpen,PageTitle}) {
             width:'100%'
             }}>
                  <button
-          className="btn d-flex align-items-baseline gap-3 border-0"
+          className="btn d-flex align-items-center gap-2 border-0 "
           type="button"
           onClick={handleToggleSidebar}
         >
-          <span
-            style={{ fontSize: 20 }}
-            className={`fa-regular fa-square-caret-${isSidebarOpen ? 'right' : 'left'}`}
-          ></span>
-          {PageTitle}
+<span>
+            <img
+  src={Arrow}
+  style={{ width: '22px', height: '22px' }}
+  className={`NavArrow-icon ${isSidebarOpen ? 'rotated' : ''}`}
+/>
+</span>
+
+         <span style={{fontSize:'18px',fontWeight:'500'}} className="pt-2"> {PageTitle}</span>
         </button>
 <div className=" d-flex align-items-center position-relative">
       

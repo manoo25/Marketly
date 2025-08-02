@@ -8,9 +8,8 @@ import avatar from "../../assets/Images/user.png"
 function DelegatorListModal({ show, Setshow, location }) {
   const dispatch = useDispatch();
   const { delegates, loading } = useSelector((state) => state.Delegates);
-  console.log(delegates);
-  
-
+  // console.log(delegates);
+ 
   useEffect(() => {
     if (show) dispatch(fetchDelegates());
   }, [dispatch, show]);
@@ -24,9 +23,12 @@ function DelegatorListModal({ show, Setshow, location }) {
 
   return (
     <Modal show={show}  >
-      <Modal.Header closeButton>
-        <Modal.Title>اختيار مندوب</Modal.Title>
-      </Modal.Header>
+       <Modal.Header className="border-0 pb-0 d-flex align-items-center justify-content-between w-100" dir="rtl">
+          <Modal.Title>اختيار مندوب</Modal.Title>
+          <button className='fa-solid fa-close border-0 bg-transparent CloseModalBtn' onClick={() => Setshow(false)} />
+
+        </Modal.Header>
+    
 
       <Modal.Body>
         {loading ? (
@@ -100,7 +102,7 @@ function DelegatorListModal({ show, Setshow, location }) {
   className="btn-primary w-100 mt-3"
   type="button"
   onClick={async () => {
-    await dispatch(updateOrder({ id: location.orderId, updatedData: { delegator: delegate.id } }));
+    await dispatch(updateOrder({ id: location.orderId, updatedData: { delegator: delegate.id,status:'inprogress' } }));
     dispatch(getOrders());
     onClose();
   }}

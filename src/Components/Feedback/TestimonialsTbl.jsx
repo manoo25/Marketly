@@ -57,18 +57,18 @@ const TestimonialsTbl = () => {
   }, [testimonials, currentPage, rowsPerPage]);
   const totalPages = Math.ceil(testimonials.length / rowsPerPage);
 
-  const handlePublish = (testimonial) => {
-    setConfirmModal({
-      open: true,
-      message: `هل تريد نشر هذا الرأي؟`,
-      confirmText: "نشر",
-      confirmClass: "btn-success",
-      onConfirm: async () => {
-        dispatch(updateTestimonial({ id: testimonial.id, isPublished: true }));
-        setConfirmModal((prev) => ({ ...prev, open: false }));
-      },
-    });
-  };
+  // const handlePublish = (testimonial) => {
+  //   setConfirmModal({
+  //     open: true,
+  //     message: `هل تريد نشر هذا الرأي؟`,
+  //     confirmText: "نشر",
+  //     confirmClass: "btn-success",
+  //     onConfirm: async () => {
+  //       dispatch(updateTestimonial({ id: testimonial.id, isPublished: true }));
+  //       setConfirmModal((prev) => ({ ...prev, open: false }));
+  //     },
+  //   });
+  // };
 
   const handleDeleteSelected = () => {
     if (!selectedIds.length) return alert("اختر على الأقل رأي واحد");
@@ -98,9 +98,7 @@ const TestimonialsTbl = () => {
     return date.toLocaleDateString("ar-EG", {
       year: "numeric",
       month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
+      day: "numeric"
     });
   };
 
@@ -135,7 +133,7 @@ const TestimonialsTbl = () => {
                       />
                     </label>
                   </th>
-                  <th>رقم الرأي</th>
+                 
                   <th>اسم المستخدم</th>
                   <th>التقييم</th>
                   <th>الرأي/التعليق</th>
@@ -172,7 +170,7 @@ const TestimonialsTbl = () => {
                         />
                       </label>
                     </td>
-                    <td>{testimonial.id}</td>
+                   
                     <td>{testimonial.users?.name || "--"}</td>
                     <td>{testimonial.rate}</td>
                     <td>{shortFeedback(testimonial.feed_back)}</td>

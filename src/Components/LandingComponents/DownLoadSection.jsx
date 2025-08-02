@@ -16,6 +16,7 @@ const colors = {
 const DownloadSection = () => {
   return (
     <section
+    id="download-section" 
       className="pb-5 mt-1 px-3 text-end"
       style={{
         direction: "rtl",

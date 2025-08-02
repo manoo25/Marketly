@@ -234,11 +234,7 @@ const ordersSlice = createSlice({
         state.error = action.payload;
       })
 
-      // Delete Multiple
-      .addCase(deleteSelectedOrders.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
+     
       .addCase(deleteSelectedOrders.fulfilled, (state, action) => {
         state.loading = false;
         const deletedIds = action.payload;

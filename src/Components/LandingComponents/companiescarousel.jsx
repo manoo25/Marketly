@@ -22,7 +22,7 @@ function CompaniesCarousel() {
   if (!companies?.length) return null;
 
   return (
-    <div className="companies-carousel-section">
+    <div className="companies-carousel-section"  id="companies-section" >
       <div className="swiper-container">
         <Swiper
           slidesPerView={5}

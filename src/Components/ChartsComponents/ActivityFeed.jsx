@@ -4,6 +4,7 @@ import moment from "moment";
 
 import { UserRole } from "../../Redux/Slices/token";
 import { useSelector } from "react-redux";
+import { color } from "framer-motion";
 
 function ActivityFeed() {
 
@@ -49,10 +50,10 @@ if (UserRole=='trader') {
 
 
     return (
-        <div className="card overflow-hidden overflow-y-scroll" style={{ height: "378px" }}>
-            <div className="card-header d-flex justify-content-between align-items-center">
-                <div>
-                    <h5 className="card-title mb-0">آخر الأحداث</h5>
+        <div className="card overflow-hidden overflow-y-scroll border-0" style={{ height: "378px" }}>
+            <div className="card-header bg-white d-flex justify-content-between align-items-center">
+                <div className="py-2">
+                   <h5 className="card-title mb-0 fw-bold" style={{color: "#7b7686"}}>آخر الأحداث</h5>
                     <small className="text-muted">آخر إشعارات النظام</small>
                 </div>
                 {/* <button className="btn btn-link btn-sm">عرض الكل</button> */}

@@ -1,25 +1,39 @@
 import React from "react";
-import {  useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { clearAuthData } from "../../Redux/Slices/token";
-import { FaRocket } from "react-icons/fa"; // أيقونة من React Icons
-import "./nav.css"; //
+import { FaRocket } from "react-icons/fa";
+import "./nav.css";
 import { Link, useNavigate } from "react-router-dom";
-const LandingNavbar = ( { token}) => {
+
+
+const LandingNavbar = ({ token }) => {
   const dispatch = useDispatch();
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+
   const handleLogout = () => {
     dispatch(clearAuthData());
     sessionStorage.removeItem("userID");
     navigate("/");
   };
 
+   const scrollToSection = (sectionId) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-5">
       <div className="container">
         <a
           className="navbar-brand fw-bolder"
           href="#"
-          style={{ color: "#2d3e82", fontSize: "30px" }}
+          style={{ color: "#915EF6", fontSize: "30px" }}
+          onClick={(e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
         >
           Marketly
         </a>
@@ -34,22 +48,46 @@ const LandingNavbar = ( { token}) => {
         </button>
 
         <div className="collapse navbar-collapse justify-content-between" id="navbarNav">
-          <ul className="navbar-nav me-4 ">
+          <ul className="navbar-nav me-4">
+
             <li className="nav-item">
-              <a className="nav-link" href="#">
-                من نحن
-              </a>
+              <button 
+                className="nav-link btn btn-link" 
+                onClick={() => scrollToSection("download-section")}
+                style={{ border: "none", background: "none", cursor: "pointer" }}
+              >
+                حمل التطبيق
+              </button>
+            </li>
+             <li className="nav-item">
+              <button 
+                className="nav-link btn btn-link" 
+                onClick={() => scrollToSection("companies-section")}
+                style={{ border: "none", background: "none", cursor: "pointer" }}
+              >
+                شركاؤنا
+              </button>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#">
-                خدماتنا
-              </a>
+              <button 
+                className="nav-link btn btn-link" 
+                onClick={() => scrollToSection("faq-section")}
+                style={{ border: "none", background: "none", cursor: "pointer" }}
+              >
+                الأسئلة الشائعة
+              </button>
             </li>
+           
             <li className="nav-item">
-              <a className="nav-link" href="#">
-                اتصل بنا
-              </a>
+              <button 
+                className="nav-link btn btn-link" 
+                onClick={() => scrollToSection("testimonials-section")}
+                style={{ border: "none", background: "none", cursor: "pointer" }}
+              >
+                آراء عملائنا
+              </button>
             </li>
+            
           </ul>
 
           {!token ? (

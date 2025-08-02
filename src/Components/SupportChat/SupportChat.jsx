@@ -89,12 +89,13 @@ export default function SupportChat() {
             <div className="support-chat-float-button" onClick={toggleChat}>
                 <img
                     src={SupportAvatar}
-                    width={"100px"}
+                    width={"55px"}
+                    height={"55px"}
                     style={{
                         border: "none",
                         background: "transparent",
                         boxShadow: "none",
-                        borderRadius: 0,
+                        borderRadius: 50,
                         margin: 0,
                         padding: 0,
                         display: "block"
