@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Button, Container, Card, Alert, Row, Col } from "react-bootstrap";
 import { useNavigate, useLocation, Link } from "react-router-dom";
-import Logo from "../../assets/Images/Logo.png";
 import styles from "../../css/AuthLayout.module.css";
 import "../../css/global.css";
 
@@ -33,7 +32,7 @@ const CheckDelegates = () => {
           md={4}
           className={`d-none d-md-flex align-items-center justify-content-center rounded-3 ${styles.signupImageSection}`}
         >
-          <img src={Logo} alt="التحقق من المناديب" className={styles.signupSideImg} />
+          <img src='src/assets/Logo/Asset 3.svg' alt="شعار" className={styles.signupSideImg} />
         </Col>
 
         <Col md={7}>

@@ -2,7 +2,6 @@ import React from "react";
 import { Button, Row, Col } from "react-bootstrap";
 import { useNavigate, Link } from "react-router-dom";
 import styles from "../../css/AuthLayout.module.css";
-import Logo from "../../assets/Images/Logo.png";
 import "../../css/global.css";
 
 const ChooseRole = () => {
@@ -23,7 +22,7 @@ const handleSelect = (role) => {
           md={4}
           className={`d-none d-md-flex align-items-center justify-content-center rounded-3 ${styles.signupImageSection}`}
         >
-          <img src={Logo} alt="اختر نوع الحساب" className={styles.signupSideImg} />
+          <img src='src/assets/Logo/Asset 3.svg' alt="شعار" className={styles.signupSideImg} />
         </Col>
 
         <Col md={7}>

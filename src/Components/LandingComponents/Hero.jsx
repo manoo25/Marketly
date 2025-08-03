@@ -9,7 +9,7 @@ const HeroSection = ( { token, role }) => {
   const navigate = useNavigate();
  if (token && !role) return null;
   return (
-    <section className="hero-section mb-5">
+    <section className="hero-section py-5"> 
       <div className="container">
         <div className="row align-items-center">
           <div className="col-lg-5 mb-4 mb-lg-0">

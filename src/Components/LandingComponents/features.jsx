@@ -24,7 +24,7 @@ const features = [
 
 const FeaturesSection = () => {
   return (
-    <section className="features-section">
+    <section className="features-section py-5">
       <div className="container">
         <div className="row mb-3">
           {features.map((feature, index) => (

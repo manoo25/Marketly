@@ -22,7 +22,9 @@
 }
 
 .signupImageSection {
-  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+  /* background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); */
+  background: url("../assets/Images/bg.png") no-repeat center center;
+  background-size: cover;
   padding: 2rem;
   border-radius: 12px;
   height: 95vh;

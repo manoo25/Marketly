@@ -40,8 +40,11 @@ const Footer = () => {
                 letterSpacing: "0.5px",
               }}
             >
-              ماركتلي
+              <img src="src/assets/Logo/Asset 1.svg"
+                alt="Marketly Logo"
+                style={{ width: "80px", height: "auto" }} />
             </h4>
+
             <p
               style={{
                 color: colors.textSecondary,
@@ -111,20 +114,20 @@ const Footer = () => {
             <h5 style={{ color: colors.text, fontWeight: 600 }}>روابط مهمة</h5>
             <ul
               className="list-unstyled mt-3"
-              style={{ color: colors.textSecondary, lineHeight: 2 }}
+              style={{ color: colors.primary, lineHeight: 2 }}
             >
               {[
                 { text: "حمل التطبيق", sectionId: "download-section" },
                 { text: "شركاؤنا", sectionId: "companies-section" },
                 { text: "الأسئلة الشائعة", sectionId: "faq-section" },
                 { text: "آراء عملائنا", sectionId: "testimonials-section" },
-               ].map(({ text, sectionId, href }, i) => (
+              ].map(({ text, sectionId, href }, i) => (
                 <li key={i} className="mb-1">
                   {sectionId ? (
                     <button
                       onClick={() => scrollToSection(sectionId)}
                       style={{
-                        color: colors.accent,
+                        color: colors.primary,
                         textDecoration: "none",
                         transition: "color 0.3s",
                         background: "none",
@@ -133,10 +136,10 @@ const Footer = () => {
                         cursor: "pointer",
                       }}
                       onMouseEnter={(e) =>
-                        (e.target.style.color = colors.primary)
+                        (e.target.style.color = colors.accent)
                       }
                       onMouseLeave={(e) =>
-                        (e.target.style.color = colors.accent)
+                        (e.target.style.color = colors.primary)
                       }
                     >
                       {text}
@@ -145,15 +148,15 @@ const Footer = () => {
                     <a
                       href={href}
                       style={{
-                        color: colors.accent,
+                        color: colors.primary,
                         textDecoration: "none",
                         transition: "color 0.3s",
                       }}
                       onMouseEnter={(e) =>
-                        (e.target.style.color = colors.primary)
+                        (e.target.style.color = colors.accent)
                       }
                       onMouseLeave={(e) =>
-                        (e.target.style.color = colors.accent)
+                        (e.target.style.color = colors.primary)
                       }
                     >
                       {text}
@@ -195,7 +198,7 @@ const Footer = () => {
           }}
         >
           جميع الحقوق محفوظة © {new Date().getFullYear()} — تصميم وتجميع فريق
-          ديڤ هاوس 
+          ديڤ هاوس
         </div>
       </div>
     </footer>

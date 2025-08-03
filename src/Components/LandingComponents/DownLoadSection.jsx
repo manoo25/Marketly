@@ -1,6 +1,5 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import mobile from "../../assets/Images/mobile.png";
 
 const colors = {
   primary: "#915EF6",
@@ -84,7 +83,7 @@ const DownloadSection = () => {
           {/* صورة الموبايل */}
           <div className="col-12 col-md-6 order-1 order-md-2 text-center">
             <img
-              src={mobile}
+              src='src\assets\Logo\Asset 11.svg'
               alt="Marketly App UI"
               className="img-fluid"
               style={{

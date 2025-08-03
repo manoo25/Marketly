@@ -6,7 +6,6 @@ import { supabase } from "../../Supabase/SupabaseClient";
 import { uploadImagesToSupabase } from "../../Redux/uploadingImage";
 import { FaCamera, FaMapMarkerAlt } from "react-icons/fa";
 import styles from "../../css/AuthLayout.module.css";
-import Logo from "../../assets/Images/Logo.png";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import "../../css/global.css";
 import { useDispatch } from "react-redux";
@@ -232,7 +231,7 @@ const SignUp = () => {
     <div className={styles.signupPage}>
       <Row className="g-0 justify-content-center align-items-center min-vh-100">
         <Col md={4} className={`d-none d-md-flex align-items-center justify-content-center ${styles.signupImageSection}`}>
-          <img src={Logo} alt="شعار" className={styles.signupSideImg} />
+          <img src='src/assets/Logo/Asset 3.svg' alt="شعار" className={styles.signupSideImg} />
         </Col>
 
         <Col md={7}>

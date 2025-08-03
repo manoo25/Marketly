@@ -29,13 +29,14 @@ const LandingNavbar = ({ token }) => {
         <a
           className="navbar-brand fw-bolder"
           href="#"
-          style={{ color: "#915EF6", fontSize: "30px" }}
           onClick={(e) => {
             e.preventDefault();
             window.scrollTo({ top: 0, behavior: "smooth" });
           }}
         >
-          Marketly
+          <img src="src/assets/Logo/Asset 1.svg"
+           alt="Marketly Logo"
+           style={{ width: "100px", height: "auto" }} />
         </a>
 
         <button

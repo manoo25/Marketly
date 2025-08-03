@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Button, Row, Col, Image } from "react-bootstrap";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import styles from "../../css/AuthLayout.module.css";
-import Logo from "../../assets/Images/Logo.png";
 import "../../css/global.css";
 
 const UploadShopImage = () => {
@@ -26,7 +25,7 @@ const UploadShopImage = () => {
           md={4}
           className={`d-none d-md-flex align-items-center justify-content-center rounded-3 ${styles.signupImageSection}`}
         >
-          <img src={Logo} alt="رفع صورة المتجر" className={styles.signupSideImg} />
+          <img src='src/assets/Logo/Asset 3.svg' alt="شعار" className={styles.signupSideImg} />
         </Col>
 
         <Col md={7}>
