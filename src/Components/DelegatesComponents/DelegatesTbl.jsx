@@ -280,7 +280,7 @@ export default function DelegatesTbl({
                             {
                               label: "تعديل",
                               icon: "fa-solid fa-user-pen",
-                              color: "blue",
+                              color: "#915EF6",
                               onClick: () => setEditModalData(delegate),
                             },
                             {

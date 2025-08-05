@@ -321,8 +321,13 @@ const EditProductModal = ({ product, show, setShow }) => {
                   </label>
                   {formik.values.onSale &&
                     <Form.Group className="ms-3">
+                     
+                      
+                  <Form.Label  style={{marginRight:25}}>السعر بعد الخصم</Form.Label>
+                     
                       <Form.Control
-                        placeholder='السعر بعد الخصم'
+                        style={{width:150,marginRight:25}}
+                        placeholder='السعر ب الخصم'
                         type="number"
                         name='endPrice'
                         onChange={(e) => {
@@ -340,7 +345,7 @@ const EditProductModal = ({ product, show, setShow }) => {
                         <div className="text-danger">{formik.errors.endPrice}</div>
                       )}
                       {formik.values.sale > 0 && (
-                        <div className="text-success mt-1">
+                        <div  style={{marginRight:25}} className="text-success mt-1">
                           نسبة الخصم: {parseFloat(formik.values.sale).toFixed(2)}%
                         </div>
                       )}

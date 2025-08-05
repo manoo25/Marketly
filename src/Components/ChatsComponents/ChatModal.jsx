@@ -181,6 +181,7 @@ export default function ChatModal({ users, searchValue, setSearchValue, onUserLi
     const getRoleLabel = (role) => {
         if (role === "trader") return "تاجر";
         if (role === "user") return "صاحب محل";
+        if (role === "delegate") return "مندوب";
         return "مستخدم";
     };
 
@@ -378,7 +379,8 @@ export default function ChatModal({ users, searchValue, setSearchValue, onUserLi
                                     onKeyDown={handleKeyDown}
                                 />
                                 <button className="chat-send-btn" onClick={handleSendMessage}>
-                                    إرسال
+                                 <i style={{fontSize:20}} className="fa-solid fa-paper-plane"></i>
+                                  
                                 </button>
                             </div>
                         </>

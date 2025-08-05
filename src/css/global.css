@@ -270,3 +270,13 @@ a{
 table tr td img{
 object-fit: contain !important;
 }
+
+.custom-btn-menuInTbl {
+    background-color: var(--white-color) !important;
+    color: var(--black-color) !important;
+}
+
+.custom-btn-menuInTbl:hover {
+    background-color: var(--delete-color-light) !important;
+    color: var(--black-color) !important;
+}

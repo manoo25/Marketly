@@ -39,7 +39,7 @@ div table tbody tr td {
 
 
 
-label nav ul li button.custom-btn-menu {
+/* label nav ul li button.custom-btn-menu {
     background-color: var(--white-color) !important;
     color: var(--black-color) !important;
 }
@@ -47,7 +47,7 @@ label nav ul li button.custom-btn-menu {
 label nav ul li button.custom-btn-menu:hover {
     background-color: var(--delete-color-light) !important;
     color: var(--black-color) !important;
-}
+} */
 
 
 .popup-window {

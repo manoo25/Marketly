@@ -309,8 +309,8 @@ const ProductsTbl = () => {
                       options={[
                         {
                           label: "تعديل",
-                          icon: "fa-solid fa-paper-plane",
-                          color: "green",
+                          icon: "fa-solid fa-pen-to-square",
+                          color:'#915EF6',
                           onClick: () => {
                             setShow(true);
                             setEditProduct(product);

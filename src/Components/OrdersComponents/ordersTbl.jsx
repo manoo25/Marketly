@@ -30,6 +30,7 @@ const OrdersTbl = () => {
     const [filteredOrders, setFilteredOrders] = useState([]);
     const [SelectedOrders, SetSelectedOrders] = useState([]);
     const [searchName, setSearchName] = useState("");
+    const [searchId, setSearchId] = useState("");
     const [selectedGovernorate, setSelectedGovernorate] = useState("");
     const [selectedState, setSelectedState] = useState("");
     const [OrderLocaction, SetOrderLocaction] = useState({});
@@ -44,6 +45,9 @@ const OrdersTbl = () => {
             const matchName =
                 searchName === "" ||
                 (order.user?.name && order.user.name.toLowerCase().includes(searchName.toLowerCase()));
+            const matchId =
+                searchId === "" ||
+                (order.id===searchId);
 
             const matchState =
                 selectedState === "" ||
@@ -53,11 +57,11 @@ const OrdersTbl = () => {
                 selectedGovernorate === "" ||
                 (order.user?.governorate && order.user.governorate.toLowerCase().includes(selectedGovernorate.toLowerCase()));
 
-            return matchName && matchState && matchGov;
+            return matchName && matchId && matchState && matchGov;
         });
         setFilteredOrders(filtered);
         setCurrentPage(1);
-    }, [searchName, selectedGovernorate, selectedState, orders, rowsPerPage]);
+    }, [searchName,searchId, selectedGovernorate, selectedState, orders, rowsPerPage]);
 
     useEffect(() => {
         const startIndex = (currentPage - 1) * rowsPerPage;
@@ -69,6 +73,7 @@ const OrdersTbl = () => {
 
     const onResetFilters = () => {
         setSearchName("");
+        setSearchId("");
         setSelectedState("");
         setSelectedGovernorate("");
         setCurrentPage(1);
@@ -267,6 +272,8 @@ const OrdersTbl = () => {
          <OrdersFilter
                         searchName={searchName}
                         setSearchName={setSearchName}
+                          searchId={searchId}
+                        setSearchId={setSearchId}
                         selectedState={selectedState}
                         setSelectedState={setSelectedState}
                         selectedGovernorate={selectedGovernorate}
@@ -328,8 +335,8 @@ const OrdersTbl = () => {
                                             options={[
                                                 {
                                                     label: "تعديل الحالة", 
-                                                    icon: "fa-solid fa-pen", 
-                                                    color: "blue", 
+                                                     icon: "fa-solid fa-pen-to-square",
+                                                    color:'#915EF6', 
                                                     onClick: () => {
                                                         if (SelectedOrders.length === 0) {
                                                             setNotification({
@@ -419,14 +426,14 @@ const OrdersTbl = () => {
     ? [
         {
           label: "تعديل الحالة",
-          icon: "fa-solid fa-pen",
-          color: "blue",
+           icon: "fa-solid fa-pen-to-square",
+           color:'#915EF6',
           onClick: () => handleOpenStateModal(order),
         },
         {
           label: "اختيار مندوب",
           icon: "fa-solid fa-user",
-          color: "red",
+          color: "#915EF6",
           onClick: () => {
             setshowDelegateModal(true);
             SetOrderLocaction({
@@ -649,7 +656,9 @@ const OrdersTbl = () => {
                                         </thead>
                                         <tbody>
                                             {orderItems.map((item, idx) => (
-                                                <tr key={item.id}>
+                                                <tr key={item.id}
+                                                 style={item.quantity === 0 ? { textDecoration: 'line-through' } : {}}
+                                                >
                                                     <td>{idx + 1}</td>
                                                     <td>{item.product_id?.name || item.name || '--'}</td>
                                                     <td>

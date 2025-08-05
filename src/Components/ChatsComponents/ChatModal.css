@@ -200,6 +200,7 @@
     padding: 10px;
     border-top: 1px solid #ddd;
     gap: 8px;
+    align-items: center;
 }
 
 
@@ -210,18 +211,20 @@
     padding: 8px 12px;
     border: 1px solid #ccc;
     resize: none;
+     height: 50px;
 }
 
 .chat-send-btn {
     background-color: #00b7ff;
     color: white;
     border: none;
-    border-radius: 20px;
-    padding: 8px 16px;
+    border-radius: 10px  5px 10px 5px;
+    padding: 2px 10px;
+    height: 40px;
 }
 
 .chat-send-btn:hover {
-    background-color: #0c93e7;
+    background-color: #0c59e7;
 }
 
 .chat-main-area {

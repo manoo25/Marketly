@@ -246,25 +246,25 @@ const ReturnsTbl = () => {
                                     <th style={{ position: "relative", zIndex: 1 }}>
                                         <CustomMenu
                                             options={[
-                                                {
-                                                    label: "تعديل الحالة",
-                                                    icon: "fa-solid fa-pen",
-                                                    color: "blue",
-                                                    onClick: () => {
-                                                        // if (SelectedReturns.length === 0) {
-                                                        //     alert("من فضلك اختر طلبات أولاً");
-                                                        //     return;
-                                                        // }
-                                                        if (SelectedReturns.length === 0) {
-                                                            setNotification({
-                                                                isOpen: true,
-                                                                message: "من فضلك، يجب تحديد طلب واحد على الأقل."
-                                                            });
-                                                            return;
-                                                        }
-                                                        setBulkStateModalOpen(true);
-                                                    }
-                                                },
+                                            //     {
+                                            //         label: "تعديل الحالة",
+                                            //         icon: "fa-solid fa-pen-to-square",
+                                            //    color:'#915EF6',
+                                            //         onClick: () => {
+                                            //             // if (SelectedReturns.length === 0) {
+                                            //             //     alert("من فضلك اختر طلبات أولاً");
+                                            //             //     return;
+                                            //             // }
+                                            //             if (SelectedReturns.length === 0) {
+                                            //                 setNotification({
+                                            //                     isOpen: true,
+                                            //                     message: "من فضلك، يجب تحديد طلب واحد على الأقل."
+                                            //                 });
+                                            //                 return;
+                                            //             }
+                                            //             setBulkStateModalOpen(true);
+                                            //         }
+                                            //     },
                                                 {
                                                     label: "مسح المحدد",
                                                     icon: "fa-solid fa-trash",
@@ -342,8 +342,8 @@ const ReturnsTbl = () => {
                                                 options={[
                                                     {
                                                         label: "تعديل الحالة",
-                                                        icon: "fa-solid fa-pen",
-                                                        color: "blue",
+                                                        icon: "fa-solid fa-pen-to-square",
+           color:'#915EF6',
                                                         onClick: () => handleOpenStateModal(ret)
                                                     },
                                                     {
@@ -545,7 +545,7 @@ const ReturnsTbl = () => {
                                     ))}
                                     <table className="table table-bordered text-center mb-4 mt-4" style={{ fontSize: 16 }}>
                                         <thead className="table-light">
-                                            <tr>
+                                            <tr >
                                                 <th>م</th>
                                                 <th>اسم المنتج</th>
                                                 <th>صورة المنتج</th>
@@ -556,7 +556,9 @@ const ReturnsTbl = () => {
                                         </thead>
                                         <tbody>
                                             {orderItems.map((item, idx) => (
-                                                <tr key={item.id}>
+                                                <tr key={item.id}
+                                                 style={item.quantity === 0 ? { textDecoration: 'line-through' } : {}}
+                                                >
                                                     <td>{idx + 1}</td>
                                                     <td>{item.product_id?.name || item.name || '--'}</td>
                                                     <td>

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
+import '../../css/global.css'
 
 function CustomMenu({id="", options=[]}) {
 
@@ -90,7 +91,7 @@ function CustomMenu({id="", options=[]}) {
                                 option.onClick();
                                 setOpenIndex(null);
                             }}
-                            className="custom-btn-menu"
+                            className="custom-btn-menuInTbl"
                         >
                             <span style={{ color: `${option.color}`, marginLeft:"0px" }} className={option.icon}></span>
                             <span >{option.label}</span>

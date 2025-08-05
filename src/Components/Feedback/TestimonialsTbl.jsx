@@ -345,13 +345,20 @@ const TestimonialsTbl = () => {
         >
           <div className="modal-dialog" role="document">
             <div className="modal-content">
-              <div className="modal-header">
+               {/* <Modal.Header className="border-0 pb-0 d-flex align-items-center justify-content-between w-100" dir="rtl">
+                        <Modal.Title>إضافة شركة</Modal.Title>
+                        <button className='fa-solid fa-close border-0 bg-transparent CloseModalBtn' onClick={() => setShow(false)} />
+              
+                      </Modal.Header> */}
+              <div style={{ borderBottom: '1px solid #ccc' }}
+ className=" py-3 px-3  d-flex align-items-center justify-content-between w-100">
                 <h5 className="modal-title">تفاصيل الرأي</h5>
                 <button
                   type="button"
-                  className="btn-close"
+                  className="fa-solid fa-close border-0 bg-transparent CloseModalBtn"
                   onClick={() => setShowModal(false)}
                 ></button>
+
               </div>
               <div className="modal-body">
                 <p>
