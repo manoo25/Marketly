@@ -1,13 +1,14 @@
 import React from "react";
 import "./testimonials.css";
-
+import Avatar from "../../assets/Images/user.png";
 function TestimonialCard({ testimonial }) {
-  const { rate, feed_back, users } = testimonial;
+  const {  feed_back, users } = testimonial;
 
   return (
     <div className="testimonial-card chat-style"  id="testimonials-section" >
       <div className="testimonial-header">
-        <span className="user-icon">👤</span>
+        {/* <span className="user-icon">👤</span> */}
+        <img style={{ width: "40px", height: "40px" }} className="user-icon" src={Avatar} alt="Avatar" />
         <span className="testimonial-user">{users?.name || "مستخدم"}</span>
       </div>
 
@@ -15,11 +16,7 @@ function TestimonialCard({ testimonial }) {
         <p>"{feed_back}"</p>
       </div>
 
-      <div className="testimonial-stars">
-        {Array.from({ length: rate }).map((_, i) => (
-          <span key={i}>⭐</span>
-        ))}
-      </div>
+     
     </div>
   );
 }

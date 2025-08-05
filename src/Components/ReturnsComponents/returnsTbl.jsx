@@ -144,7 +144,7 @@ const ReturnsTbl = () => {
     const handlePrintInvoice = () => {
         const printContents = document.getElementById("order-invoice-print").innerHTML;
         const win = window.open('', '', 'height=700,width=900');
-        win.document.write('<html><head><title>فاتورة الطلب</title>');
+        win.document.write('<html><head><title>فاتورة مرتجع</title>');
         win.document.write(`
             <style>
                 body{direction:rtl;font-family:tahoma,Arial,sans-serif;background:#fff;}
@@ -517,23 +517,23 @@ const ReturnsTbl = () => {
                                 <div style={{ border: '0.1rem solid #00000073', borderRadius: 12, padding: 24, background: '#fff', maxWidth: 700, margin: '0 auto' }}>
                                     <div className="d-flex justify-content-between align-items-center mb-4">
                                         <div>
-                                            <h2 className="fw-bold mb-1">فاتورة بيع</h2>
+                                            <h2 className="fw-bold mb-1">فاتورة مرتجع</h2>
                                             <div style={{ fontSize: 15 }}>رقم الطلب: <span className="fw-bold">{viewOrderId}</span></div>
                                         </div>
                                     </div>
                                     {returns.filter(x => x.id === viewOrderId).map(order => (
                                         <>
                                             <div className="mb-2" style={{ fontSize: 16 }}>
-                                                <span className="fw-bold">اسم العميل:</span> {order.orders?.users?.name || "--"}
+                                                <span className="fw-bold">اسم العميل:</span> {order.user.name || "--"}
                                             </div>
                                             <div className="mb-2" style={{ fontSize: 16 }}>
-                                                <span className="fw-bold"> رقم الهاتف:</span> {order.orders?.users?.phone || "--"}
+                                                <span className="fw-bold"> رقم الهاتف:</span> {order.user?.phone || "--"}
                                             </div>
                                             <div className="mb-2" style={{ fontSize: 16 }}>
-                                                <span className="fw-bold">المدينة:</span> {order.orders?.users?.city || "--"}
+                                                <span className="fw-bold">المدينة:</span> {order.user?.city || "--"}
                                             </div>
                                             <div className="mb-2" style={{ fontSize: 16 }}>
-                                                <span className="fw-bold">العنوان:</span> {order.orders?.users?.location || "--"}
+                                                <span className="fw-bold">العنوان:</span> {order.user?.location || "--"}
                                             </div>
                                             <div className="mb-2" style={{ fontSize: 16 }}>
                                                 <span className="fw-bold">سبب الارتجاع:</span> {order.reason || "--"}
@@ -586,7 +586,7 @@ const ReturnsTbl = () => {
                                                 </div>
                                                 <div className="d-flex justify-content-between mb-2">
                                                     <span>طريقة الدفع:</span>
-                                                    <span>{order.payment_method}</span>
+                                                    <span>عند الاستلام</span>
                                                 </div>
                                                 <div className="d-flex justify-content-between mb-2">
                                                     <span>حالة الطلب:</span>

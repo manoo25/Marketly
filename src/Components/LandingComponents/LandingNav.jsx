@@ -24,7 +24,7 @@ const LandingNavbar = ({ token }) => {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-5">
+    <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-5 py-3">
       <div className="container">
         <a
           className="navbar-brand fw-bolder"

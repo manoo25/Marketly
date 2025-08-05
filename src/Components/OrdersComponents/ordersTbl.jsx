@@ -679,11 +679,16 @@ const OrdersTbl = () => {
                                                 </div>
                                                 <div className="d-flex justify-content-between mb-2">
                                                     <span>طريقة الدفع:</span>
-                                                    <span>{order.payment_method}</span>
+                                                    <span>عند الاستلام</span>
                                                 </div>
                                                 <div className="d-flex justify-content-between mb-2">
                                                     <span>حالة الطلب:</span>
-                                                    <span style={{ color: getStatusBgColor(order.status), fontWeight: 'bold' }}>{order.status}</span>
+                                                    <span style={{ color: getStatusBgColor(order.status), fontWeight: 'bold' }}>
+                                                       {order.status=='done'&&'تم الاستلام'||
+                                            order.status=='pending'&&'معلق'||
+                                            order.status=='returns'&&'مرتجع'||
+                                            order.status=='inprogress'&&'قيد التنفيذ'}
+                                                        </span>
                                                 </div>
                                             </div>
                                         </div>

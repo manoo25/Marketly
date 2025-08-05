@@ -16,10 +16,9 @@ function TestimonialsSection() {
   }, [dispatch]);
 
   const publishedTestimonials =
-    testimonials?.filter((t) => t.isPublished) || [];
+    testimonials?.filter((t) => t.isPublished===true) || [];
 
   if (loading || publishedTestimonials.length < 5) return null;
-console.log("published count:", publishedTestimonials.length);
   return (
     <div className="testimonials-section">
       <h2 className="testimonials-title">آراء عملائنا</h2>

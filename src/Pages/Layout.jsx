@@ -52,10 +52,10 @@ function Layout() {
         aria-labelledby="offcanvasRightLabel"
       >
         <div className="px-3 py-0">
-          <div className="offcanvas-header p-0 m-0">
+          <div className="offcanvas-header p-0 mt-2">
             <img
-              style={{ width: "100px", height: "80px" }}
-              src='../../src/assets/Logo/Asset 3.svg'
+              style={{ width: "120px", height: "60px" }}
+              src='../../src/assets/Logo/Asset 1.svg'
               alt="Logo"
             />
           </div>
