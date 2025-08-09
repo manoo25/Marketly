@@ -10,6 +10,7 @@ import { uploadImagesToSupabase } from '../../Redux/uploadingImage';
 import { createDelegate, fetchDelegates } from '../../Redux/Slices/DelegatesSlice';
 import { UserRole } from '../../Redux/Slices/token';
 import { AiOutlineClose } from 'react-icons/ai';
+import NotificationModal from './NotificationModal';
 
 /* ───────── ثوابت ───────── */
 const daysOfWeek = ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'];
@@ -61,14 +62,15 @@ const AddDelegateModal = () => {
     const { users } = useSelector(s => s.Users);
     const { delegates } = useSelector(s => s.Delegates);
 
-
+    const [notifOpen, setNotifOpen] = useState(false);
+    const [notifMessage, setNotifMessage] = useState('');
 
     useEffect(() => { dispatch(fetchDelegates()); }, [dispatch]);
-      useEffect(() => {
-         if (UserRole!='admin') {
-         setSelectedTraderId(sessionStorage.getItem("userID"))
-         }
-        }, [UserRole]);
+    useEffect(() => {
+        if (UserRole != 'admin') {
+            setSelectedTraderId(sessionStorage.getItem("userID"))
+        }
+    }, [UserRole]);
 
     /* ───────── helpers ───────── */
     const checkPhoneUnique = debounce(val => {
@@ -117,7 +119,7 @@ const AddDelegateModal = () => {
 
     /* ───────── handlers ───────── */
     async function handleAdd(vals, { resetForm }) {
-        if (UserRole=='admin' && !selectedTraderId) {
+        if (UserRole == 'admin' && !selectedTraderId) {
             alert('اختيار التاجر مطلوب'); return;
         }
 
@@ -126,7 +128,7 @@ const AddDelegateModal = () => {
             ? await uploadImagesToSupabase(vals.delegateImage, 'delegates')
             : [];
 
-        const finalTraderId = selectedTraderId ;
+        const finalTraderId = selectedTraderId;
 
         /* تحضير الـ routes الصالحة */
         const validRoutes = routes
@@ -146,6 +148,17 @@ const AddDelegateModal = () => {
         };
 
         await dispatch(createDelegate(payload)).unwrap();
+
+        // 📌 تجهيز الرسالة للمودال
+        setNotifMessage(
+            `تمت إضافة المندوب "${vals.name}" بنجاح.\n\n` +
+            `بيانات تسجيل الدخول:\n` +
+            `البريد الإلكتروني: ${vals.phone}\n` +
+            `كلمة المرور: ${vals.phone}\n\n` +
+            `سيتوجب على المندوب تغيير كلمة المرور عند فتح التطبيق لأول مرة.`
+        );
+        setNotifOpen(true); // فتح المودال
+
         resetForm();
         setRoutes([{ governorate: '', route: '', days: [] }]);
         setImages([]); setShow(false);
@@ -210,11 +223,11 @@ const AddDelegateModal = () => {
                 </Modal.Header> */}
 
                 <Modal.Header>
-          <div className="border-0 pb-0 d-flex align-items-center justify-content-between w-100">
-            <Modal.Title>إضافة مندوب</Modal.Title>
-            <button className='fa-solid fa-close border-0 bg-transparent CloseModalBtn' onClick={() => setShow(false)} />
-          </div>
-        </Modal.Header>
+                    <div className="border-0 pb-0 d-flex align-items-center justify-content-between w-100">
+                        <Modal.Title>إضافة مندوب</Modal.Title>
+                        <button className='fa-solid fa-close border-0 bg-transparent CloseModalBtn' onClick={() => setShow(false)} />
+                    </div>
+                </Modal.Header>
 
                 <Modal.Body>
                     <Form noValidate onSubmit={formik.handleSubmit}>
@@ -242,7 +255,7 @@ const AddDelegateModal = () => {
                             </Col>
 
                             {/* اختيار التاجر (عند الأدمن) */}
-                            {UserRole=='admin' && (
+                            {UserRole == 'admin' && (
                                 <Col md={12} className="mb-3">
                                     <Form.Label>اختر التاجر</Form.Label>
                                     <Form.Select value={selectedTraderId} onChange={e => setSelectedTraderId(e.target.value)} required>
@@ -329,6 +342,11 @@ const AddDelegateModal = () => {
                     </Form>
                 </Modal.Body>
             </Modal>
+            <NotificationModal
+                isOpen={notifOpen}
+                onClose={() => setNotifOpen(false)}
+                message={notifMessage}
+            />
         </>
     );
 };
